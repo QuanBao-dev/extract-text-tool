@@ -11,6 +11,7 @@ const {
   replacedExactCharsAfterTranslation,
 } = require("../setting.json");
 const delay = require("./delay");
+const handleWordWrap = require("./handleWordWrap");
 const objectMap = replacedCharsBeforeTranslation;
 // g
 const objectMap2 = replacedExactCharsAfterTranslation;
@@ -157,13 +158,14 @@ async function translateOfflineSugoiLongList(
 let cacheTranslation = {};
 async function translateOfflineSugoiCt2LongList(
   textList,
-  limit = 0,
+  limit = 1,
   isSplit = false,
   isConsoleLog = true
 ) {
   let ans = [];
   let i = 0;
   textList = textList.map((text) => {
+    if (text === null) return null;
     let rawMatchedText = text.match(
       /(\[ruby text="[a-zA-Z一-龠ぁ-ゔァ-ヴ　ーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-ん ァ-ヾｦ-ﾟ〟！～『「！」』？＆、。　 '"・♡＝…―,＋]+"\][a-zA-Z一-龠ぁ-ゔァ-ヴ　ーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-ん ァ-ヾｦ-ﾟ〟！～『「！」』？＆、。　 '"・♡＝…―,＋]+\[\/ruby\])/g
     );
@@ -233,6 +235,7 @@ async function translateOfflineSugoiCt2LongList(
 }
 // let a = []
 async function translateOfflineSugoiCt2(text) {
+  if (text === null) return null;
   if (text === "？？？？？") return "base";
   if (text === "？？？？") return "？？？？";
   if (text === "？？？") return "？？？";
@@ -328,17 +331,21 @@ async function translateOfflineSugoiCt2(text) {
         ? text.trim().match(new RegExp(listOfChoice[4], "g"))[0]
         : "");
   }
-  const finalResult =
+  const finalResult = handleWordWrap(
+    55,
     prefix +
-    temp
-      .trim()
-      .replace(/^\*/i, "＊")
-      .replace("「」", "「……」")
-      .replace(/’/g, "'")
-      .replace(/」"/g, '」"')
-      .replace(/^"/g, "")
-      .replace(/"$/g, "")
-      .replace(/( )?⁇( )?/g, "");
+      temp
+        .trim()
+        .replace(/^\*/i, "＊")
+        .replace("「」", "「……」")
+        .replace(/’/g, "'")
+        .replace(/」"/g, '」"')
+        .replace(/^"/g, "")
+        .replace(/"$/g, "")
+        .replace(/( )?⁇( )?/g, "")
+        .replace(/"/g, "”"),
+    "\\n"
+  );
   cacheTranslation[text] = finalResult;
   return finalResult;
 }
@@ -530,14 +537,14 @@ let backupText = "";
 // let backupText2 = "";
 let check = false;
 async function translateSelectCenterText(rawText, start = 0, end) {
-  if (
-    !rawText
-      .trim()
-      .match(
-        new RegExp(ks.translation.regExpToFilterSentenceContainTagName, "g")
-      )
-  )
-    return rawText;
+  // if (
+  //   !rawText
+  //     .trim()
+  //     .match(
+  //       new RegExp(ks.translation.regExpToFilterSentenceContainTagName, "g")
+  //     )
+  // )
+  //   return rawText;
   rawText = excludeTranslateText(rawText);
   const prefix = rawText.match(/^((　)+)/g)
     ? rawText.match(/^((　)+)/g)[0]
@@ -684,7 +691,7 @@ async function translateSelectCenterText(rawText, start = 0, end) {
       );
   }
   // backupText2 = backupText;
-  return prefix + text.replace(/\\n/g, " ").replace("Huh? What's up?", "へ");
+  return prefix + text.replace("Huh? What's up?", "へ");
   // +suffix
 }
 
@@ -702,10 +709,11 @@ async function translateSelectCenterTextList(dataList, limit = 20) {
               return "ＯＰムービー２回目以降";
             if (text === "……") return "……";
             if (text === "。、」』）！？”～ー♪") return "。、」』）！？”～ー♪";
-            return await translateSelectCenterText(
+            const temp = await translateSelectCenterText(
               text,
               ks.translation.isQlie ? (text.includes("＠") ? 1 : 0) : 0
             );
+            return temp
           })
         );
         ans = [...ans, ...translatedSelectCenterText];

@@ -1,13 +1,22 @@
 require("events").EventEmitter.setMaxListeners(100);
-const { translateOfflineSugoiLongList } = require("./translateJapanese");
+const {
+  translateOfflineSugoiLongList,
+  translateOfflineSugoiCt2LongList,
+} = require("./translateJapanese");
 const fs = require("fs");
 const delay = require("./delay");
 const { readFile, writeFile } = require("./handleFile");
 const { scn } = require("../setting.json");
 (async () => {
   // console.log(
-  //   await translateOfflineSugoiLongList(["「シャルちゃん、誕生日おめでとう。えへへ、おうちが近いから、お誕生日会で遅くまで残れるのっていいね」"])
+  //   await translateOfflineSugoiCt2LongList([
+  //     "萬屋 ひな",
+  //     "春夏冬 凛",
+  //     "メリル・ハサウェイ",
+  //     "勅使河原 琴子",
+  //   ])
   // );
+  // await delay(1000000);
   const listFileName = fs.readdirSync(scn.translation.folderPath);
   for (let i = 0; i < listFileName.length; i++) {
     await translateScn(scn.translation.folderPath + "/" + listFileName[i]);
@@ -36,7 +45,7 @@ async function translateScn(filePathInput) {
       let selects = scene.selects;
       selects = await Promise.all(
         selects.map(async (select) => {
-          select.text = (await translateOfflineSugoiLongList([select.text]))[0];
+          select.text = (await translateOfflineSugoiCt2LongList([select.text]))[0];
           return select;
         })
       );
@@ -46,26 +55,20 @@ async function translateScn(filePathInput) {
     if (!scene.texts) continue;
     texts = scene.texts;
     const contentList = texts.map((text) => {
-      return text[2];
+      return text[1][0][3] || text[1][0][1];
     });
     const tagNameList = texts.map((text) => {
-      return text[1] || text[0];
+      return text[0];
     });
     let [translatedContentList, translatedTagNameList] = await Promise.all([
-      translateOfflineSugoiLongList(
-        contentList,
-        scn.translation.numberOfSentences
-      ),
-      translateOfflineSugoiLongList(
-        tagNameList,
-        scn.translation.numberOfSentences
-      ),
+      translateOfflineSugoiCt2LongList(contentList, 1),
+      translateOfflineSugoiCt2LongList(tagNameList, 1),
     ]);
 
     for (let j = 0; j < texts.length; j++) {
       const text = texts[j];
-      text[1] = translatedTagNameList[j];
-      text[2] = translatedContentList[j];
+      text[1][0][0] = translatedTagNameList[j];
+      text[1][0][1] = translatedContentList[j];
       // console.log(text[1],text[0]);
     }
   }

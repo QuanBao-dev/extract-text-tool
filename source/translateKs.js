@@ -56,25 +56,7 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateSelectCenterTextList(
   //     [
-  //       `「家じゃないんだよ？　遊園地！　パブリックスペースだよ！？\n:　なのに、あんな……あんな……」`,
-  //       "「まもなく\r;愛鷹;あしたか:、愛鷹。お出口は左側です」",
-  //       "こいつの名前は“\r;墹之上;ままのうえ:\r;由乃;ゆの:",
-  //       "墹之上 由乃",
-  //       "三島 星彩",
-  //       "沼津 潤海",
-  //       "八重沢 やえ",
-  //       "クーグル",
-  //       "墹之上 源十郎",
-  //       "そのスキに三島さんを%fpの後ろへ。",
-  //       `		   text="「せんぱーい！　こんどいっしょにスイーツ食べにいきましょうよ。\n:　となり町におすすめのケーキ屋さんがあるんです、\n:　ザッハトルテが名物でぇ」"
-  //       `,
-  //       `		   text="「上の切り口も細くて……こういうニンジンって芯も細いので、\n:　柔らかくて美味しいんですよ」" timeout=""
-  //       `,
-  //       "「上の切り口も細くて……こういうニンジンって芯も細いので、\n:　柔らかくて美味しいんですよ」",
-  //       "見違えるように成長した由乃から視線をはずし、”ただいま”とハンカチを受け取る。",
-  //       "「絶頂くぞ 婚ェェェェ約ッ！！！！」",
-  //       "整った顔は、目を閉じているとどこか和風人形めいた美しさがある。",
-  //       "ちなみに『ｖｅｒ２－β３』とのことだが、そのあたりは\n:詳しくわからない。"
+  //       "25500 ,,,,,,,,,,,,,,,,,,,すべてを捨てて殺風景になった部屋で、スマホから婚活サイトに登録して、三度、四度とイベントに参加して……"
   //     ],
   //     1
   //   )
@@ -123,7 +105,7 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
 
 async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   const fileContent = await readFile(filePath, encoding);
-  const dataList = fileContent.split(/\r\n/i);
+  const dataList = fileContent.split(/\r\n/g);
   let temp = "";
   console.time(filePath);
   if (isTagName) {
@@ -238,7 +220,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
       if (
-        (rawText.match(containRegExpI) && !rawText.match(exceptRegExpI)) ||
+        (rawText.trim().match(containRegExpI) &&
+          !rawText.trim().match(exceptRegExpI)) ||
         rawText === "" ||
         rawText.match(containRegExpG2)
       ) {
@@ -262,26 +245,27 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         temp += rawText.trim();
       }
       if (rawText.match(exceptRegExpG)) {
-        ans.push(temp.replace(exceptRegExpG2, "").replace(/／/g, ""));
+        ans.push(temp.replace(exceptRegExpG, "").replace(/／/g, ""));
         temp = "";
         listCount.push(count3);
         count3 = 0;
       }
       return ans;
     }, []);
-  // console.log(rawTextList, listCount);
+  // console.log(rawTextList);
   // const translatedTextList = await translateOfflineSugoiLongList(
   //   rawTextList,
   //   ks.translation.numberOfSentences
   // );
+  // console.log(rawTextList);
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
     1,
-    true
+    false
   );
   // const translatedTextList = await translateSelectCenterTextList(
   //   rawTextList,
-  //   ks.translation.numberOfSentences
+  //   1
   // );
   // const translatedTextList = rawTextList.map((text) => text + "[plc]");
   // const translatedTextList = rawTextList.map((text) => handleWordWrap(76,text,"[r]"));
@@ -290,14 +274,16 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   const translatedFileContent = dataList
     .reduce((ans, rawText) => {
       if (
-        (rawText.match(containRegExpI) && !rawText.match(exceptRegExpI)) ||
+        (rawText.trim().match(containRegExpI) &&
+          !rawText.trim().match(exceptRegExpI)) ||
         rawText === "" ||
         rawText.match(containRegExpG2)
       )
         isDisable = false;
       if (isDisable) return ans;
       if (
-        (rawText.match(containRegExpI) && !rawText.match(exceptRegExpI)) ||
+        (rawText.trim().match(containRegExpI) &&
+          !rawText.trim().match(exceptRegExpI)) ||
         rawText === "" ||
         rawText.match(containRegExpG2)
       ) {
@@ -330,13 +316,13 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       count++;
       return ans;
     }, [])
-    .join("\r\n");
+    .join("\n");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding);
 }
 
 async function fixTranslatedFileKs(filePathTranslated, filePathRaw, encoding) {
-  const fileContent = await readFile(filePathTranslated, encoding);
+  const fileContent = await readFfile(filePathTranslated, encoding);
   let dataList = fileContent.split(/\n/i);
   let check = true;
   for (let i = 0; i < dataList.length; i++) {

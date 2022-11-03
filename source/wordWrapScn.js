@@ -40,8 +40,8 @@ async function wordWrapScn(filePath) {
     let texts = data.scenes[indexText].texts;
     for (let j = 0; j < texts.length; j++) {
       const text = texts[j];
-      if (typeof text[2] === "string") {
-        text[2] = await handleWordWrap(scn.wordWrap.maxCharPerLines, text[2], "\\n");
+      if (typeof text[1][0][1] === "string") {
+        text[1][0][1] = (await handleWordWrap(scn.wordWrap.maxCharPerLines, text[1][0][1], "\\n")).replace(/、/g,", ").replace(/。/g,". ");
         continue;
       }
       // text[2][1] = await Promise.all(
@@ -52,20 +52,21 @@ async function wordWrapScn(filePath) {
       //   })
       // );
       // text[2] = await handleWordWrap(68, text[2], "\\n");
-      text[1][1] = await Promise.all(
-        text[1][1].map(async (textChild, index) => {
-          // if (index === 0 && textChild === null) {
-          //   const tagName = capitalize(await translateJapaneseToEng(text[0]));
-          //   return tagName;
-          // }
-          // if (index !== 1) return textChild;
-          if (typeof textChild !== "string") return textChild;
-          let lengthWordWrap = scn.wordWrap.maxCharPerLines;
-          // if (textChild[0] === "(") lengthWordWrap = 65;
-          const temp = handleWordWrap(lengthWordWrap, textChild, "\\n");
-          return temp;
-        })
-      );
+
+      // text[1][0] = await Promise.all(
+      //   text[1][1].map(async (textChild, index) => {
+      //     // if (index === 0 && textChild === null) {
+      //     //   const tagName = capitalize(await translateJapaneseToEng(text[0]));
+      //     //   return tagName;
+      //     // }
+      //     // if (index !== 1) return textChild;
+      //     if (typeof textChild !== "string") return textChild;
+      //     let lengthWordWrap = scn.wordWrap.maxCharPerLines;
+      //     // if (textChild[0] === "(") lengthWordWrap = 65;
+      //     const temp = handleWordWrap(lengthWordWrap, textChild, "\\n");
+      //     return temp;
+      //   })
+      // );
     }
   }
   console.log("End:", filePath);

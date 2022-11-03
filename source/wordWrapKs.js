@@ -35,8 +35,8 @@ async function wordWrapKs(filePath) {
   const fileContent = await readFile(filePath, "shiftjis");
   // await writeFile(filePath, handleWordWrapArtemis(fileContent), "utf8");
   // await writeFile(filePath, handleWordWrapQlieVN(fileContent), "shiftjis");
-  await writeFile(filePath, handleWordWrapShina(fileContent), "shiftjis");
-  // await writeFile(filePath, handleWordWrapKs(fileContent), "shiftjis");
+  // await writeFile(filePath, handleWordWrapShina(fileContent), "shiftjis");
+  await writeFile(filePath, handleWordWrapKs(fileContent), "shiftjis");
   // await writeFile(filePath, handleWordWrapSrp(fileContent), "shiftjis");
   // const dataList = fileContent.split(/\r\n/i);
   // let isHighLight = false;
@@ -63,16 +63,16 @@ async function wordWrapKs(filePath) {
   // const translatedTextList = rawTextList.map((text) => {
   //   const prefix = `		   text="`;
   //   // if(text.match(/ timeout=".+\/>/g)) return text
-  //   if(!text.match(/ timeout="(.+\/>)?/g)) return text
+  //   if (!text.match(/ timeout="(.+\/>)?/g)) return text;
   //   const suffix = text.match(/ timeout="(.+\/>)?/g)[0];
-  //   const ans =prefix+ handleWordWrap(
-  //     ks.wordWrap.maxCharPerLines,
+  //   const ans =
+  //     prefix +
   //     text
   //       .replace(/\|HIGHTLIGHT\|/g, "")
   //       .replace(prefix, "")
-  //       .replace(suffix, ""),
-  //     "\\n:"
-  //   )+suffix;
+  //       .replace(suffix, "")
+  //       .replace(/"/g, "'") +
+  //     suffix;
   //   return ans;
   // });
   // let count = 0;

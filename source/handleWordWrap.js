@@ -51,7 +51,7 @@ module.exports = function handleWordWrap(
     prefix +
     ans
       .slice(0, ans.length - 1)
-      .replace(/[“”]/g, '"')
+      // .replace(/[“”]/g, '"')
       .replace(/,( )?/g, "、")
   );
   // .replace(/、/g, ", ");

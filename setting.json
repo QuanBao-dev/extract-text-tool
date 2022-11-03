@@ -1,26 +1,13 @@
 {
   "replacedCharsBeforeTranslation": {
-    "%fp": "景登",
-    "星彩": "かおり",
-    "潤海": "くるみ",
-    "やえ": "神山",
-    "由乃": "夏子",
-    
-    "墹之上": "那由太"
+    "愛宮": "那由太",
+    "碧": "かおり",
+    "真姫":"神山"
   },
   "replacedCharsAfterTranslation": {
-    "Kageto": "%name",
-    "Kagenori": "%name",
-    "Kaori": "Kirara",
-    "Kurumi": "Urumi",
-    "Kamiyama": "Yae",
-    "Cougle": "Coogle",
-    "Natsuko": "Yuno",
-    "Yuuha": "Yuu",
-    "Kuguru": "Coogle",
-    "Chihaya": "Nanoka",
-    "nayuta": "Mamanoue",
-    "Kugur": "Coogle"
+    "nayuta": "Enomiya",
+    "kaori": "Aoi",
+    "kamiyama":"Maki"
   },
   "replacedExactCharsAfterTranslation": {},
   "bsxx": {
@@ -40,7 +27,7 @@
       "isSelects": true
     },
     "wordWrap": {
-      "maxCharPerLines": 53,
+      "maxCharPerLines": 49,
       "folderPath": "./scn"
     }
   },
@@ -196,19 +183,20 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "kiri4": {
+  "kiri2": {
+    "encoding": "shiftjis",
     "translation": {
       "folderPath": "./ks",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "seladd text=",
+      "regExpToFilterSentenceContainTagName": "name = ",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))",
-      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(\\[SYSTEM_MENU_ON_OPENING]\\\\)",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
       "addedString": "[T_NEXT]\\",
-      "addedStringAfterTranslation": "",
+      "addedStringAfterTranslation": "[SYSTEM_MENU_ON_OPENING]\\",
       "addedPrefixAfterTranslation": "",
       "isArtemis": false,
       "isQlie": false
@@ -248,7 +236,7 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "ks": {
+  "Entis": {
     "encoding": "utf8",
     "translation": {
       "folderPath": "./ks",
@@ -269,7 +257,7 @@
     },
     "wordWrap": {
       "maxCharPerLines": 59,
-      "folderPath": "./ks",
+      "folderPath": "./shina_rio",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))|(//)|(^:)",
       "regExpToFilterSentenceContainTagName": "text=",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
@@ -311,6 +299,32 @@
       "isTagName": false,
       "regExpToFilterSentenceContainTagName": "seladd text=",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(@)|(^(BG))|(^(ST))|(^(CG))|((AS)$)|(^(ST))|(^(MW))|(^(\\*))|(^(CS))|(^(【))|(^(WA))|(^(SC))|(^(MS))|(^(SE))|(^(SELECT))|(^(VO))|(^(EV))|(^(goto))|(^(ZM))|(^(ED))|(^(XM))|(^(MV))|(^(string))|(^(if))|(^(cal))|(^(TL))|(^(ER))|(^(systemEffect))|(^(sp))|(^(systemWait))|(^(sp_d))|(^(return))|(^(gosub))|(^(setWindowVisible))",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
+      "addedString": "[T_NEXT]\\",
+      "addedStringAfterTranslation": "",
+      "addedPrefixAfterTranslation": "",
+      "isArtemis": false,
+      "isQlie": false
+    },
+    "wordWrap": {
+      "maxCharPerLines": 54,
+      "folderPath": "./ks",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
+      "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
+      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+    }
+  },
+  "ks": {
+    "encoding": "shiftjis",
+    "translation": {
+      "folderPath": "./csv",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300,
+      "isSelects": true,
+      "isTagName": false,
+      "regExpToFilterSentenceContainTagName": "seladd text=",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "dkmkmkm",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
       "addedString": "[T_NEXT]\\",
