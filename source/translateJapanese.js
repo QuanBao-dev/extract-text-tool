@@ -208,24 +208,26 @@ async function translateOfflineSugoiCt2LongList(
               )
             )
               .split(/[＠@]/g)
-              .filter((v) => v !== "")
-              .map((v, index) => {
-                const rawText = rawTextList[index];
-                if (!rawText) return v;
-                if (rawText.match(/^『/g) && rawText.match(/』$/g)) {
-                  return "『" + v + "』";
-                }
-                if (rawText.match(/^「/g) && rawText.match(/」$/g)) {
-                  return "「" + v + "」";
-                }
-                return v;
-              });
+              .filter((v) => v !== "");
             if (
               translatedTextList.length !==
               textList.slice(i * limit, (i + 1) * limit).length
             ) {
               isGlue = false;
+              continue;
             }
+            translatedTextList = translatedTextList.map((v, index) => {
+              const rawText = rawTextList.slice(i * limit, (i + 1) * limit)[
+                index
+              ];
+              if (rawText.match(/^『/g) && rawText.match(/』$/g)) {
+                return "『" + v + "』";
+              }
+              if (rawText.match(/^「/g) && rawText.match(/」$/g)) {
+                return "「" + v + "」";
+              }
+              return v;
+            });
             console.log(true, translatedTextList);
           } else {
             // const translatedText = await translateOfflineSugoiCt2(textList[i]);

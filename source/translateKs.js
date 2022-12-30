@@ -53,22 +53,21 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //   1
   // );
 
-  console.log(
-    await translateSelectCenterTextList(
-      [
-        "25500 ,,,,,,,,,,,,,,,,,,,すべてを捨てて殺風景になった部屋で、スマホから婚活サイトに登録して、三度、四度とイベントに参加して……",
-        "甘くて、優しくて、ずっとしていたい心地よさに頭が覚醒することを妨げている感じがした-dsf"
-      ],
-      2,
-      true
-    )
-  );
-  await delay(10000000);
+  // console.log(
+  //   await translateSelectCenterTextList(
+  //     [
+  //       "甘くて、優しくて、ずっとしていたい心地よさに頭が覚醒することを妨げている感じがした-dsf",
+  //       "「さってと。お昼も食べたし、どうしよっか」"
+  //     ],
+  //     2,
+  //     true
+  //   )
+  // );
+  // await delay(10000000);
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "すべてを捨てて殺風景になった部屋で、スマホから婚活サイトに登録して、三度、四度とイベントに参加して……",
-  //       "甘くて、優しくて、ずっとしていたい心地よさに頭が覚醒することを妨げている感じがした。"
+  //       "「あの、私……学園の中を\\n見て回りたいです」",
   //     ],
   //     2,
   //     false,
