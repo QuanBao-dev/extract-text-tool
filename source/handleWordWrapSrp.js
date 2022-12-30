@@ -21,8 +21,8 @@ module.exports = function handleWordWrapSrp(fileContent) {
     for (let i = blockList.length - 1; i > 0; i--) {
       if (blockList[i].includes(" ")) {
         return handleSplitWordWrappedText(
-          handleWordWrap(64, blockList[i].replace(/, /g,"、"), "\\n").split("\\n"),
-          2,
+          handleWordWrap(50, blockList[i].replace(/, /g,"、"), "\\n").split("\\n"),
+          3,
           "\\n"
         );
       }

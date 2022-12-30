@@ -143,6 +143,21 @@ const converter = new AFHConvert();
   //   }))
   // );
   // await delay(1000000);
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       "緑野の瑞風…Shaonが使う回復系の天眷。対象１体を回復する。怪我をしてない対象に、この天眷をかけると生命力が溢れ各能力が上昇する。",
+  //       "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
+  //       "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
+  //       "「かおることか呼ばないで。イラッとくるから」",
+  //     ],
+  //     3,
+  //     false,
+  //     false,
+  //     true
+  //   )
+  // );
+  // await delay(1000000);
   const filePathInput = "./anim/script.json";
   const jsonRawText = await readFile(filePathInput, "utf8");
   const json = JSON.parse(jsonRawText);
@@ -161,7 +176,10 @@ const converter = new AFHConvert();
       }
       return rawText;
     }),
-    50
+    3,
+    false,
+    false,
+    true
   );
   let ans = {};
   translationList.forEach((translatedText, index) => {

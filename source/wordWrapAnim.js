@@ -3,13 +3,13 @@ const { readFile, writeFile } = require("./handleFile");
 const handleWordWrap = require("./handleWordWrap");
 
 (async () => {
-  const filePathInput = "./anim/script.json";
+  const filePathInput = "./anim_output/script.json";
   const jsonRawText = await readFile(filePathInput, "utf8");
   const json = JSON.parse(jsonRawText);
   const rawTextList = Object.keys(json);
   // const rawTextList = json;
   const translationList = rawTextList.map((rawText) => {
-    return handleWordWrap(65, json[rawText].replace(/(<unk>(")?)/g, " "), "@b");
+    return handleWordWrap(49, json[rawText].replace(/(<unk>(")?)/g, " "), "\r\n");
     // return handleWordWrap(70, rawText.replace(/(<unk>(")?)/g, " "), "\\r\\n");
     // return json[rawText].replace(/(<unk>(")?)|(@b)/g, " ");
   });

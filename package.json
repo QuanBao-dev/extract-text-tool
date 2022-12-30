@@ -12,8 +12,12 @@
   "dependencies": {
     "ascii-fullwidth-halfwidth-convert": "^0.1.1",
     "axios": "^0.27.2",
+    "dotenv": "^16.0.3",
     "iconv-lite": "^0.6.3",
+    "nanoid": "^3.2.0",
+    "openai": "^3.1.0",
     "text-from-image": "^1.1.1",
-    "text-to-image": "^5.2.0"
+    "text-to-image": "^5.2.0",
+    "translatte": "^3.0.1"
   }
 }

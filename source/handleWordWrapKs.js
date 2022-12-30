@@ -2,8 +2,33 @@ const { ks } = require("../setting.json");
 const handleWordWrap = require("./handleWordWrap");
 
 const containRegExpI = new RegExp(
-  ks.wordWrap.regExpToExcludeSentenceNotNeedTranslatedContain,
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  "i"
+);
+const containRegExpG = new RegExp(
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "g"
+);
+const containRegExpG2 = new RegExp(
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain2,
+  "g"
+);
+const exceptRegExpI = new RegExp(
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  "i"
+);
+const exceptRegExpG = new RegExp(
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  "g"
+);
+const exceptRegExpG2 = new RegExp(
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
+  "g"
+);
+
+const containTagNameRegExpI = new RegExp(
+  ks.translation.regExpToFilterSentenceContainTagName,
+  "i"
 );
 
 // module.exports = function handleWordWrapKs(fileContent) {
@@ -45,50 +70,168 @@ const containRegExpI = new RegExp(
 //   return ans.join("\r\n[Hitret]\r\n");
 // };
 
+// module.exports = function handleWordWrapKs(fileContent) {
+//   // console.log(fileContent.split(/@Hitret id=[0-9]+/));
+//   // const footerList = fileContent.match(/@Hitret id=[0-9]+/g);
+//   let blockList = fileContent
+//     .split(/@Hitret id=[0-9]+/g)
+//     .map((block, index) => {
+//       const stringList = block.split("\n");
+//       return stringList;
+//     });
+//   let contentsList = blockList.map((block) => {
+//     if (block.length===1) return [""];
+//     // if(!blockList[block.length - 2) return "";
+//     const temp = handleWordWrap(
+//       45,
+//       block[block.length - 2]
+//         .replace(/\[/g, "『")
+//         .replace(/\]/g, "』")
+//         .replace(/^\*/, "＊")
+//         .replace(/　/g, " "),
+//       "[r]"
+//     ).split("[r]");
+//     if (temp.slice(3).join("[r]") === "") return [temp.slice(0, 3).join("[r]")];
+//     return [temp.slice(0, 3).join("[r]"), temp.slice(3).join("[r]")];
+//   });
+//   let ans = [];
+//   let count = 0;
+//   contentsList.forEach((contents, index) => {
+//     contents.forEach((content, key) => {
+//       const block = blockList[index];
+//       count++;
+//       if (key === 0) {
+//         ans.push(
+//           block.slice(0, block.length - 2).join("\n") +
+//             "\n" +
+//             content +
+//             `\n@Hitret id=${count}`
+//         );
+//       } else {
+//         let temp = block.slice(block.length - 3, block.length - 2).join("\n");
+//         temp = temp.replace(/voice=[A-Z]+[0-9]+/g, "");
+//         ans.push("\n" + temp + "\n" + content + `\n@Hitret id=${count}`);
+//       }
+//     });
+//   });
+//   // console.log(
+//   //   blockList.map((block) => {
+//   //     // if (!block[block.length - 1]) return [block[0]];
+//   //     const temp = handleWordWrap(
+//   //       45,
+//   //       block[block.length - 2]
+//   //         .replace(/\[/g, "『")
+//   //         .replace(/\]/g, "』")
+//   //         .replace(/^\*/, "＊"),
+//   //       "[r]"
+//   //     ).split("[r]");
+//   //     return temp;
+//   //   })
+//   // );
+//   return ans.join("\n");
+// };
 module.exports = function handleWordWrapKs(fileContent) {
   // console.log(fileContent.split(/@Hitret id=[0-9]+/));
   // const footerList = fileContent.match(/@Hitret id=[0-9]+/g);
-  let blockList = fileContent
-    .split(/@Hitret id=[0-9]+/g)
-    .map((block, index) => {
-      const stringList = block.split("\r\n");
-      return stringList;
-    });
-
-  // console.log(blockList);
-  let contentsList = blockList.map((block) => {
-    // if (!block[block.length - 1]) return [block[0]];
-    const temp = handleWordWrap(
-      45,
-      block[block.length - 2]
-        .replace(/\[/g, "『")
-        .replace(/\]/g, "』")
-        .replace(/^\*/, "＊"),
-      "[r]"
-    ).split("[r]");
-    if (temp.slice(3).join("[r]") === "") return [temp.slice(0, 3).join("[r]")];
-    return [temp.slice(0, 3).join("[r]"), temp.slice(3).join("[r]")];
+  let blockList = fileContent.split(/\n\*s/g).map((block, index) => {
+    const stringList = block.split("\n");
+    stringList[0] = "*s" + stringList[0];
+    return stringList.map((v) => v.trim());
   });
-  let ans = [];
-  let count = 0;
-  contentsList.forEach((contents, index) => {
-    contents.forEach((content, key) => {
-      const block = blockList[index];
-      count++;
-      if (key === 0) {
-        ans.push(
-          block.slice(0, block.length - 2).join("\r\n") +
-            "\r\n" +
-            content +
-            `\r\n@Hitret id=${count}`
+  let contentList = blockList.map((stringList) => {
+    const temp = (
+      stringList.filter((rawText) => {
+        return !(
+          (rawText.trim().match(containRegExpI) &&
+            !rawText.trim().match(exceptRegExpI)) ||
+          rawText.trim() === ""
         );
+      })[0] || ""
+    ).split("[r]");
+    let ans = [];
+    let index = 0;
+    do {
+      const suffix = temp.join("[r]").match(/\[T_NEXT(.+)?\]\\/g);
+      const text = temp.slice(index, index + 3).join("[r]");
+      if (text.match(/\[T_NEXT(.+)?\]\\/g)) {
+        ans.push(text);
       } else {
-        let temp = block.slice(block.length - 3, block.length - 2).join("\r\n");
-        temp = temp.replace(/voice=[A-Z]+[0-9]+/g, "");
-        ans.push("\r\n" + temp + "\r\n" + content + `\r\n@Hitret id=${count}`);
+        ans.push(text + suffix);
       }
+      index += 3;
+    } while (index < temp.length);
+    return ans;
+  });
+  console.log(contentList)
+  let frameList = blockList.map((stringList) => {
+    return stringList.map((rawText) => {
+      if (
+        !(
+          (rawText.trim().match(containRegExpI) &&
+            !rawText.trim().match(exceptRegExpI)) ||
+          rawText.trim() === ""
+        )
+      ) {
+        return "#@$4";
+      }
+      return rawText;
     });
   });
+  const ans = frameList
+    .map((arrayItem, index) => {
+      let temp = [];
+      contentList[index].forEach((content, index) => {
+        if (index === 0) {
+          temp.push(arrayItem.join("\n").replace("#@$4", content));
+        } else {
+          temp.push(
+            arrayItem
+              .filter((v) => {
+                return !v.match(/\[VO vo=/g);
+              })
+              .join("\n")
+              .replace("#@$4", content)
+          );
+        }
+      });
+      return temp.join("\n");
+    })
+    .join("\n");
+  // let contentsList = blockList.map((block) => {
+  //   if (block.length===1) return [""];
+  //   // if(!blockList[block.length - 2) return "";
+  //   const temp = handleWordWrap(
+  //     45,
+  //     block[block.length - 2]
+  //       .replace(/\[/g, "『")
+  //       .replace(/\]/g, "』")
+  //       .replace(/^\*/, "＊")
+  //       .replace(/　/g, " "),
+  //     "[r]"
+  //   ).split("[r]");
+  //   if (temp.slice(3).join("[r]") === "") return [temp.slice(0, 3).join("[r]")];
+  //   return [temp.slice(0, 3).join("[r]"), temp.slice(3).join("[r]")];
+  // });
+  // let ans = [];
+  // let count = 0;
+  // contentsList.forEach((contents, index) => {
+  //   contents.forEach((content, key) => {
+  //     const block = blockList[index];
+  //     count++;
+  //     if (key === 0) {
+  //       ans.push(
+  //         block.slice(0, block.length - 2).join("\n") +
+  //           "\n" +
+  //           content +
+  //           `\n@Hitret id=${count}`
+  //       );
+  //     } else {
+  //       let temp = block.slice(block.length - 3, block.length - 2).join("\n");
+  //       temp = temp.replace(/voice=[A-Z]+[0-9]+/g, "");
+  //       ans.push("\n" + temp + "\n" + content + `\n@Hitret id=${count}`);
+  //     }
+  //   });
+  // });
   // console.log(
   //   blockList.map((block) => {
   //     // if (!block[block.length - 1]) return [block[0]];
@@ -103,5 +246,5 @@ module.exports = function handleWordWrapKs(fileContent) {
   //     return temp;
   //   })
   // );
-  return ans.join("\r\n");
+  return ans;
 };

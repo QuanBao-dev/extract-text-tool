@@ -23,13 +23,16 @@ async function wordWrapBsxx(filePath) {
     return extractThePrefix(text);
   });
 
-  contentTextList = await Promise.all(
-    contentTextList.map(async (text) => {
-      text = text.replace(/\\n/g, "").replace(/Kageto/g,"");
-      if (text.match(/^「/g)) text += "」";
-      return await handleWordWrap(bsxx.wordWrap.maxCharPerLines, text, "\\n");
-    })
-  );
+  contentTextList = contentTextList.map((text) => {
+    // text = text.replace(/\\n/g, "").replace(/Kageto/g,"");
+    // if (text.match(/^「/g)) text += "」";
+    return handleWordWrap(
+      bsxx.wordWrap.maxCharPerLines,
+      text,
+      "\\n",
+      1000
+    );
+  });
 
   const ans = prefixList
     .map(

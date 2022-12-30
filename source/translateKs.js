@@ -53,12 +53,27 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //   1
   // );
 
+  console.log(
+    await translateSelectCenterTextList(
+      [
+        "25500 ,,,,,,,,,,,,,,,,,,,すべてを捨てて殺風景になった部屋で、スマホから婚活サイトに登録して、三度、四度とイベントに参加して……",
+        "甘くて、優しくて、ずっとしていたい心地よさに頭が覚醒することを妨げている感じがした-dsf"
+      ],
+      2,
+      true
+    )
+  );
+  await delay(10000000);
   // console.log(
-  //   await translateSelectCenterTextList(
+  //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "25500 ,,,,,,,,,,,,,,,,,,,すべてを捨てて殺風景になった部屋で、スマホから婚活サイトに登録して、三度、四度とイベントに参加して……"
+  //       "すべてを捨てて殺風景になった部屋で、スマホから婚活サイトに登録して、三度、四度とイベントに参加して……",
+  //       "甘くて、優しくて、ずっとしていたい心地よさに頭が覚醒することを妨げている感じがした。"
   //     ],
-  //     1
+  //     2,
+  //     false,
+  //     false,
+  //     true
   //   )
   // );
   // await delay(10000000);
@@ -229,23 +244,21 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         return ans;
       }
       if (ans.length > 0 && isNewDialog === false) {
-        dataList[index - 1] = dataList[index - 1].replace(containRegExpG, "");
-        ans[ans.length - 1] = ans[ans.length - 1].replace(exceptRegExpG, "");
+        dataList[index - 1] = dataList[index - 1].replace(/\[Cock\]/, "");
+        ans[ans.length - 1] = ans[ans.length - 1].replace(/\[Cock\]/, "");
       }
-      ans.push(rawText + addedString);
-      dataList[index] = dataList[index] + addedString;
+      ans.push(rawText + "[Cock]");
+      dataList[index] = dataList[index] + "[Cock]";
       isNewDialog = false;
       return ans;
     }, [])
     .reduce((ans, rawText) => {
+      ans.push(rawText);
+      return ans;
       count3++;
-      if (temp === "") {
-        temp += rawText.trim();
-      } else {
-        temp += rawText.trim();
-      }
+      temp += rawText.trim();
       if (rawText.match(exceptRegExpG)) {
-        ans.push(temp.replace(exceptRegExpG, "").replace(/／/g, ""));
+        ans.push(temp);
         temp = "";
         listCount.push(count3);
         count3 = 0;
@@ -260,7 +273,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // console.log(rawTextList);
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    1,
+    2,
     false
   );
   // const translatedTextList = await translateSelectCenterTextList(
@@ -337,3 +350,10 @@ async function fixTranslatedFileKs(filePathTranslated, filePathRaw, encoding) {
     fs.unlinkSync(filePathRaw);
   }
 }
+// [...$0.querySelectorAll(".mainbox")].reduce((ans, curr) => {
+//   const characters = [...curr.querySelectorAll(".chardetails")]
+//   characters.forEach(character => {
+//       ans[character.querySelector("tr b").textContent]=character.querySelector("tr a").textContent
+//   })
+//      return ans;
+// },{})

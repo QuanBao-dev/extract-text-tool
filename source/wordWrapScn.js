@@ -38,20 +38,64 @@ async function wordWrapScn(filePath) {
       continue;
     }
     let texts = data.scenes[indexText].texts;
+    let ans = [];
     for (let j = 0; j < texts.length; j++) {
       const text = texts[j];
+
       if (typeof text[1][0][1] === "string") {
-        text[1][0][1] = (await handleWordWrap(scn.wordWrap.maxCharPerLines, text[1][0][1], "\\n")).replace(/、/g,", ").replace(/。/g,". ");
+        const tempText = handleWordWrap(
+          scn.wordWrap.maxCharPerLines,
+          text[1][0][1].replace(/\% /g, "％ "),
+          "\\n"
+        )
+          .replace(/、/g, ", ")
+          .replace(/。/g, ". ");
+        const textList = tempText.split("\\n");
+        const filterSpecialPrefixRegExp = new RegExp(
+          "%(n)?[0-9]+([;. ,])?",
+          "g"
+        );
+        text[1][0][1] = textList.join("\\n");
+        // if (text[2].replace(/\\n/g," ").length > 195) {
+        //   console.log(text[2])
+        //   text[2] =
+        //     "%60; " +
+        //     handleWordWrap(
+        //       81,
+        //       text[2].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       "\\n"
+        //     );
+        // } else if (textList.length > 3) {
+        //   text[2] =
+        //     "%70; " +
+        //     handleWordWrap(
+        //       72,
+        //       text[2].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       "\\n"
+        //     );
+        // }
+        ans.push(text);
+        // if (textList.length > 3) {
+        //   const temp = Object.values(deepCloning(text));
+        //   temp[1][0][1] = textList.slice(3).join("\\\n");
+        //   temp[2] = null;
+        //   // console.log(ans[ans.length - 1])
+        //   ans.push(temp);
+        //   // console.log(ans[ans.length - 1])
+        //   // console.log("--------")
+        // }
+
         continue;
       }
+      ans.push(text);
       // text[2][1] = await Promise.all(
       //   text[2][1].map(async (textChild) => {
       //     if (textChild === null) return null;
-      //     const temp = await handleWordWrap(58, textChild, "\\n");
+      //     const temp = await handleWordWrap(58, textChild, "\\\n");
       //     return temp;
       //   })
       // );
-      // text[2] = await handleWordWrap(68, text[2], "\\n");
+      // text[2] = await handleWordWrap(68, text[2], "\\\n");
 
       // text[1][0] = await Promise.all(
       //   text[1][1].map(async (textChild, index) => {
@@ -63,11 +107,12 @@ async function wordWrapScn(filePath) {
       //     if (typeof textChild !== "string") return textChild;
       //     let lengthWordWrap = scn.wordWrap.maxCharPerLines;
       //     // if (textChild[0] === "(") lengthWordWrap = 65;
-      //     const temp = handleWordWrap(lengthWordWrap, textChild, "\\n");
+      //     const temp = handleWordWrap(lengthWordWrap, textChild, "\\\n");
       //     return temp;
       //   })
       // );
     }
+    data.scenes[indexText].texts = [...ans];
   }
   console.log("End:", filePath);
   const buffer = iconv.encode(JSON.stringify(data, null, 2), "utf8");
@@ -79,4 +124,20 @@ async function wordWrapScn(filePath) {
     fs.mkdirSync(filePathOutput.slice(0, filePathOutput.length - 1).join("/"));
   }
   await fs.promises.writeFile(filePathOutput.join("/"), buffer);
+}
+
+function deepCloning(object) {
+  let obj = {};
+  for (let i in object) {
+    obj[i] = object[i];
+    if (obj[i] === null) continue;
+    if (typeof object[i] == "object") {
+      if (!object[i].length) {
+        obj[i] = deepCloning(object[i]);
+      } else {
+        obj[i] = Object.values(deepCloning(object[i]));
+      }
+    }
+  }
+  return obj;
 }

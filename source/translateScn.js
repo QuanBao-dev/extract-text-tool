@@ -1,20 +1,38 @@
-require("events").EventEmitter.setMaxListeners(100);
 const {
   translateOfflineSugoiLongList,
   translateOfflineSugoiCt2LongList,
+  translateSelectCenterTextList,
 } = require("./translateJapanese");
 const fs = require("fs");
 const delay = require("./delay");
 const { readFile, writeFile } = require("./handleFile");
 const { scn } = require("../setting.json");
+const handleWordWrap = require("./handleWordWrap");
+const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
+const converter = new AFHConvert();
+
 (async () => {
   // console.log(
-  //   await translateOfflineSugoiCt2LongList([
-  //     "萬屋 ひな",
-  //     "春夏冬 凛",
-  //     "メリル・ハサウェイ",
-  //     "勅使河原 琴子",
-  //   ])
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       "「Kaoruとか呼ばないで。イラッとくるから」＊＊「Kaoruとか呼ばないで。イラッとくるから」＊＊「Kaoruとか呼ばないで。イラッとくるから」",
+  //     ],
+  //     1,
+  //     false,
+  //     false,
+  //     true
+  //   )
+  // );
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       "朱色に染まる手紙に記されていた、その言葉の意味は、彼、瀬真颯太朗には分からなかったが―――。"
+  //     ],
+  //     5,
+  //     false,
+  //     false,
+  //     true
+  //   )
   // );
   // await delay(1000000);
   const listFileName = fs.readdirSync(scn.translation.folderPath);
@@ -28,8 +46,12 @@ const { scn } = require("../setting.json");
 async function translateScn(filePathInput) {
   console.log(filePathInput);
   const content = await readFile(filePathInput, "utf8");
+  // const rawContent = await readFile(
+  //   filePathInput.replace("./scn", "./bak3"),
+  //   "utf8"
+  // );
   const dataJson = JSON.parse(content);
-
+  // const rawDataJson = JSON.parse(rawContent);
   if (!dataJson.scenes)
     return await writeFile(
       filePathInput,
@@ -39,13 +61,14 @@ async function translateScn(filePathInput) {
 
   for (let i = 0; i < dataJson.scenes.length; i++) {
     const scene = dataJson.scenes[i];
-
+    // const rawScene = rawDataJson.scenes[i];
     if (scn.translation.isSelects) {
       if (!scene.selects) continue;
       let selects = scene.selects;
       selects = await Promise.all(
         selects.map(async (select) => {
-          select.text = (await translateOfflineSugoiCt2LongList([select.text]))[0];
+          if (!select.text) return select;
+          select.text = (await translateSelectCenterTextList([select.text]))[0];
           return select;
         })
       );
@@ -54,22 +77,102 @@ async function translateScn(filePathInput) {
 
     if (!scene.texts) continue;
     texts = scene.texts;
+    // rawTexts = rawScene.texts;
     const contentList = texts.map((text) => {
-      return text[1][0][3] || text[1][0][1];
+      return typeof text[7] === "string" ? text[7] : text[2];
     });
+    // const contentList = texts.map((text) => {
+    //   return text[1][0][1];
+    // });
+    // const contentList = texts.reduce((ans, text, key) => {
+    //   if (text[1][0][1].includes("%70;")) {
+    //     console.log(text[1][0][1]);
+    //     ans.push(rawTexts[key][1][0][1]);
+    //   }
+    //   return ans;
+    // }, []);
+    // const tagNameList = rawTexts.map((text) => {
+    //   return text[1][0][0] || text[0];
+    // });
     const tagNameList = texts.map((text) => {
-      return text[0];
+      return text[1] || text[0];
     });
+    // let [translatedContentList, translatedTagNameList] = await Promise.all([
+    //   Promise.resolve(contentList),
+    //   translateOfflineSugoiCt2LongList(tagNameList, 1),
+    // ]);
+    // let [translatedContentList, translatedTagNameList] = await Promise.all([
+    //   translateSelectCenterTextList(contentList, 3, false),
+    //   Promise.resolve(tagNameList),
+    // ]);
+
+    // let translatedContentList = [];
+    // let temp2 = "";
+    // for (let i = 0; i < contentList.length; i++) {
+    //   const v = contentList[i];
+    //   // const text = v.replace(/m\[[0-9]+\] = "/g, "").replace(/"/g, "");
+    //   // const prefix = v.match(/m\[[0-9]+\] = "/g);
+    //   const prefix = [""];
+    //   let text = v;
+    //   const allSpecialCharacters = text.match(/[\.\?\!\)―♪]/g);
+    //   const splittedSentences = text.split(/[\.\?\!\)―♪]/g);
+  
+    //   if (text.trim() === "") {
+    //     translatedContentList.push(prefix[0] + '');
+    //     continue;
+    //   }
+    //   // translatedTextList.push(
+    //   //   prefix[0] + (await translateSelectCenterTextList([text], 1, false))
+    //   // );
+    //   const prefixedText = text.match(/^["\(『「]/g)
+    //     ? text.match(/^["\(『「]/g)[0]
+    //     : "";
+    //   let finalText =
+    //     prefixedText + temp2 + text.trim().replace(/["\(『「]/g, "");
+    //   translatedContentList.push(
+    //     prefix[0] + handleWordWrap(48, finalText, "\\n") 
+    //   );
+    //   if (
+    //     ![".", "?", "!", ")", "―", "♪", "*"].includes(
+    //       text.replace(/[\"」』]/g, "")[text.replace(/[\"」』]/g, "").length - 1]
+    //     )
+    //   ) {
+    //     const finalSentences = splittedSentences[
+    //       splittedSentences.length - 1
+    //     ].replace(/[\"」』]/g, "");
+    //     if (splittedSentences.length === 1) continue;
+    //     let textTemp = "";
+    //     for (let i = 0; i < splittedSentences.length - 1; i++) {
+    //       textTemp +=
+    //         splittedSentences[i] +
+    //         (allSpecialCharacters[i] ? allSpecialCharacters[i] : "");
+    //     }
+    //     translatedContentList[translatedContentList.length - 1] =
+    //       prefix[0] + handleBracket(handleWordWrap(48, textTemp, "\\n"));
+    //     temp2 = finalSentences.trim() + " ";
+    //   } else {
+    //     temp2 = "";
+    //   }
+    // }
     let [translatedContentList, translatedTagNameList] = await Promise.all([
-      translateOfflineSugoiCt2LongList(contentList, 1),
+      translateOfflineSugoiCt2LongList(contentList, 2, false, false, true),
       translateOfflineSugoiCt2LongList(tagNameList, 1),
     ]);
-
+    // console.log(translatedContentList);
+    // let count = 0;
+    // for (let j = 0; j < texts.length; j++) {
+    //   const text = texts[j];
+    //   text[1][0][0] = translatedTagNameList[j];
+    //   if (text[1][0][1].includes("%70;")) {
+    //     text[1][0][1] = translatedContentList[count];
+    //     count++;
+    //   }
+    //   // console.log(text[1],text[0]);
+    // }
     for (let j = 0; j < texts.length; j++) {
       const text = texts[j];
-      text[1][0][0] = translatedTagNameList[j];
-      text[1][0][1] = translatedContentList[j];
-      // console.log(text[1],text[0]);
+      text[1] = translatedTagNameList[j];
+      text[2] = translatedContentList[j];
     }
   }
   await writeFile(filePathInput, JSON.stringify(dataJson, null, 2), "utf8");
@@ -187,3 +290,33 @@ async function translateScn(filePathInput) {
 //   }
 //   return scene;
 // }
+
+function handleBracket(text) {
+  const listOfChoice = [
+    `[…。♪:：〟！～『「」』？]`,
+    "…",
+    "(([『「」』])$)|(^([『「」』]))",
+    "(^([『「」』]))",
+    "(([『「」』])$)",
+  ];
+  let temp = text;
+  if (
+    text.trim().match(new RegExp(listOfChoice[3], "g")) &&
+    !text.trim().match(new RegExp(listOfChoice[4], "g"))
+  ) {
+    if (text.trim().match(new RegExp(listOfChoice[3], "g"))[0] === "「")
+      temp += "」";
+    if (text.trim().match(new RegExp(listOfChoice[3], "g"))[0] === "『")
+      temp += "』";
+  }
+  // if (
+  //   text.trim().match(new RegExp(listOfChoice[4], "g")) &&
+  //   !text.trim().match(new RegExp(listOfChoice[3], "g"))
+  // ) {
+  //   if (text.trim().match(new RegExp(listOfChoice[4], "g"))[0] === "」")
+  //     temp = "「" + temp;
+  //   if (text.trim().match(new RegExp(listOfChoice[4], "g"))[0] === "』")
+  //     temp = "『" + temp;
+  // }
+  return temp;
+}

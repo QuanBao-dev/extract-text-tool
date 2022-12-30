@@ -1,63 +1,21 @@
-const obj = {
-  replacedCharsBeforeTranslation: {
-    千咲都: "神山",
-    妙花: "あさひ",
-    波多江: "ちはや",
-    紅林: "トウカ",
-    ノア: "ひろみ",
-    我妻: "さとみ",
-    日和子: "夏子",
-    柊菜子: "かおり",
-    姫瑠: "くるみ",
-    修理: "トウカ",
-    烝: "かおり",
-    葉常: "夏子",
-    考: "くるみ",
-    河上: "ちはや",
-    //
-    ゆるぎ: "春人",
-    小不動: "夏子",
-    紫乃: "ちはや",
-    久末: "神山",
-    紫子: "くるみ",
-    八椚: "久我",
-    紅葉: "小太郎",
-    祈吏: "壬生",
-    征士: "那由太",
-    神峯: "黒谷",
-    灯: "リト",
-  },
-  replacedCharsAfterTranslation: {
-    Kamiyama: "Chisato",
-    Asahi: "Taeko",
-    Chihaya: "Hatae",
-    Touka: "Kurebayashi",
-    Hiromi: "Noah",
-    Satomi: "Agatsuma",
-    Natsuko: "Hiwako",
-    Kaori: "Hinako",
-    Kurumi: "Himeru",
-    Touka: "Shuri",
-    Kaori: "Susumu",
-    Natsuko: "Hatsune",
-    Kurumi: "Kou",
-    Chihaya: "Kawakami",
-    //
-    Haruto: "Yurugi",
-    natsuko: "Koyurugi",
-    chihaya: "Shino",
-    Yuzakura: "Yuura",
-    Eiji: "Elshi",
-    Kusuri: "Kukuri",
-    Sosugaya: "Suzugaya",
-    kamiyama: "Kumatsu",
-    kurumi: "Yukariko",
-    Koga: "Yatsukunugi",
-    kotaro: "Kureha",
-    mibu: "Inori",
-    nayuta: "Masashi",
-    kurotani: "Kounomine",
-    Rito: "Akari",
-  },
-};
-// |(\\{\"rt2\"\\})|({\"(/)?ruby\"(, text=\"[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆:]+\")?},)
+function solution(a, m, k) {
+  let count = 0;
+  for (let i = 0; i < a.length - m + 1; i++) {
+    if (checkSubSum(a, i, m, k)) count++;
+  }
+  return count;
+}
+
+function checkSubSum(a, x, m, k) {
+  let lastIndex = x + m;
+  let b = a.slice(x, lastIndex).sort((a, b) => a - b);
+  for (let i = 0; i < b.length; i++) {
+    for (let j = i + 1; j < b.length; j++) {
+      if (b[i] + b[j] === k) return true;
+      if (b[i] + b[j] > k) continue;
+    }
+  }
+  return false;
+}
+
+console.log(solution([2, 4, 7, 5, 3, 5, 8, 5, 1, 7], 4, 10));
