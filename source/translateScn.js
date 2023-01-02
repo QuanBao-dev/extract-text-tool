@@ -9,6 +9,7 @@ const { readFile, writeFile } = require("./handleFile");
 const { scn } = require("../setting.json");
 const handleWordWrap = require("./handleWordWrap");
 const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
+const handleWordWrapGlue = require("./handleWordWrapGlue");
 const converter = new AFHConvert();
 
 (async () => {
@@ -68,7 +69,8 @@ async function translateScn(filePathInput) {
       selects = await Promise.all(
         selects.map(async (select) => {
           if (!select.text) return select;
-          select.text = (await translateSelectCenterTextList([select.text]))[0];
+          // select.text = (await translateSelectCenterTextList([select.text]))[0];
+          select.text = select.text.replace(/[\{\}\[\]]/g, '"');
           return select;
         })
       );
@@ -79,7 +81,8 @@ async function translateScn(filePathInput) {
     texts = scene.texts;
     // rawTexts = rawScene.texts;
     const contentList = texts.map((text) => {
-      return typeof text[7] === "string" ? text[7] : text[2];
+      return typeof text[1][0][3] === "string" ? text[1][0][3] : text[1][0][1];
+      // return text[2];
     });
     // const contentList = texts.map((text) => {
     //   return text[1][0][1];
@@ -95,8 +98,9 @@ async function translateScn(filePathInput) {
     //   return text[1][0][0] || text[0];
     // });
     const tagNameList = texts.map((text) => {
-      return text[1] || text[0];
+      return text[1][0][0] || text[0];
     });
+    let translatedContentList = handleWordWrapGlue(contentList, 58, "\\n");
     // let [translatedContentList, translatedTagNameList] = await Promise.all([
     //   Promise.resolve(contentList),
     //   translateOfflineSugoiCt2LongList(tagNameList, 1),
@@ -106,58 +110,10 @@ async function translateScn(filePathInput) {
     //   Promise.resolve(tagNameList),
     // ]);
 
-    // let translatedContentList = [];
-    // let temp2 = "";
-    // for (let i = 0; i < contentList.length; i++) {
-    //   const v = contentList[i];
-    //   // const text = v.replace(/m\[[0-9]+\] = "/g, "").replace(/"/g, "");
-    //   // const prefix = v.match(/m\[[0-9]+\] = "/g);
-    //   const prefix = [""];
-    //   let text = v;
-    //   const allSpecialCharacters = text.match(/[\.\?\!\)―♪]/g);
-    //   const splittedSentences = text.split(/[\.\?\!\)―♪]/g);
-  
-    //   if (text.trim() === "") {
-    //     translatedContentList.push(prefix[0] + '');
-    //     continue;
-    //   }
-    //   // translatedTextList.push(
-    //   //   prefix[0] + (await translateSelectCenterTextList([text], 1, false))
-    //   // );
-    //   const prefixedText = text.match(/^["\(『「]/g)
-    //     ? text.match(/^["\(『「]/g)[0]
-    //     : "";
-    //   let finalText =
-    //     prefixedText + temp2 + text.trim().replace(/["\(『「]/g, "");
-    //   translatedContentList.push(
-    //     prefix[0] + handleWordWrap(48, finalText, "\\n") 
-    //   );
-    //   if (
-    //     ![".", "?", "!", ")", "―", "♪", "*"].includes(
-    //       text.replace(/[\"」』]/g, "")[text.replace(/[\"」』]/g, "").length - 1]
-    //     )
-    //   ) {
-    //     const finalSentences = splittedSentences[
-    //       splittedSentences.length - 1
-    //     ].replace(/[\"」』]/g, "");
-    //     if (splittedSentences.length === 1) continue;
-    //     let textTemp = "";
-    //     for (let i = 0; i < splittedSentences.length - 1; i++) {
-    //       textTemp +=
-    //         splittedSentences[i] +
-    //         (allSpecialCharacters[i] ? allSpecialCharacters[i] : "");
-    //     }
-    //     translatedContentList[translatedContentList.length - 1] =
-    //       prefix[0] + handleBracket(handleWordWrap(48, textTemp, "\\n"));
-    //     temp2 = finalSentences.trim() + " ";
-    //   } else {
-    //     temp2 = "";
-    //   }
-    // }
-    let [translatedContentList, translatedTagNameList] = await Promise.all([
-      translateOfflineSugoiCt2LongList(contentList, 2, false, false, true),
-      translateOfflineSugoiCt2LongList(tagNameList, 1),
-    ]);
+    // let [translatedContentList, translatedTagNameList] = await Promise.all([
+    //   translateOfflineSugoiCt2LongList(contentList, 2, false, false, true),
+    //   translateOfflineSugoiCt2LongList(tagNameList, 1),
+    // ]);
     // console.log(translatedContentList);
     // let count = 0;
     // for (let j = 0; j < texts.length; j++) {
@@ -171,8 +127,16 @@ async function translateScn(filePathInput) {
     // }
     for (let j = 0; j < texts.length; j++) {
       const text = texts[j];
-      text[1] = translatedTagNameList[j];
-      text[2] = translatedContentList[j];
+      // text[1][0][0] =
+      //   typeof translatedTagNameList[j] === "string"
+      //     ? translatedTagNameList[j]
+      //         .replace(/&/g, "＆")
+      //         .replace(/%/g, "％")
+      //         .replace(/;/g, "；")
+      //     : translatedTagNameList[j];
+      text[1][0][1] = translatedContentList[j]
+        .replace(/[\{\}\[\]]/g, '"')
+        .replace(/&/g, "＆");
     }
   }
   await writeFile(filePathInput, JSON.stringify(dataJson, null, 2), "utf8");

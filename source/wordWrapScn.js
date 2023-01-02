@@ -42,10 +42,10 @@ async function wordWrapScn(filePath) {
     for (let j = 0; j < texts.length; j++) {
       const text = texts[j];
 
-      if (typeof text[1][0][1] === "string") {
+      if (typeof text[2] === "string") {
         const tempText = handleWordWrap(
           scn.wordWrap.maxCharPerLines,
-          text[1][0][1].replace(/\% /g, "％ "),
+          text[2].replace(/\% /g, "％ ").replace(/\\n/g," "),
           "\\n"
         )
           .replace(/、/g, ", ")
@@ -55,7 +55,7 @@ async function wordWrapScn(filePath) {
           "%(n)?[0-9]+([;. ,])?",
           "g"
         );
-        text[1][0][1] = textList.join("\\n");
+        text[2] = textList.join("\\n");
         // if (text[2].replace(/\\n/g," ").length > 195) {
         //   console.log(text[2])
         //   text[2] =

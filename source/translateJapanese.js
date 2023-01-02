@@ -273,8 +273,9 @@ async function translateOfflineSugoiCt2LongList(
       break;
     } catch (error) {
       console.log(error);
-      limit = parseInt(limit / 2) === 0 ? 1 : parseInt(limit / 2);
+      // limit = parseInt(limit / 2) === 0 ? 1 : parseInt(limit / 2);
       console.log({ limit });
+      // limit = 2;
       await delay(10000);
     }
   }

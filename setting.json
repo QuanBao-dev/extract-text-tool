@@ -1,21 +1,30 @@
 {
   "replacedCharsBeforeTranslation": {
-    "瀬真 颯太朗": "Sema Soutarou",
-    "藤乃 雪": "Fujino Yuki",
-    "神咲 エリサ": "Kanzaki Erisa",
-    "久遠寺 一葉": "Kuonji Kazuha",
-    "凜堂 耶々": "Rindou Yaya",
-    "白羽 優理": "Shirahane Yuuri",
-    "橘 朝陽": "Tachibana Asahi",
-    "遥 由宇": "Haruka Yuu",
-    "神無月 祥子": "Kannazuki Shouko",
-    "笠倉 乃々花": "Kasakura Nonoka",
-    "北菱 摩秀": "Kitabishi Mashuu",
-    "佐伯 まおり": "Saeki Maori",
-    "瀬真 梢": "Sema Kozue",
-    "須藤 弦": "Sudou Gen",
-    "浮気 澪": "Ukigi Mio"
-  },
+    "有持乃 炎司": "Arujino Enji",
+    "アナスターシャ ミステランテ": "Anastasia Mysterante",
+    "ディゼニア ドラクール": "Dyzenia Dracour",
+    "エイベル ハウリシア": "Eibel Haurisia",
+    "クリムヒルデ ヴァルハンナ": "Kriemhild Valhanna",
+    "リリエラ ラブノット": "Liliera Loveknot",
+    "リグジュアル ヘルマーレ": "Lixual Hellmare",
+    "マキナ ル ブランシェット": "Makina Le Blanchette",
+    "ミーナ １９１９": "Meena 1919",
+    "明堂 萌依": "Myoudou Mei",
+    "ミュンミュン ラフルール": "MyunMyun Lafleur",
+    "アルカ ヘルマーレ": "Arka Hellmare",
+    "ブリュンヒルド ヴァルハンナ": "Brynhildr Valhanna",
+    "エリザベス ミステランテ": "Elizabeth Mysterante",
+    "エルマ サベンティラ": "Elma Saventilla",
+    "ファヴニーラ ドラクール": "Fáfnira Dracour",
+    "フラン フランシール": "Fran Franchir",
+    "ローレシア ル ブランシェット": "Laurecia Le Blanchette",
+    "ルナリリア ラブノット": "Lunalilia Loveknot",
+    "明堂 真亜紗": "Myoudou Maasa",
+    "ヌンヌン ラフルール": "NunNun Lafleur",
+    "パルティア ラムジー": "Parthia Ramsey",
+    "サイゼル ハウリシア": "Saizel Haurisia",
+    "ラグジュアル ヘルマーレ": "Luxual Hellmare"
+},
   "replacedCharsAfterTranslation": {},
   "replacedExactCharsAfterTranslation": {},
   "bsxx": {
@@ -35,7 +44,7 @@
       "isSelects": false
     },
     "wordWrap": {
-      "maxCharPerLines": 48,
+      "maxCharPerLines": 58,
       "folderPath": "./scn_output_output"
     }
   },

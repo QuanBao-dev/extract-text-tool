@@ -33,13 +33,14 @@ module.exports = function handleWordWrap(
   const words = filteredText.split(" ");
   let ans = "";
   let sum = 0;
+  let count2 = 0;
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
-    if (priorityWordWrap) {
-      maxNumberOfChar = priorityWordWrap;
-    } else {
-      maxNumberOfChar = rawMaxNumberOfChar;
-    }
+    // if (priorityWordWrap) {
+    //   maxNumberOfChar = priorityWordWrap;
+    // } else {
+    //   maxNumberOfChar = rawMaxNumberOfChar;
+    // }
     sum += word.length + 1;
     if (sum <= maxNumberOfChar || count >= limitBreak - 1) {
       ans += word + " ";
