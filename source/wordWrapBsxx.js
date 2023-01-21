@@ -3,6 +3,7 @@ const handleWordWrap = require("./handleWordWrap");
 const { bsxx } = require("../setting.json");
 const fs = require("fs");
 const delay = require("./delay");
+const handleWordWrapGlue = require("./handleWordWrapGlue");
 (async () => {
   const listFileName = fs.readdirSync(bsxx.wordWrap.folderPath);
   console.log(listFileName);
@@ -23,16 +24,17 @@ async function wordWrapBsxx(filePath) {
     return extractThePrefix(text);
   });
 
+  // contentTextList = handleWordWrapGlue(
   contentTextList = contentTextList.map((text) => {
     // text = text.replace(/\\n/g, "").replace(/Kageto/g,"");
     // if (text.match(/^「/g)) text += "」";
-    return handleWordWrap(
-      bsxx.wordWrap.maxCharPerLines,
-      text,
-      "\\n",
-      1000
-    );
+    return handleWordWrap(bsxx.wordWrap.maxCharPerLines, text, "\\n", 1000)
+      // .replace(/^[『「]/g, "「 ")
+    return text;
   });
+  //   65,
+  //   "\\n"
+  // );
 
   const ans = prefixList
     .map(

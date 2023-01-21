@@ -19,10 +19,14 @@ module.exports = function handleWordWrapSrp(fileContent) {
   }, []);
   const blockTextList = ans.map((blockList) => {
     for (let i = blockList.length - 1; i > 0; i--) {
-      if (blockList[i].includes(" ")) {
+      if (blockList[i].includes(" ")||blockList[i].includes(".")) {
         return handleSplitWordWrappedText(
-          handleWordWrap(50, blockList[i].replace(/, /g,"、"), "\\n").split("\\n"),
-          3,
+          handleWordWrap(
+            65,
+            blockList[i].replace(/\\n/g, " ").replace(/, /g, "、"),
+            "\\n"
+          ).split("\\n"),
+          2,
           "\\n"
         );
       }
@@ -45,9 +49,11 @@ module.exports = function handleWordWrapSrp(fileContent) {
             );
           } else {
             temp.push(
-              ["00002000", ...data.slice(1, data.length - 2), blockText[j]].join(
-                "\n"
-              )
+              [
+                "00002000",
+                ...data.slice(1, data.length - 2),
+                blockText[j],
+              ].join("\n")
             );
           }
         }

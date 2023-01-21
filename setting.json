@@ -1,39 +1,43 @@
 {
   "replacedCharsBeforeTranslation": {
-    "有持乃 炎司": "Arujino Enji",
-    "アナスターシャ ミステランテ": "Anastasia Mysterante",
-    "ディゼニア ドラクール": "Dyzenia Dracour",
-    "エイベル ハウリシア": "Eibel Haurisia",
-    "クリムヒルデ ヴァルハンナ": "Kriemhild Valhanna",
-    "リリエラ ラブノット": "Liliera Loveknot",
-    "リグジュアル ヘルマーレ": "Lixual Hellmare",
-    "マキナ ル ブランシェット": "Makina Le Blanchette",
-    "ミーナ １９１９": "Meena 1919",
-    "明堂 萌依": "Myoudou Mei",
-    "ミュンミュン ラフルール": "MyunMyun Lafleur",
-    "アルカ ヘルマーレ": "Arka Hellmare",
-    "ブリュンヒルド ヴァルハンナ": "Brynhildr Valhanna",
-    "エリザベス ミステランテ": "Elizabeth Mysterante",
-    "エルマ サベンティラ": "Elma Saventilla",
-    "ファヴニーラ ドラクール": "Fáfnira Dracour",
-    "フラン フランシール": "Fran Franchir",
-    "ローレシア ル ブランシェット": "Laurecia Le Blanchette",
-    "ルナリリア ラブノット": "Lunalilia Loveknot",
-    "明堂 真亜紗": "Myoudou Maasa",
-    "ヌンヌン ラフルール": "NunNun Lafleur",
-    "パルティア ラムジー": "Parthia Ramsey",
-    "サイゼル ハウリシア": "Saizel Haurisia",
-    "ラグジュアル ヘルマーレ": "Luxual Hellmare"
-},
+    "草薙 直哉": "Kusanagi Naoya",
+    "氷川 里奈": "Hikawa Rina",
+    "御桜 稟": "Misakura Rin",
+    "夏目 藍": "Natsume Ai",
+    "夏目 雫": "Natsume Shizuku",
+    "鳥谷 真琴": "Toritani Makoto",
+    "明石 小牧": "Akashi Komaki",
+    "明石 小沙智": "Akashi Kosachi",
+    "明石 亘": "Akashi Wataru",
+    "柊 ノノ未": "Hiiragi Nonomi",
+    "氷川 ルリヲ": "Hikawa Ruriwo",
+    "片貝 拓実": "Katagai Takumi",
+    "川内野 鈴菜": "Kawachino Suzuna",
+    "川内野 優美": "Kawachino Yuumi",
+    "栗山 奈津子": "Kuriyama Natsuko",
+    "草薙 健一郎": "Kusanagi Ken'ichirou",
+    "マーティ フリッドマン": "Marty Friedman",
+    "長山 香奈": "Nagayama Kana",
+    "夏目 圭": "Natsume Kei",
+    "夏目 琴子": "Natsume Kotoko",
+    "恩田 霧乃": "Onda Kirino",
+    "恩田 寧": "Onda Nei",
+    "咲崎 桜子": "Sakizaki Sakurako",
+    "吹": "Sui",
+    "タキザワ トーマス ネーゲル ジュンペー": "Takizawa Thomas Nagel Junpe",
+    "鳥谷 紗希": "Toritani Saki",
+    "若田 清二郎": "Wakata Seijirou",
+    "弘瀬 琢磨": "Hirose Takuma"
+  },
   "replacedCharsAfterTranslation": {},
   "replacedExactCharsAfterTranslation": {},
   "bsxx": {
     "translation": {
       "folderPath": "./Bsxx",
-      "numberOfSentences": 3
+      "numberOfSentences": 4
     },
     "wordWrap": {
-      "maxCharPerLines": 59,
+      "maxCharPerLines": 65,
       "folderPath": "./Bsxx_output"
     }
   },
@@ -99,19 +103,19 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "systemC": {
-    "encoding": "shiftjis",
+  "SystemC": {
+    "encoding": "utf8",
     "translation": {
-      "folderPath": "./ks_output",
+      "folderPath": "./ks_output_output_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 150,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
       "regExpToFilterSentenceContainTagName": "(（[０-９]+）)",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(MV_)|(LB_)|(KM_)|(EF_)|(SC_)|(（[０-９]+）)|(\\/\\/)",
-      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(MV_)|(LB_)|(KM_)|(EF_)|(SC_)|(（[０-９]+）)|(_)|(\\/)",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "DS#SA",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
-      "addedString": "[T_NEXT]\\",
+      "addedString": "",
       "addedStringAfterTranslation": "",
       "addedPrefixAfterTranslation": "",
       "isArtemis": false,
@@ -177,7 +181,33 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "ks": {
+  "EAGLS": {
+    "encoding": "shiftjis",
+    "translation": {
+      "folderPath": "./ks_output_output_output",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300,
+      "isSelects": false,
+      "isTagName": false,
+      "regExpToFilterSentenceContainTagName": "^【",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "",
+      "regExpToExcludeSentenceNotNeedTranslatedContain2": "(^&)",
+      "addedString": "",
+      "addedStringAfterTranslation": "",
+      "addedPrefixAfterTranslation": "",
+      "isArtemis": false,
+      "isQlie": false
+    },
+    "wordWrap": {
+      "maxCharPerLines": 54,
+      "folderPath": "./ks_output_output_output_output",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
+      "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
+      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+    }
+  },
+  "kiri7": {
     "encoding": "utf8",
     "translation": {
       "folderPath": "./ks_output_output_output",
@@ -400,6 +430,34 @@
       "regExpToExcludeSentenceNotNeedTranslatedExcept2": "(\\[T_NEXT\\]\\\\)",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
       "addedString": "[T_NEXT]\\",
+      "addedStringAfterTranslation": "",
+      "addedPrefixAfterTranslation": "",
+      "isArtemis": false,
+      "isQlie": false
+    },
+    "wordWrap": {
+      "maxCharPerLines": 59,
+      "folderPath": "./shina_rio",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))|(//)|(^:)",
+      "regExpToFilterSentenceContainTagName": "text=",
+      "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
+      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+    }
+  },
+  "ks": {
+    "encoding": "utf8",
+    "translation": {
+      "folderPath": "./ks",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300,
+      "isSelects": false,
+      "isTagName": false,
+      "regExpToFilterSentenceContainTagName": "",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "\/\/",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "#@$@",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept2": "",
+      "regExpToExcludeSentenceNotNeedTranslatedContain2": "<en",
+      "addedString": "",
       "addedStringAfterTranslation": "",
       "addedPrefixAfterTranslation": "",
       "isArtemis": false,

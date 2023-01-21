@@ -8,26 +8,36 @@ module.exports = function handleWordWrap(
 ) {
   let count = 0;
   const rawMaxNumberOfChar = maxNumberOfChar;
-  const tagName = text.match(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g)
-    ? text.match(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g)[0]
-    : "";
-  text = text.replace(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g, "");
+  // const tagName = text.match(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g)
+  //   ? text.match(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g)[0]
+  //   : "";
+  // text = text
+  //   .replace(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g, "")
+  //   .replace(/\(e\)/g, " ");
   if (text.trim() === "") return text;
   let prefix = text.replace(/\[plc\]/g, "").match(/^(	+)/g)
     ? text.match(/^(	+)/g)[0]
     : "";
   let filteredText = text
-    .replace(
-      new RegExp(lineBreakString.replace("[", "\\[").replace("]", "\\]"), "g"),
-      " "
-    )
+    // .replace(
+    //   new RegExp(
+    //     lineBreakString
+    //       .replace("(", "\\(")
+    //       .replace(")", "\\)")
+    //       .replace("[", "\\[")
+    //       .replace("]", "\\]"),
+    //     "g"
+    //   ),
+    //   " "
+    // )
     .replace(/é/g, "e")
     .replace(/ó/g, "o")
     .replace(/ +/g, " ")
     .replace(/\["text"\] = \{\[\[/g, "")
     .replace(/\]\]\},/g, "")
-    .replace(/、/g, ", ")
-    .replace(/&/g, "＆");
+    .replace(/,( )?/g, "、")
+    .replace(/&/g, "＆")
+    .replace(/、/g, ", ");
   // filteredText = replaceTagName(filteredText, [2], "g");
   // filteredText = replaceTagName(filteredText, [3], "gi");
   const words = filteredText.split(" ");
@@ -60,20 +70,25 @@ module.exports = function handleWordWrap(
       count++;
     }
   }
-  let finalResult = tagName + prefix + ans.slice(0, ans.length - 1);
+  let finalResult =
+    // tagName +
+    prefix + ans.slice(0, ans.length - 1);
   // .replace(/[“”]/g, '"')
   // .replace(/"/g, "”")
   // .replace(/^”/g, '"')
   // .replace(/”,$/g, '",');
   // .replace(/,( )?/g, "、")
   // .replace(/、/g, ", ");
-  // if (finalResult.split(lineBreakString).length < limitBreak) {
-  //   finalResult += Array.from(
-  //     Array(limitBreak - finalResult.split(lineBreakString).length).keys()
-  //   )
-  //     .map(() => lineBreakString)
-  //     .join("");
-  // }
+  if (
+    finalResult.split(lineBreakString).length < limitBreak &&
+    limitBreak !== 1000
+  ) {
+    finalResult += Array.from(
+      Array(limitBreak - finalResult.split(lineBreakString).length).keys()
+    )
+      .map(() => lineBreakString)
+      .join("---");
+  }
   // return `\t\t["text"] = {[[` + finalResult + `]]},`;
   return finalResult.replace(/\\k/g, "\\k\n");
 };

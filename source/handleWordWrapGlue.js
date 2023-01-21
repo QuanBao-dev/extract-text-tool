@@ -1,3 +1,5 @@
+const handleWordWrap = require("./handleWordWrap");
+
 module.exports = function handleWordWrapGlue(
   contentList,
   maxNumberChars,
@@ -11,8 +13,8 @@ module.exports = function handleWordWrapGlue(
     // const prefix = v.match(/m\[[0-9]+\] = "/g);
     const prefix = [""];
     let text = v;
-    const allSpecialCharacters = text.match(/[\.\?\!\)―♪\-]/g);
-    const splittedSentences = text.split(/[\.\?\!\)―♪\-]/g);
+    const allSpecialCharacters = text.match(/[\.\?\!\)―♪]/g);
+    const splittedSentences = text.split(/[\.\?\!\)―♪]/g);
 
     if (text.trim() === "") {
       translatedContentList.push(prefix[0] + "");
@@ -30,7 +32,7 @@ module.exports = function handleWordWrapGlue(
       prefix[0] + handleWordWrap(maxNumberChars, finalText, lineBreakString)
     );
     if (
-      ![".", "?", "!", ")", "―", "♪", "*", "-"].includes(
+      ![".", "?", "!", ")", "―", "♪"].includes(
         text.replace(/[\"」』]/g, "")[text.replace(/[\"」』]/g, "").length - 1]
       )
     ) {
@@ -54,3 +56,33 @@ module.exports = function handleWordWrapGlue(
   }
   return translatedContentList;
 };
+
+function handleBracket(text) {
+  const listOfChoice = [
+    `[…。♪:：〟！～『「」』？]`,
+    "…",
+    "(([『「」』])$)|(^([『「」』]))",
+    "(^([『「」』]))",
+    "(([『「」』])$)",
+  ];
+  let temp = text;
+  if (
+    text.trim().match(new RegExp(listOfChoice[3], "g")) &&
+    !text.trim().match(new RegExp(listOfChoice[4], "g"))
+  ) {
+    if (text.trim().match(new RegExp(listOfChoice[3], "g"))[0] === "「")
+      temp += "」";
+    if (text.trim().match(new RegExp(listOfChoice[3], "g"))[0] === "『")
+      temp += "』";
+  }
+  // if (
+  //   text.trim().match(new RegExp(listOfChoice[4], "g")) &&
+  //   !text.trim().match(new RegExp(listOfChoice[3], "g"))
+  // ) {
+  //   if (text.trim().match(new RegExp(listOfChoice[4], "g"))[0] === "」")
+  //     temp = "「" + temp;
+  //   if (text.trim().match(new RegExp(listOfChoice[4], "g"))[0] === "』")
+  //     temp = "『" + temp;
+  // }
+  return temp;
+}
