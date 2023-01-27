@@ -52,8 +52,8 @@ async function wordWrapKs(filePath) {
   // return await writeFile(filePath, handleWordWrapArtemis2(fileContent), "utf8");
   // await writeFile(filePath, handleWordWrapQlieVN(fileContent), "shiftjis");
   // await writeFile(filePath, handleWordWrapShina(fileContent), "shiftjis");
-  return await writeFile(filePath, handleWordWrapKs(fileContent), "shiftjis");
-  // return await writeFile(filePath, handleWordWrapSrp(fileContent), "shiftjis");
+  // return await writeFile(filePath, handleWordWrapKs(fileContent), "shiftjis");
+  return await writeFile(filePath, handleWordWrapSrp(fileContent), "shiftjis");
   const dataList = fileContent.split(/\r\n/i);
   let isHighLight = false;
   const rawTextList = dataList.reduce((ans, rawText) => {

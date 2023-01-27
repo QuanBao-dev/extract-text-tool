@@ -47,13 +47,13 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
+  //       "「わ、私・・・・・・そういうのあまり気にしてなかったんですけど・・・・・・。も、もしかして・・・・・・。日常的にバンツを見せて飛んでいましたか?」",
   //       "怯えてるんだ……？　ふふっ……やっぱり、君って素質あるよ……",
   //       "それで、目覚めたはいいけど。自己主張の激しい子も一緒に元気になってるよ",
   //       "甘くて、優しくて、ずっとしていたい心地よさに頭が覚醒することを妨げている感じがした。",
   //       "濡れたような声が耳元で響いた気がした。",
-  //       `「はーい。お冷やお持ちしましたー。[ruby text="ワン"]１[/ruby]、[ruby text="ツー"]２[/ruby]ーっとご注文はいかがいたしますスか？」`,
   //     ],
-  //     3,
+  //     5,
   //     false,
   //     true,
   //     true
@@ -147,7 +147,7 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
 
 async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   const fileContent = await readFile(filePath, encoding);
-  let dataList = fileContent.split(/\r\n/g);
+  let dataList = fileContent.split(/\n/g);
   // console.log(dataList);
   // let temp2 = [];
   // dataList.forEach(text => {
@@ -259,7 +259,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   }
   if (isSelect) {
     const translatedFileContent = (
-      await translateSelectCenterTextList(dataList, 1)
+      await translateSelectCenterTextList(dataList, 1, false)
     ).join("\r\n");
     return await writeFile(filePath, translatedFileContent, encoding);
   }
@@ -269,10 +269,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
       if (
-        // (rawText.trim().match(containRegExpI) &&
-        //   !rawText.trim().match(exceptRegExpI)) ||
-        // rawText.trim() === ""
-        !rawText.match(containRegExpG2)
+        (rawText.trim().match(containRegExpI) &&
+          !rawText.trim().match(exceptRegExpI)) ||
+        rawText.trim() === ""
+        // !rawText.match(containRegExpG2)
         // rawText.match(containTagNameRegExpI)
       ) {
         isNewDialog = true;
@@ -337,13 +337,13 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   }
   //   return splittedTexts.join('"');
   // });
-  // const translatedTextList = await translateOfflineSugoiCt2LongList(
-  //   rawTextList,
-  //   2,
-  //   false,
-  //   true,
-  //   true
-  // );
+  const translatedTextList = await translateOfflineSugoiCt2LongList(
+    rawTextList,
+    5,
+    false,
+    true,
+    true
+  );
   // let translatedTextList = handleWordWrapGlue(rawTextList,100000,"\\n")
 
   // const translatedTextList = rawTextList
@@ -365,11 +365,11 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   // "&" + text.split("&").slice(1).join("\r\n&").split("#").join("\r\n#")
   // );
   // console.log(rawTextList)
-  let translatedTextList = await translateSelectCenterTextList(
-    rawTextList,
-    5,
-    true
-  );
+  // let translatedTextList = await translateSelectCenterTextList(
+  //   rawTextList,
+  //   3,
+  //   true
+  // );
 
   // console.log(translatedTextList)
   // translatedTextList = translatedTextList.map((text) => text + "[np]");
@@ -437,10 +437,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       //   isDisable = false;
       // if (isDisable) return ans;
       if (
-        // (rawText.trim().match(containRegExpI) &&
-        //   !rawText.trim().match(exceptRegExpI)) ||
-        // rawText.trim() === ""
-        !rawText.match(containRegExpG2)
+        (rawText.trim().match(containRegExpI) &&
+          !rawText.trim().match(exceptRegExpI)) ||
+        rawText.trim() === ""
+        // !rawText.match(containRegExpG2)
         // rawText.match(containTagNameRegExpI)
       ) {
         ans.push(rawText);
@@ -480,7 +480,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       count++;
       return ans;
     }, [])
-    .join("\r\n");
+    .join("\n");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding);
 }

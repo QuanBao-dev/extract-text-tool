@@ -1,33 +1,12 @@
 {
   "replacedCharsBeforeTranslation": {
-    "草薙 直哉": "Kusanagi Naoya",
-    "氷川 里奈": "Hikawa Rina",
-    "御桜 稟": "Misakura Rin",
-    "夏目 藍": "Natsume Ai",
-    "夏目 雫": "Natsume Shizuku",
-    "鳥谷 真琴": "Toritani Makoto",
-    "明石 小牧": "Akashi Komaki",
-    "明石 小沙智": "Akashi Kosachi",
-    "明石 亘": "Akashi Wataru",
-    "柊 ノノ未": "Hiiragi Nonomi",
-    "氷川 ルリヲ": "Hikawa Ruriwo",
-    "片貝 拓実": "Katagai Takumi",
-    "川内野 鈴菜": "Kawachino Suzuna",
-    "川内野 優美": "Kawachino Yuumi",
-    "栗山 奈津子": "Kuriyama Natsuko",
-    "草薙 健一郎": "Kusanagi Ken'ichirou",
-    "マーティ フリッドマン": "Marty Friedman",
-    "長山 香奈": "Nagayama Kana",
-    "夏目 圭": "Natsume Kei",
-    "夏目 琴子": "Natsume Kotoko",
-    "恩田 霧乃": "Onda Kirino",
-    "恩田 寧": "Onda Nei",
-    "咲崎 桜子": "Sakizaki Sakurako",
-    "吹": "Sui",
-    "タキザワ トーマス ネーゲル ジュンペー": "Takizawa Thomas Nagel Junpe",
-    "鳥谷 紗希": "Toritani Saki",
-    "若田 清二郎": "Wakata Seijirou",
-    "弘瀬 琢磨": "Hirose Takuma"
+    "＄α":"Morishita",
+    "＄β":"Wataru",
+    "森下 渉": "Morishita Wataru",
+    "大門 奈緒子": "Daimon Naoko",
+    "神楽坂 ゆい": "Kagurazaka Yui",
+    "白河 美和": "Shirakawa Miwa",
+    "月島 響子": "Tsukishima Kyouko"
   },
   "replacedCharsAfterTranslation": {},
   "replacedExactCharsAfterTranslation": {},
@@ -312,18 +291,18 @@
     }
   },
   "artemis": {
-    "encoding": "utf8",
+    "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./ks_output",
+      "folderPath": "./ks",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "@name chara",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(scenario\\[))|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))",
-      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))",
+      "regExpToFilterSentenceContainTagName": "\\[sel_text",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(scenario\\[))|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))|(^(/))",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(^(\\[ruby))|(^(\\[咲奈))",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "\\[\"label\"\\] = \\[\\[select",
-      "addedString": "[T_NEXT]\\",
+      "addedString": "",
       "addedStringAfterTranslation": "",
       "addedPrefixAfterTranslation": "",
       "isArtemis": false,
@@ -444,7 +423,7 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "ks": {
+  "sakura no uta": {
     "encoding": "utf8",
     "translation": {
       "folderPath": "./ks",
@@ -453,7 +432,7 @@
       "isSelects": false,
       "isTagName": false,
       "regExpToFilterSentenceContainTagName": "",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "\/\/",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "//",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "#@$@",
       "regExpToExcludeSentenceNotNeedTranslatedExcept2": "",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "<en",
@@ -472,13 +451,13 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "srp": {
+  "ks": {
     "encoding": "shiftjis",
     "translation": {
       "folderPath": "./srp",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
       "regExpToFilterSentenceContainTagName": "seladd text=",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "([0-9])|(\\x02)",
@@ -492,7 +471,7 @@
     },
     "wordWrap": {
       "maxCharPerLines": 54,
-      "folderPath": "./srp",
+      "folderPath": "./srp_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
@@ -578,8 +557,8 @@
     }
   },
   "textToImageSetting": {
-    "width": 316,
-    "height": 78,
+    "width": 271,
+    "height": 55,
     "margin": 5,
     "fileInputPath": "raw_images"
   }

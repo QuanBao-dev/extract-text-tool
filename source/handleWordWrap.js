@@ -19,25 +19,25 @@ module.exports = function handleWordWrap(
     ? text.match(/^(	+)/g)[0]
     : "";
   let filteredText = text
-    // .replace(
-    //   new RegExp(
-    //     lineBreakString
-    //       .replace("(", "\\(")
-    //       .replace(")", "\\)")
-    //       .replace("[", "\\[")
-    //       .replace("]", "\\]"),
-    //     "g"
-    //   ),
-    //   " "
-    // )
+    .replace(
+      new RegExp(
+        lineBreakString
+          .replace("(", "\\(")
+          .replace(")", "\\)")
+          .replace("[", "\\[")
+          .replace("]", "\\]"),
+        "g"
+      ),
+      " "
+    )
     .replace(/é/g, "e")
     .replace(/ó/g, "o")
     .replace(/ +/g, " ")
     .replace(/\["text"\] = \{\[\[/g, "")
     .replace(/\]\]\},/g, "")
-    .replace(/,( )?/g, "、")
+    // .replace(/,( )?/g, "、")
     .replace(/&/g, "＆")
-    .replace(/、/g, ", ");
+  .replace(/、/g, ", ");
   // filteredText = replaceTagName(filteredText, [2], "g");
   // filteredText = replaceTagName(filteredText, [3], "gi");
   const words = filteredText.split(" ");
@@ -90,5 +90,5 @@ module.exports = function handleWordWrap(
       .join("---");
   }
   // return `\t\t["text"] = {[[` + finalResult + `]]},`;
-  return finalResult.replace(/\\k/g, "\\k\n");
+  return finalResult.replace(/\\k/g, "\\k\n").replace(/,( )?/g, "、");
 };

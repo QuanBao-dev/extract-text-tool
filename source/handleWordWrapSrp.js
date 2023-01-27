@@ -19,10 +19,10 @@ module.exports = function handleWordWrapSrp(fileContent) {
   }, []);
   const blockTextList = ans.map((blockList) => {
     for (let i = blockList.length - 1; i > 0; i--) {
-      if (blockList[i].includes(" ")||blockList[i].includes(".")) {
+      if (blockList[i].includes(" ") || blockList[i].includes(".")) {
         return handleSplitWordWrappedText(
           handleWordWrap(
-            65,
+            60,
             blockList[i].replace(/\\n/g, " ").replace(/, /g, "、"),
             "\\n"
           ).split("\\n"),
@@ -35,7 +35,7 @@ module.exports = function handleWordWrapSrp(fileContent) {
   });
   ans = ans
     .reduce((result, data, index) => {
-      if (data.length === 4) {
+      if (data.length === 4 || data[0] === "00001000") {
         const temp = [];
         const blockText = blockTextList[index];
         for (let j = 0; j < blockText.length; j++) {
@@ -50,7 +50,7 @@ module.exports = function handleWordWrapSrp(fileContent) {
           } else {
             temp.push(
               [
-                "00002000",
+                data[0] === "00001000" ? "00000000" : data[0],
                 ...data.slice(1, data.length - 2),
                 blockText[j],
               ].join("\n")
@@ -59,6 +59,19 @@ module.exports = function handleWordWrapSrp(fileContent) {
         }
         result.push(...temp);
       } else if (data.length === 3 || data.length === 2) {
+        // if (data[0] === "00001000") {
+        //   const temp = [];
+        //   const blockText = [...blockTextList[index]];
+        //   for (let j = 0; j < blockText.length; j++)
+        //     temp.push(
+        //       [
+        //         ...data.slice(0, data.length - 2),
+        //         blockText[j],
+        //         data[data.length - 1],
+        //       ].join("\n")
+        //     );
+        //   result.push(...temp);
+        // } else {
         const temp = [];
         const blockText = [...blockTextList[index]];
         for (let j = 0; j < blockText.length; j++)
@@ -66,6 +79,7 @@ module.exports = function handleWordWrapSrp(fileContent) {
             [...data.slice(0, data.length - 1), blockText[j]].join("\n")
           );
         result.push(...temp);
+        // }
       } else result.push(data);
       return result;
     }, [])
