@@ -47,12 +47,12 @@ const converter = new AFHConvert();
 async function translateScn(filePathInput) {
   console.log(filePathInput);
   const content = await readFile(filePathInput, "utf8");
-  const rawContent = await readFile(
-    filePathInput.replace("./scn", "./scn_raw"),
-    "utf8"
-  );
+  // const rawContent = await readFile(
+  //   filePathInput.replace("./scn", "./scn_raw"),
+  //   "utf8"
+  // );
   const dataJson = JSON.parse(content);
-  const rawDataJson = JSON.parse(rawContent);
+  // const rawDataJson = JSON.parse(rawContent);
   if (!dataJson.scenes)
     return await writeFile(
       filePathInput,
@@ -62,7 +62,7 @@ async function translateScn(filePathInput) {
 
   for (let i = 0; i < dataJson.scenes.length; i++) {
     const scene = dataJson.scenes[i];
-    const rawScene = rawDataJson.scenes[i];
+    // const rawScene = rawDataJson.scenes[i];
     if (scn.translation.isSelects) {
       if (!scene.selects) continue;
       let selects = scene.selects;
@@ -79,19 +79,19 @@ async function translateScn(filePathInput) {
 
     if (!scene.texts) continue;
     let texts = scene.texts;
-    let rawTexts = [...rawScene.texts];
-    let contentList = rawTexts.filter((text, index) => {
-      const rawText =
-        typeof rawTexts[index][7] === "string"
-          ? rawTexts[index][7]
-          : rawTexts[index][2];
-      return rawText.includes("城にぃ");
-    });
-    contentList = contentList.map((text, index) => {
+    // let rawTexts = [...rawScene.texts];
+    // let contentList = rawTexts.filter((text, index) => {
+    //   const rawText =
+    //     typeof rawTexts[index][7] === "string"
+    //       ? rawTexts[index][7]
+    //       : rawTexts[index][2];
+    //   return rawText.includes("城にぃ");
+    // });
+    let contentList = texts.map((text, index) => {
       // return text[2];
-      return typeof text[7] === "string" ? text[7] : text[2];
-      // return typeof text[1][0][3] === "string" ? text[1][0][3] : text[1][0][1];
-      // return text[1][0][1];
+      // return typeof text[7] === "string" ? text[7] : text[2];
+      // return typeof text[1][0][4] === "string" ? text[1][0][4] : text[1][0][1];
+      return text[1][0][1];
     });
     // const contentList = texts.map((text) => {
     //   return text[1][0][1];
@@ -107,19 +107,40 @@ async function translateScn(filePathInput) {
     //   return text[1][0][0] || text[0];
     // });
     const tagNameList = texts.map((text) => {
-      return text[1] || text[0];
+      // return text[1] || text[0];
+      return text[1][0][0] || text[0];
     });
     // let translatedContentList = handleWordWrapGlue(contentList, 58, "\\n");
     // let [translatedContentList, translatedTagNameList] = await Promise.all([
     //   Promise.resolve(contentList),
     //   translateOfflineSugoiCt2LongList(tagNameList, 1),
     // ]);
-    let [translatedContentList, translatedTagNameList] = await Promise.all([
-      translateOfflineSugoiCt2LongList(contentList, 2, false, false, true),
-      Promise.resolve(tagNameList),
-    ]);
     // let [translatedContentList, translatedTagNameList] = await Promise.all([
     //   translateOfflineSugoiCt2LongList(contentList, 2, false, false, true),
+    //   Promise.resolve(tagNameList),
+    // ]);
+    let translatedContentList = contentList.map((v) =>
+      v
+        .replace(/Soutet(su)+/g, "Soutetsu")
+        .replace(/Suettesu/g, "Soutetsu")
+        .replace(/broski/g, "nii-nii")
+    );
+    let translatedTagNameList = tagNameList.map((v) => {
+      if (!v) return v;
+      return v
+        .replace(/Soutet(su)+/g, "Soutetsu")
+        .replace(/Suettesu/g, "Soutetsu")
+        .replace(/broski/g, "nii-nii");
+    });
+
+    // let [translatedContentList, translatedTagNameList] = await Promise.all([
+    //   translateOfflineSugoiCt2LongList(
+    //     contentList.map((v) => v.replace(/\\n/g, "")),
+    //     2,
+    //     false,
+    //     false,
+    //     true
+    //   ),
     //   translateOfflineSugoiCt2LongList(tagNameList, 1),
     // ]);
     // console.log(translatedContentList);
@@ -137,22 +158,27 @@ async function translateScn(filePathInput) {
     let count = 0;
     for (let j = 0; j < texts.length; j++) {
       const text = texts[j];
-      const rawText =
-        typeof rawTexts[j][7] === "string" ? rawTexts[j][7] : rawTexts[j][2];
-      // text[1] =
-      //   typeof translatedTagNameList[j] === "string"
-      //     ? translatedTagNameList[j]
-      //         .replace(/&/g, "＆")
-      //         .replace(/%/g, "％")
-      //         .replace(/;/g, "；")
-      //         .replace(/\./g, "")
-      //     : translatedTagNameList[j];
-      if (rawText.includes("城にぃ")) {
-        text[2] = translatedContentList[count]
-          .replace(/[\{\}\[\]]/g, '"')
-          .replace(/&/g, "＆");
-        count++;
-      }
+      // const rawText =
+      //   typeof rawTexts[j][7] === "string" ? rawTexts[j][7] : rawTexts[j][2];
+      text[1][0][0] =
+        typeof translatedTagNameList[j] === "string"
+          ? translatedTagNameList[j]
+              .replace(/&/g, "＆")
+              .replace(/%/g, "％")
+              .replace(/;/g, "；")
+              .replace(/\./g, "")
+          : translatedTagNameList[j];
+      text[1][0][1] = translatedContentList[count]
+        .replace(/[\{\}\[\]]/g, '"')
+        .replace(/&/g, "＆");
+      count++;
+
+      // if (rawText.includes("城にぃ")) {
+      //   text[2] = translatedContentList[count]
+      //     .replace(/[\{\}\[\]]/g, '"')
+      //     .replace(/&/g, "＆");
+      //   count++;
+      // }
     }
   }
   await writeFile(filePathInput, JSON.stringify(dataJson, null, 2), "utf8");

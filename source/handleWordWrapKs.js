@@ -31,44 +31,45 @@ const containTagNameRegExpI = new RegExp(
   "i"
 );
 
-// module.exports = function handleWordWrapKs(fileContent) {
-//   let blockList = fileContent.split("\r\n[Hitret]\r\n").map((block) => {
-//     const stringList = block.split("\r\n");
-//     return stringList;
-//   });
-//   let contentsList = blockList.map((block) => {
-//     // if (!block[block.length - 1]) return [block[0]];
-//     const temp = handleWordWrap(
-//       54,
-//       block[block.length - 1]
-//         .replace(/\[/g, "『")
-//         .replace(/\]/g, "』")
-//         .replace(/^\*/, "＊"),
-//       "[r]"
-//     ).split("[r]");
-//     if (temp.slice(3).join("[r]") === "") return [temp.slice(0, 3).join("[r]")];
-//     return [temp.slice(0, 3).join("[r]"), temp.slice(3).join("[r]")];
-//   });
-//   let ans = [];
-//   contentsList.forEach((contents, index) => {
-//     contents.forEach((content, key) => {
-//       const block = blockList[index];
-//       if (key === 0) {
-//         ans.push(
-//           block.slice(0, block.length - 1).join("\r\n") + "\r\n" + content
-//         );
-//       } else {
-//         ans.push(
-//           "\r\n" +
-//             block.slice(block.length - 2, block.length - 1).join("\r\n") +
-//             "\r\n" +
-//             content
-//         );
-//       }
-//     });
-//   });
-//   return ans.join("\r\n[Hitret]\r\n");
-// };
+module.exports = function handleWordWrapKs(fileContent) {
+  let blockList = fileContent.split("\r\n[Hitret]\r\n").map((block) => {
+    const stringList = block.split("\r\n");
+    return stringList;
+  });
+  let contentsList = blockList.map((block) => {
+    // if (!block[block.length - 1]) return [block[0]];
+    const temp = handleWordWrap(
+      50,
+      block[block.length - 1]
+        .replace(/\[/g, "『")
+        .replace(/\]/g, "』")
+        .replace(/^\*/, "＊"),
+      "[r]"
+    ).split("[r]");
+    if (temp.slice(3).join("[r]") === "") return [temp.slice(0, 3).join("[r]")];
+    return [temp.slice(0, 3).join("[r]"), temp.slice(3).join("[r]")];
+  });
+  
+  let ans = [];
+  contentsList.forEach((contents, index) => {
+    contents.forEach((content, key) => {
+      const block = blockList[index];
+      if (key === 0) {
+        ans.push(
+          block.slice(0, block.length - 1).join("\r\n") + "\r\n" + content
+        );
+      } else {
+        ans.push(
+          "\r\n" +
+            block.slice(block.length - 2, block.length - 1).join("\r\n") +
+            "\r\n" +
+            content
+        );
+      }
+    });
+  });
+  return ans.join("\r\n[Hitret]\r\n");
+};
 
 // module.exports = function handleWordWrapKs(fileContent) {
 //   // console.log(fileContent.split(/@Hitret id=[0-9]+/));
@@ -248,42 +249,42 @@ const containTagNameRegExpI = new RegExp(
 //   // );
 //   return ans;
 // };
-module.exports = function handleWordWrapKs(fileContent) {
-  // EAGLS
-  const textList = fileContent.split("\r\n");
-  let count = 0;
-  const filterTextList = textList
-    .filter((text) => text.match(/^&/g))
-    .map((text) => {
-      const list = text.replace(/\(E\)/g,"(e)").split("(e)");
-      const temp = [];
-      let i = 0;
-      do {
-        temp.push(
-          "&" +
-            count +
-            (i > 0 ? '"' : "") +
-            list
-              .slice(i, i + 3)
-              .map((text) => text.replace(/&[0-9]+/g, ""))
-              .join("(e)")
-        );
-        i += 3;
-        count += 1;
-      } while (i < list.length);
-      return temp.join('"\r\n');
-    });
-  let count2 = 0;
+// module.exports = function handleWordWrapKs(fileContent) {
+//   // EAGLS
+//   const textList = fileContent.split("\r\n");
+//   let count = 0;
+//   const filterTextList = textList
+//     .filter((text) => text.match(/^&/g))
+//     .map((text) => {
+//       const list = text.replace(/\(E\)/g,"(e)").split("(e)");
+//       const temp = [];
+//       let i = 0;
+//       do {
+//         temp.push(
+//           "&" +
+//             count +
+//             (i > 0 ? '"' : "") +
+//             list
+//               .slice(i, i + 3)
+//               .map((text) => text.replace(/&[0-9]+/g, ""))
+//               .join("(e)")
+//         );
+//         i += 3;
+//         count += 1;
+//       } while (i < list.length);
+//       return temp.join('"\r\n');
+//     });
+//   let count2 = 0;
 
-  const finalResult = textList
-    .map((text) => {
-      if (text.match(/^&/g)) {
-        let temp = filterTextList[count2];
-        count2++;
-        return temp;
-      }
-      return text;
-    })
-    .join("\r\n");
-  return finalResult;
-};
+//   const finalResult = textList
+//     .map((text) => {
+//       if (text.match(/^&/g)) {
+//         let temp = filterTextList[count2];
+//         count2++;
+//         return temp;
+//       }
+//       return text;
+//     })
+//     .join("\r\n");
+//   return finalResult;
+// };

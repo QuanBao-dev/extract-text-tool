@@ -8,184 +8,18 @@ const {
 const extractTextFromImage = require("./textFromImage");
 const { textToImageSetting } = require("../setting.json");
 const handleWordWrap = require("./handleWordWrap");
-const list = [
-  {
-    tag: "01",
-    name: "雄馬",
-  },
-  {
-    tag: "02",
-    name: "慎也",
-  },
-  {
-    tag: "03",
-    name: "かなめ",
-  },
-  {
-    tag: "04",
-    name: "由那",
-  },
-  {
-    tag: "05",
-    name: "藤花",
-  },
-  {
-    tag: "06",
-    name: "橘花",
-  },
-  {
-    tag: "07",
-    name: "浩一郎",
-  },
-  {
-    tag: "08",
-    name: "芽依",
-  },
-  {
-    tag: "09",
-    name: "啓吾",
-  },
-  {
-    tag: "10",
-    name: "リンドウ",
-  },
-  {
-    tag: "11",
-    name: "マイキー",
-  },
-  {
-    tag: "12",
-    name: "Ｏ",
-  },
-  {
-    tag: "13",
-    name: "クラスメイト",
-  },
-  {
-    tag: "14",
-    name: "男性の声",
-  },
-  {
-    tag: "15",
-    name: "男性",
-  },
-  {
-    tag: "16",
-    name: "女性",
-  },
-  {
-    tag: "17",
-    name: "藤花たちの父",
-  },
-  {
-    tag: "18",
-    name: "サトミ",
-  },
-  {
-    tag: "19",
-    name: "成れの果て",
-  },
-  {
-    tag: "20",
-    name: "？？？",
-  },
-  {
-    tag: "21",
-    name: "謎の少女",
-  },
-  {
-    tag: "22",
-    name: "ボス",
-  },
-  {
-    tag: "23",
-    name: "怪物",
-  },
-  {
-    tag: "24",
-    name: "見知らぬ青年",
-  },
-  {
-    tag: "25",
-    name: "女性の悲鳴",
-  },
-  {
-    tag: "26",
-    name: "男性の悲鳴",
-  },
-  {
-    tag: "27",
-    name: "眞紀男",
-  },
-  {
-    tag: "28",
-    name: "由那・マイキー",
-  },
-  {
-    tag: "29",
-    name: "雄馬・由那・マイキー",
-  },
-  {
-    tag: "30",
-    name: "雄馬・由那",
-  },
-  {
-    tag: "31",
-    name: "かなめ・由那・マイキー",
-  },
-  {
-    tag: "32",
-    name: "２人",
-  },
-  {
-    tag: "33",
-    name: "３人",
-  },
-  {
-    tag: "34",
-    name: "全員",
-  },
-  {
-    tag: "35",
-    name: "マイキー・リンドウ",
-  },
-];
 const textList = [
-  "来栖 雄馬",
-  "小鳥遊 慎也",
-  "秋月 かなめ",
-  "水瀬 由那",
-  "明坂 藤花",
-  "明坂 橘花",
-  "小鳥遊 浩一郎",
-  "天城 芽依",
-  "篠原 啓吾",
-  "リンドウ",
-  "マイキー",
-  "Ｏ",
-  "クラスメイト",
-  "男性の声",
-  "男性",
-  "女性",
-  "藤花たちの父",
-  "サトミ",
-  "成れの果て",
-  "？？？",
-  "謎の少女",
-  "ボス",
-  "怪物",
-  "見知らぬ青年",
-  "女性の悲鳴",
-  "男性の悲鳴",
-  "眞紀男",
-  "由那&マイキー",
-  "雄馬 & 由那 & マイキー",
-  "雄馬 & 由那",
-  "かなめ & 由那 & マイキー",
-  "２人",
-  "３人",
-  "全員",
-  "マイキー & リンドウ",
+  { index: "04", name: "アマミヤ" },
+  { index: "05", name: "シガニー" },
+  { index: "06", name: "リッサ" },
+  { index: "07", name: "マコ" },
+  { index: "08", name: "ミナ" },
+  { index: "09", name: "ジョン" },
+  { index: "10", name: "ラッセル" },
+  { index: "11", name: "ダニエル" },
+  { index: "12", name: "マッド" },
+  { index: "13", name: "タロウ" },
+  { index: "14", name: "アーノルド" },
 ];
 (async () => {
   const width = textToImageSetting.width;
@@ -226,7 +60,7 @@ const textList = [
   // );
   // console.log(listExtractedFileName)
   const translatedTexts = await translateOfflineSugoiCt2LongList(
-    listExtractedFileName,
+    textList.map(({ name }) => name),
     1,
     false,
     true,
@@ -256,12 +90,13 @@ const textList = [
         lineHeight: 30,
         // margin,
         verticalAlign: "center",
-        bgColor: "transparent",
+        bgColor: "black",
         textColor: "white",
         textAlign: "center",
         debugFilename: `./raw_images_output/name_${
           // listExtractedFileName[index]
-          translatedText.replace(/\./g, "").replace(/ /g,"　")
+          textList[index].index
+          // translatedText.replace(/\./g, "").replace(/ /g, "　")
         }.png`,
       });
     })

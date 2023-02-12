@@ -8,7 +8,7 @@ const containRegExpI = new RegExp(
 
 function handleWordWrapQlie(rawText, start = 0, end) {
   let text = rawText
-    .replace(/, /g, "、")
+    .replace(/,( )?/g, "、")
     .replace(/^"/g, "「")
     .replace(/"$/g, "」")
     .replace(/,"/g, ",「");
@@ -16,7 +16,7 @@ function handleWordWrapQlie(rawText, start = 0, end) {
   const textList = text.split(",");
   if (!textList) return rawText;
   const translatedTextList = textList.map((v) => {
-    return handleWordWrap(44, v, "[r]");
+    return handleWordWrap(55, v, "[r]");
   });
   if (!end) end = translatedTextList.length;
   for (let i = start; i < end; i++) {
@@ -43,7 +43,6 @@ module.exports = function handleWordWrapQlieVN(fileContent) {
   }, []);
   dataList = dataList
     .reduce((dataItem, listText) => {
-      let temp = [];
       dataItem.push(
         listText
           .reduce((ans, text) => {
@@ -55,18 +54,20 @@ module.exports = function handleWordWrapQlieVN(fileContent) {
               text.includes("＠") ? 1 : 0
             );
             const texts = wordWrappedText.split("[r]");
-            texts.forEach((text, index) => {
-              if (index / 2 < 1) {
-                ans.push(text);
-              } else {
-                temp = [text];
+            let j = 0;
+            do {
+              ans.push(...texts.slice(j, j + 3));
+              if (ans.slice(0, 3).length % 3 === 0) {
+                ans.push(
+                  "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
+                );
               }
-            });
+              j += 3;
+            } while (j < texts.length);
             return ans;
           }, [])
           .join("\r\n")
       );
-      if (temp.length !== 0) dataItem.push(temp);
       return dataItem;
     }, [])
     .join("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");

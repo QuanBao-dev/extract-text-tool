@@ -7,7 +7,7 @@ const containRegExpI = new RegExp(
 );
 
 module.exports = function handleWordWrapSrp(fileContent) {
-  const blockList = fileContent.split("\n");
+  const blockList = fileContent.split("\r\n");
   let temp = [];
   let ans = blockList.reduce((result, text) => {
     if (text !== "") temp.push(text);
@@ -22,7 +22,7 @@ module.exports = function handleWordWrapSrp(fileContent) {
       if (blockList[i].includes(" ") || blockList[i].includes(".")) {
         return handleSplitWordWrappedText(
           handleWordWrap(
-            60,
+            63,
             blockList[i].replace(/\\n/g, " ").replace(/, /g, "、"),
             "\\n"
           ).split("\\n"),
@@ -33,58 +33,55 @@ module.exports = function handleWordWrapSrp(fileContent) {
     }
     return "";
   });
-  ans = ans
-    .reduce((result, data, index) => {
-      if (data.length === 4 || data[0] === "00001000") {
-        const temp = [];
-        const blockText = blockTextList[index];
-        for (let j = 0; j < blockText.length; j++) {
-          if (j === 0) {
-            temp.push(
-              [
-                ...data.slice(0, data.length - 2),
-                blockText[j],
-                data[data.length - 1],
-              ].join("\n")
-            );
-          } else {
-            temp.push(
-              [
-                data[0] === "00001000" ? "00000000" : data[0],
-                ...data.slice(1, data.length - 2),
-                blockText[j],
-              ].join("\n")
-            );
-          }
-        }
-        result.push(...temp);
-      } else if (data.length === 3 || data.length === 2) {
-        // if (data[0] === "00001000") {
-        //   const temp = [];
-        //   const blockText = [...blockTextList[index]];
-        //   for (let j = 0; j < blockText.length; j++)
-        //     temp.push(
-        //       [
-        //         ...data.slice(0, data.length - 2),
-        //         blockText[j],
-        //         data[data.length - 1],
-        //       ].join("\n")
-        //     );
-        //   result.push(...temp);
-        // } else {
-        const temp = [];
-        const blockText = [...blockTextList[index]];
-        for (let j = 0; j < blockText.length; j++)
+  ans = ans.reduce((result, data, index) => {
+    if (data.length === 4 || data[0] === "00003000") {
+      const temp = [];
+      const blockText = blockTextList[index];
+      for (let j = 0; j < blockText.length; j++) {
+        if (j === 0) {
           temp.push(
-            [...data.slice(0, data.length - 1), blockText[j]].join("\n")
+            [
+              ...data.slice(0, data.length - 2),
+              blockText[j],
+              data[data.length - 1],
+            ].join("\n")
           );
-        result.push(...temp);
-        // }
-      } else result.push(data);
-      return result;
-    }, [])
-    .join("\n\n");
-  return ans;
+        } else {
+          temp.push(
+            [
+              data[0] === "00003000" ? "00000000" : data[0],
+              ...data.slice(1, data.length - 2),
+              blockText[j],
+            ].join("\n")
+          );
+        }
+      }
+      result.push(...temp);
+    } else if (data.length === 3 || data.length === 2) {
+      // if (data[0] === "00001000") {
+      //   const temp = [];
+      //   const blockText = [...blockTextList[index]];
+      //   for (let j = 0; j < blockText.length; j++)
+      //     temp.push(
+      //       [
+      //         ...data.slice(0, data.length - 2),
+      //         blockText[j],
+      //         data[data.length - 1],
+      //       ].join("\n")
+      //     );
+      //   result.push(...temp);
+      // } else {
+      const temp = [];
+      const blockText = [...blockTextList[index]];
+      for (let j = 0; j < blockText.length; j++)
+        temp.push([...data.slice(0, data.length - 1), blockText[j]].join("\n"));
+      result.push(...temp);
+      // }
+    } else result.push(data);
+    return result;
+  }, []);
+  ans = ans.slice(0, ans.length - 2).join("\n\n");
+  return ans+"\n";
 };
 // 64
 function handleSplitWordWrappedText(textList, number, joinString) {

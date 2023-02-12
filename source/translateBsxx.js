@@ -17,30 +17,32 @@ const axios = require("axios");
   //       "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
   //       "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
   //       "「かおることか呼ばないで。イラッとくるから」",
+  //       "緑野の瑞風…Shaonが使う回復系の天眷。対象１体を回復する。怪我をしてない対象に、この天眷をかけると生命力が溢れ各能力が上昇する。"
   //     ],
-  //     3,
+  //     4,
   //     undefined,
   //     true,
   //     true
   //   )
   // );
-  console.log(
-    await translateOfflineSugoiCt2LongList(
-      [
-        "　　ドクンッ……！　ドクッ、ドクッ、ドクッ……",
-        "「あっ　あんっ、いいっ？",
-        "　熱いのが子宮に流れ込んでくるっ",
-        "　ああ……あはぁああああっ」",
-        `「 How is it, Mom? Does it feel good?      」`,
-        "「ぁっ……ぉっ、ぉぅ……\n　ぶ、ぐ……ぐぇ……ぇ、ぇぇ……」"
-      ],
-      3,
-      false,
-      true,
-      true
-    )
-  );
-  await delay(10000000);
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       "　　ドクンッ……！　ドクッ、ドクッ、ドクッ……",
+  //       "「あっ　あんっ、いいっ？",
+  //       "　熱いのが子宮に流れ込んでくるっ",
+  //       "　ああ……あはぁああああっ」",
+  //       `「 How is it, Mom? Does it feel good?      」`,
+  //       "「ぁっ……ぉっ、ぉぅ……♥　ぶ、ぐ……ぐぇ……ぇ、ぇぇ……♥",
+  //       "「\\A\\B君、\n　ちょっといいかしら？」"
+  //     ],
+  //     3,
+  //     false,
+  //     true,
+  //     true
+  //   )
+  // );
+  // await delay(10000000);
 
   try {
     const listFileName = fs.readdirSync(bsxx.translation.folderPath);
@@ -71,7 +73,7 @@ async function translateFileBsxx(filePath) {
   const narrowedContentText = await translateOfflineSugoiCt2LongList(
     contentText.reduce((ans, curr) => {
       if (temp !== curr && curr !== "" && !curr.match(/\/\//g)) {
-        ans.push(curr.replace(/\\n/g, "").replace(//g, ""));
+        ans.push(curr.replace(/\\n/g, "").replace(//g, "♥"));
       }
       temp = curr;
       return ans;
@@ -79,7 +81,7 @@ async function translateFileBsxx(filePath) {
     bsxx.translation.numberOfSentences,
     undefined,
     true,
-    true
+    false
   );
   const translatedContentText = narrowedContentText.reduce((ans, curr) => {
     ans.push(
