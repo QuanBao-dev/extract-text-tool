@@ -197,7 +197,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     encoding
   );
   let dataList = fileContent.split(/\r\n/g);
-  // let dumpList = dumpFileContent.split(/\r\n/g);
+  let dumpList = dumpFileContent.split(/\r\n/g);
   // console.log(dataList);
   // let temp2 = [];
   // dataList.forEach((text) => {
