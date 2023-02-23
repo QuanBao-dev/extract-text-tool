@@ -1,30 +1,28 @@
 const { readFile, writeFile } = require("./handleFile");
 const {
-  translateSelectCenterTextList,
   translateOfflineSugoiCt2LongList,
-  translateOpenAi,
-  translateGlueSpecialLongList,
+  translateSelectCenterTextList,
 } = require("./translateJapanese");
 const { bsxx } = require("../setting.json");
 const fs = require("fs");
 const delay = require("./delay");
-const axios = require("axios");
 
 (async () => {
-  // console.log(
-  //   await translateOfflineSugoiCt2LongList(
-  //     [
-  //       "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
-  //       "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
-  //       "「かおることか呼ばないで。イラッとくるから」",
-  //       "緑野の瑞風…Shaonが使う回復系の天眷。対象１体を回復する。怪我をしてない対象に、この天眷をかけると生命力が溢れ各能力が上昇する。"
-  //     ],
-  //     4,
-  //     undefined,
-  //     true,
-  //     true
-  //   )
-  // );
+  console.log(
+    await translateOfflineSugoiCt2LongList(
+      [
+        "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
+        "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
+        "緑野の瑞風…Shaonが使う回復系の天眷。対象１体を回復する。怪我をしてない対象に、この天眷をかけると生命力が溢れ各能力が上昇する。",
+        "「かおることか呼ばないで。イラッとくるから」",
+        "少なくともこの俺……\n\A\Bはそう思っている。"
+      ],
+      2,
+      undefined,
+      true,
+      true
+    )
+  );
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
@@ -42,7 +40,7 @@ const axios = require("axios");
   //     true
   //   )
   // );
-  // await delay(10000000);
+  await delay(10000000);
 
   try {
     const listFileName = fs.readdirSync(bsxx.translation.folderPath);
@@ -70,6 +68,19 @@ async function translateFileBsxx(filePath) {
   });
   // return retranslatedSpecificLines();
   let temp = "";
+  // const narrowedContentText = await translateOfflineSugoiCt2LongList(
+  //   contentText.reduce((ans, curr) => {
+  //     if (temp !== curr && curr !== "" && !curr.match(/\/\//g)) {
+  //       ans.push(curr.replace(/\\n/g, "").replace(//g, "♥"));
+  //     }
+  //     temp = curr;
+  //     return ans;
+  //   }, []),
+  //   bsxx.translation.numberOfSentences,
+  //   undefined,
+  //   true,
+  //   true
+  // );
   const narrowedContentText = await translateOfflineSugoiCt2LongList(
     contentText.reduce((ans, curr) => {
       if (temp !== curr && curr !== "" && !curr.match(/\/\//g)) {
@@ -79,9 +90,9 @@ async function translateFileBsxx(filePath) {
       return ans;
     }, []),
     bsxx.translation.numberOfSentences,
-    undefined,
+    false,
     true,
-    false
+    true
   );
   const translatedContentText = narrowedContentText.reduce((ans, curr) => {
     ans.push(
@@ -180,12 +191,12 @@ async function retranslatedSpecificLines() {
 
 function extractThePrefix(text) {
   // const matchedText = text.match(/[●○].+[○●]/g);
-  const matchedText = text.match(/[<◆◇].+[◆◇>]/g);
+  const matchedText = text.match(/[<◆◇].+[◆◇>](\\b)?/g);
   if (!matchedText) return "";
   return matchedText[0];
 }
 
 function removeThePrefix(text) {
-  return text.replace(/[<◆◇].+[◆◇>]/g, "");
+  return text.replace(/[<◆◇].+[◆◇>](\\b)?/g, "");
 }
 // ○○○○

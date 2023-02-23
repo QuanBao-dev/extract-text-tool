@@ -42,55 +42,55 @@ async function wordWrapScn(filePath) {
     for (let j = 0; j < texts.length; j++) {
       const text = texts[j];
 
-      if (typeof text[1][0][1] === "string") {
+      if (typeof text[2] === "string") {
         const tempText = handleWordWrap(
           scn.wordWrap.maxCharPerLines,
-          text[1][0][1].replace(/\% /g, "％ ").replace(/\\n/g, " "),
-          "\\n"
+          text[2].replace(/\% /g, "％ ").replace(/\n/g, " "),
+          "\n"
         )
           .replace(/、/g, ", ")
           .replace(/。/g, ". ");
-        const textList = tempText.split("\\n");
+        const textList = tempText.split("\n");
         const filterSpecialPrefixRegExp = new RegExp(
           "%(n)?[0-9]+([;. ,])?( )+",
           "g"
         );
-        text[1][0][1] = textList.join("\\n");
-        if (text[1][0][1].replace(/\\n/g, " ").length > 172) {
-          text[1][0][1] =
-            "%55; " +
-            handleWordWrap(
-              90,
-              text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
-              "\\n"
-            );
-        } else 
-        if (text[1][0][1].replace(/\\n/g, " ").length > 162) {
-          text[1][0][1] =
-            "%60; " +
-            handleWordWrap(
-              85,
-              text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
-              "\\n"
-            );
-        } else 
-        if (text[1][0][1].replace(/\\n/g, " ").length > 135) {
-          text[1][0][1] =
-            "%65; " +
-            handleWordWrap(
-              81,
-              text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
-              "\\n"
-            );
-        } else if (textList.length > 2) {
-          text[1][0][1] =
-            "%70; " +
-            handleWordWrap(
-              70,
-              text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
-              "\\n"
-            );
-        }
+        text[2] = textList.join("\n");
+        // if (text[1][0][1].replace(/\\n/g, " ").length > 172) {
+        //   text[1][0][1] =
+        //     "%55; " +
+        //     handleWordWrap(
+        //       90,
+        //       text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       "\\n"
+        //     );
+        // } else 
+        // if (text[1][0][1].replace(/\\n/g, " ").length > 162) {
+        //   text[1][0][1] =
+        //     "%60; " +
+        //     handleWordWrap(
+        //       85,
+        //       text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       "\\n"
+        //     );
+        // } else 
+        // if (text[1][0][1].replace(/\\n/g, " ").length > 135) {
+        //   text[1][0][1] =
+        //     "%65; " +
+        //     handleWordWrap(
+        //       81,
+        //       text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       "\\n"
+        //     );
+        // } else if (textList.length > 2) {
+        //   text[1][0][1] =
+        //     "%70; " +
+        //     handleWordWrap(
+        //       70,
+        //       text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       "\\n"
+        //     );
+        // }
         ans.push(text);
         // if (textList.length > 3) {
         //   const temp = Object.values(deepCloning(text));

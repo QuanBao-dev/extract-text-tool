@@ -7,9 +7,9 @@ const fs = require("fs");
 const delay = require("./delay");
 const { readFile, writeFile } = require("./handleFile");
 const { scn } = require("../setting.json");
-const handleWordWrap = require("./handleWordWrap");
+// const handleWordWrap = require("./handleWordWrap");
 const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
-const handleWordWrapGlue = require("./handleWordWrapGlue");
+// const handleWordWrapGlue = require("./handleWordWrapGlue");
 const converter = new AFHConvert();
 
 (async () => {
@@ -88,10 +88,10 @@ async function translateScn(filePathInput) {
     //   return rawText.includes("城にぃ");
     // });
     let contentList = texts.map((text, index) => {
-      // return text[2];
-      // return typeof text[7] === "string" ? text[7] : text[2];
+      return text[2];
+      // return typeof text[8] === "string" ? text[8] : text[2];
       // return typeof text[1][0][4] === "string" ? text[1][0][4] : text[1][0][1];
-      return text[1][0][1];
+      // return text[1][0][1];
     });
     // const contentList = texts.map((text) => {
     //   return text[1][0][1];
@@ -107,8 +107,8 @@ async function translateScn(filePathInput) {
     //   return text[1][0][0] || text[0];
     // });
     const tagNameList = texts.map((text) => {
-      // return text[1] || text[0];
-      return text[1][0][0] || text[0];
+      return text[1] || text[0];
+      // return text[1][0][0] || text[0];
     });
     // let translatedContentList = handleWordWrapGlue(contentList, 58, "\\n");
     // let [translatedContentList, translatedTagNameList] = await Promise.all([
@@ -119,30 +119,30 @@ async function translateScn(filePathInput) {
     //   translateOfflineSugoiCt2LongList(contentList, 2, false, false, true),
     //   Promise.resolve(tagNameList),
     // ]);
-    let translatedContentList = contentList.map((v) =>
-      v
-        .replace(/Soutet(su)+/g, "Soutetsu")
-        .replace(/Suettesu/g, "Soutetsu")
-        .replace(/broski/g, "nii-nii")
-    );
-    let translatedTagNameList = tagNameList.map((v) => {
-      if (!v) return v;
-      return v
-        .replace(/Soutet(su)+/g, "Soutetsu")
-        .replace(/Suettesu/g, "Soutetsu")
-        .replace(/broski/g, "nii-nii");
-    });
+    // let translatedContentList = contentList.map((v) =>
+    //   v
+    //     .replace(/Soutet(su)+/g, "Soutetsu")
+    //     .replace(/Suettesu/g, "Soutetsu")
+    //     .replace(/broski/g, "nii-nii")
+    // );
+    // let translatedTagNameList = tagNameList.map((v) => {
+    //   if (!v) return v;
+    //   return v
+    //     .replace(/Soutet(su)+/g, "Soutetsu")
+    //     .replace(/Suettesu/g, "Soutetsu")
+    //     .replace(/broski/g, "nii-nii");
+    // });
 
-    // let [translatedContentList, translatedTagNameList] = await Promise.all([
-    //   translateOfflineSugoiCt2LongList(
-    //     contentList.map((v) => v.replace(/\\n/g, "")),
-    //     2,
-    //     false,
-    //     false,
-    //     true
-    //   ),
-    //   translateOfflineSugoiCt2LongList(tagNameList, 1),
-    // ]);
+    let [translatedContentList, translatedTagNameList] = await Promise.all([
+      translateOfflineSugoiCt2LongList(
+        contentList.map((v) => v.replace(/\\n/g, "")),
+        2,
+        false,
+        true,
+        true
+      ),
+      translateOfflineSugoiCt2LongList(tagNameList, 1),
+    ]);
     // console.log(translatedContentList);
     // let count = 0;
     // for (let j = 0; j < texts.length; j++) {
@@ -160,7 +160,7 @@ async function translateScn(filePathInput) {
       const text = texts[j];
       // const rawText =
       //   typeof rawTexts[j][7] === "string" ? rawTexts[j][7] : rawTexts[j][2];
-      text[1][0][0] =
+      text[1] =
         typeof translatedTagNameList[j] === "string"
           ? translatedTagNameList[j]
               .replace(/&/g, "＆")
@@ -168,7 +168,7 @@ async function translateScn(filePathInput) {
               .replace(/;/g, "；")
               .replace(/\./g, "")
           : translatedTagNameList[j];
-      text[1][0][1] = translatedContentList[count]
+      text[2] = translatedContentList[count]
         .replace(/[\{\}\[\]]/g, '"')
         .replace(/&/g, "＆");
       count++;

@@ -2,11 +2,8 @@ const { readFile, writeFile } = require("./handleFile");
 const fs = require("fs");
 const {
   translateOfflineSugoiCt2LongList,
-  translateOpenAi,
-  translateSelectCenterTextList,
 } = require("./translateJapanese");
 const delay = require("./delay");
-const { nanoid } = require("nanoid");
 (async () => {
   const listFileName = fs.readdirSync("./cst");
   let start = 0;
@@ -55,17 +52,21 @@ async function translateFileCst(filePath) {
     message.replace(/( )?<[a-z A-Z0-9]+>( )?/g, "")
   );
   const nameList = dataList.map(({ name }) => name);
-  const translatedMessageList = await translateSelectCenterTextList(
+  const translatedMessageList = await translateOfflineSugoiCt2LongList(
     messageList,
-    3,
+    2,
+    false,
     true,
+    true,
+    "cst"
   );
   const translatedNameList = await translateOfflineSugoiCt2LongList(
     nameList,
     1,
     false,
     false,
-    false
+    false,
+    "cst"
   );
   const ans = translatedMessageList.reduce((result, translatedMessage, key) => {
     const name = translatedNameList[key];

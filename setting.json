@@ -1,41 +1,44 @@
 {
   "replacedCharsBeforeTranslation": {
-    "村沢 伊月": "Murasawa Itsuki",
-    "乙浦 音羽": "Otoura Otoha",
-    "三条 茜": "Sanjou Akane",
-    "神荘 瑠依": "Shinjou Rui",
-    "綾瀬 彩子": "Ayase Ayako",
-    "濱丘 沙紀": "Hamaoka Saki",
-    "稲岡 香苗": "Inaoka Kanae",
-    "戸林 麻耶": "Kobayashi Maya",
-    "古桧山 麗子": "Kobiyama Reiko",
-    "水城 風子": "Mizuki Fuuko",
-    "内藤 乃亜": "Naitou Noa",
-    "西澤 日鞠": "Nishizawa Himari",
-    "奥里原 透子": "Orihara Touko",
-    "扇木 加代": "Ougi Kayo"
+    "窓際 円蔵": "Madogiwa Enzou",
+    "神堂 栗子": "Shindou Kuriko",
+    "神堂 真姫菜": "Shindou Makina",
+    "神堂 静香": "Shindou Shizuka",
+    "神堂 ユキ": "Shindou Yuki"
   },
   "replacedCharsAfterTranslation": {},
-  "replacedExactCharsAfterTranslation": {},
+  "replacedExactCharsAfterTranslation": {
+    
+  },
   "bsxx": {
     "translation": {
       "folderPath": "./Bsxx",
+      "numberOfSentences": 2
+    },
+    "wordWrap": {
+      "maxCharPerLines": 69,
+      "folderPath": "./Bsxx"
+    }
+  },
+  "waffle": {
+    "translation": {
+      "folderPath": "./Waffle",
       "numberOfSentences": 4
     },
     "wordWrap": {
-      "maxCharPerLines": 65,
-      "folderPath": "./Bsxx_output"
+      "maxCharPerLines": 67,
+      "folderPath": "./waffle_output"
     }
   },
   "scn": {
     "translation": {
-      "folderPath": "./scn_output",
+      "folderPath": "./scn",
       "numberOfSentences": 150,
       "isSelects": false
     },
     "wordWrap": {
-      "maxCharPerLines": 49,
-      "folderPath": "./scn_output_output"
+      "maxCharPerLines": 63,
+      "folderPath": "./scn"
     }
   },
   "artemisAster": {
@@ -170,7 +173,7 @@
   "EAGLS": {
     "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./ks_output_output_output",
+      "folderPath": "./EAGLS",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
       "isSelects": false,
@@ -219,15 +222,15 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "ks": {
-    "encoding": "utf16",
+  "pinpoint": {
+    "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./ks_output",
+      "folderPath": "./ks",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(\\|)|(@labelopt)|(【)",
+      "regExpToFilterSentenceContainTagName": "(\\|)|(@labelopt)|(【)|(@Msg)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(var )|(for\\()|({)|(})|(//)|(kag.)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[r\\]))|(^(\\[haret\\]))",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "@nm t=\"",
@@ -238,11 +241,38 @@
       "isQlie": false
     },
     "wordWrap": {
-      "maxCharPerLines": 50,
-      "folderPath": "./ks_output_output",
+      "maxCharPerLines": 54,
+      "folderPath": "./ks_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+    }
+  },
+  "rpgm": {
+    "encoding": "utf8",
+    "translation": {
+      "folderPath": "./rpgm",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300
+    },
+    "wordWrap": {
+      "maxCharPerLines": 54,
+      "numberOfFiles": 1,
+      "folderPath": "./rpgm_1"
+    }
+  },
+  "BGI": {
+    "encoding": "shiftjis",
+    "translation": {
+      "folderPath": "./BGI_1",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300,
+      "isNoFilter": true
+    },
+    "wordWrap": {
+      "maxCharPerLines": 64,
+      "folderPath": "./BGI_output",
+      "isNoFilter": true
     }
   },
   "alice": {
@@ -271,10 +301,26 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "ybf": {
+  "ain": {
     "encoding": "utf8",
     "translation": {
-      "folderPath": "./ybn_output_output",
+      "folderPath": "./ain",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300,
+      "regExpToFilterSentenceContainTagName": "^(m\\[)"
+    },
+    "wordWrap": {
+      "maxCharPerLines": 50,
+      "folderPath": "./ks_output_output",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
+      "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
+      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+    }
+  },
+  "ks": {
+    "encoding": "utf8",
+    "translation": {
+      "folderPath": "./csa_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
       "isSelects": false,
@@ -287,14 +333,16 @@
       "addedStringAfterTranslation": "",
       "addedPrefixAfterTranslation": "",
       "isArtemis": false,
-      "isQlie": false
+      "isQlie": false,
+      "isNoFilter": true
     },
     "wordWrap": {
       "maxCharPerLines": 54,
       "folderPath": "./ks_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
-      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+      "regExpToFilterSentenceNeededHighlightStop": "@Hitret",
+      "isNoFilter": true
     }
   },
   "kiri6": {
@@ -326,12 +374,12 @@
   "artemis": {
     "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./ks",
+      "folderPath": "./ks_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": false,
+      "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "\\[sel_text",
+      "regExpToFilterSentenceContainTagName": "\\[name",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(scenario\\[))|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))|(^(/))",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(^(\\[ruby))|(^(\\[咲奈))",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "\\[\"label\"\\] = \\[\\[select",
@@ -504,7 +552,7 @@
     },
     "wordWrap": {
       "maxCharPerLines": 64,
-      "folderPath": "./srp_output",
+      "folderPath": "./srp",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
@@ -590,8 +638,8 @@
     }
   },
   "textToImageSetting": {
-    "width": 126,
-    "height": 31,
+    "width": 271,
+    "height": 55,
     "margin": 5,
     "fileInputPath": "raw_images"
   }

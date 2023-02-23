@@ -7,7 +7,7 @@ const containRegExpI = new RegExp(
 );
 
 module.exports = function handleWordWrapSrp(fileContent) {
-  const blockList = fileContent.split("\r\n");
+  const blockList = fileContent.split("\n");
   let temp = [];
   let ans = blockList.reduce((result, text) => {
     if (text !== "") temp.push(text);
@@ -19,10 +19,10 @@ module.exports = function handleWordWrapSrp(fileContent) {
   }, []);
   const blockTextList = ans.map((blockList) => {
     for (let i = blockList.length - 1; i > 0; i--) {
-      if (blockList[i].includes(" ") || blockList[i].includes(".")) {
+      if (blockList[i].includes(" ") || blockList[i].match(/[.!\?:]/g)) {
         return handleSplitWordWrappedText(
           handleWordWrap(
-            63,
+            60,
             blockList[i].replace(/\\n/g, " ").replace(/, /g, "、"),
             "\\n"
           ).split("\\n"),
@@ -34,7 +34,7 @@ module.exports = function handleWordWrapSrp(fileContent) {
     return "";
   });
   ans = ans.reduce((result, data, index) => {
-    if (data.length === 4 || data[0] === "00003000") {
+    if (data.length === 4 || data[0] === "00003000"|| data[0] === "00001000") {
       const temp = [];
       const blockText = blockTextList[index];
       for (let j = 0; j < blockText.length; j++) {
@@ -49,7 +49,7 @@ module.exports = function handleWordWrapSrp(fileContent) {
         } else {
           temp.push(
             [
-              data[0] === "00003000" ? "00000000" : data[0],
+              data[0] === "00003000"|| data[0] === "00001000" ? "00000000" : data[0],
               ...data.slice(1, data.length - 2),
               blockText[j],
             ].join("\n")
@@ -80,8 +80,8 @@ module.exports = function handleWordWrapSrp(fileContent) {
     } else result.push(data);
     return result;
   }, []);
-  ans = ans.slice(0, ans.length - 2).join("\n\n");
-  return ans+"\n";
+  ans = ans.slice(0, ans.length).join("\n\n");
+  return ans;
 };
 // 64
 function handleSplitWordWrappedText(textList, number, joinString) {

@@ -33,7 +33,7 @@ async function wordWrapBsxx(filePath) {
       .replace(/^[『]/g, "『 ");
 
     return text;
-  });
+  }); 
   //   65,
   //   "\\n"
   // );

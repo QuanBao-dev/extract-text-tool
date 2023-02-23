@@ -8,6 +8,10 @@ const {
 const extractTextFromImage = require("./textFromImage");
 const { textToImageSetting } = require("../setting.json");
 const handleWordWrap = require("./handleWordWrap");
+const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
+// const handleWordWrapGlue = require("./handleWordWrapGlue");
+const converter = new AFHConvert();
+
 const textList = [
   { index: "04", name: "アマミヤ" },
   { index: "05", name: "シガニー" },
@@ -60,7 +64,7 @@ const textList = [
   // );
   // console.log(listExtractedFileName)
   const translatedTexts = await translateOfflineSugoiCt2LongList(
-    textList.map(({ name }) => name),
+    listExtractedFileName,
     1,
     false,
     true,
@@ -77,7 +81,7 @@ const textList = [
   console.log(listFileName, translatedTexts);
   await Promise.all(
     translatedTexts.map(async (translatedText, index) => {
-      let fontSize = 20;
+      let fontSize = 25;
       // if(listExtractedFileName[index] === "眉毛にピアスの男") fontSize = 20
       // if(translatedText.length )
       return await textToImage.generate(translatedText.replace(/\./g, ""), {
@@ -90,12 +94,17 @@ const textList = [
         lineHeight: 30,
         // margin,
         verticalAlign: "center",
-        bgColor: "black",
+        bgColor: "transparent",
         textColor: "white",
-        textAlign: "center",
+        textAlign: "start",
         debugFilename: `./raw_images_output/name_${
+          translatedText
+            .replace(/\./g, "")
+            .replace(/ /g, converter.toFullWidth(" "))
+            .replace(/&/g, converter.toFullWidth("&"))
+            .replace(/-/g, converter.toFullWidth("-"))
           // listExtractedFileName[index]
-          textList[index].index
+          // textList[index].index
           // translatedText.replace(/\./g, "").replace(/ /g, "　")
         }.png`,
       });

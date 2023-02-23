@@ -32,14 +32,14 @@ const containTagNameRegExpI = new RegExp(
 );
 
 module.exports = function handleWordWrapKs(fileContent) {
-  let blockList = fileContent.split("\r\n[Hitret]\r\n").map((block) => {
+  let blockList = fileContent.split("\r\n@Msgend\r\n").map((block) => {
     const stringList = block.split("\r\n");
     return stringList;
   });
   let contentsList = blockList.map((block) => {
     // if (!block[block.length - 1]) return [block[0]];
     const temp = handleWordWrap(
-      50,
+      54,
       block[block.length - 1]
         .replace(/\[/g, "『")
         .replace(/\]/g, "』")
@@ -61,14 +61,14 @@ module.exports = function handleWordWrapKs(fileContent) {
       } else {
         ans.push(
           "\r\n" +
-            block.slice(block.length - 2, block.length - 1).join("\r\n") +
+            block.map((text) => text.replace(/voice=".+"/g,"")).slice(block.length - 2, block.length - 1).join("\r\n") +
             "\r\n" +
             content
         );
       }
     });
   });
-  return ans.join("\r\n[Hitret]\r\n");
+  return ans.join("\r\n@Msgend\r\n");
 };
 
 // module.exports = function handleWordWrapKs(fileContent) {
