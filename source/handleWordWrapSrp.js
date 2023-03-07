@@ -1,10 +1,5 @@
-const { ks } = require("../setting.json");
+const { srp } = require("../setting.json");
 const handleWordWrap = require("./handleWordWrap");
-
-const containRegExpI = new RegExp(
-  ks.wordWrap.regExpToExcludeSentenceNotNeedTranslatedContain,
-  "i"
-);
 
 module.exports = function handleWordWrapSrp(fileContent) {
   const blockList = fileContent.split("\n");
@@ -22,11 +17,11 @@ module.exports = function handleWordWrapSrp(fileContent) {
       if (blockList[i].includes(" ") || blockList[i].match(/[.!\?:]/g)) {
         return handleSplitWordWrappedText(
           handleWordWrap(
-            60,
+            srp.wordWrap.maxCharPerLines,
             blockList[i].replace(/\\n/g, " ").replace(/, /g, "、"),
             "\\n"
           ).split("\\n"),
-          2,
+          srp.wordWrap.maxLinePerDialog,
           "\\n"
         );
       }

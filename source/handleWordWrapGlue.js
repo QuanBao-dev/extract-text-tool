@@ -3,19 +3,32 @@ const handleWordWrap = require("./handleWordWrap");
 module.exports = function handleWordWrapGlue(
   contentList,
   maxNumberChars,
-  lineBreakString
+  lineBreakString,
+  isAin
 ) {
   let translatedContentList = [];
   let temp2 = "";
   for (let i = 0; i < contentList.length; i++) {
-    const v = contentList[i];
-    // const text = v.replace(/m\[[0-9]+\] = "/g, "").replace(/"/g, "");
-    // const prefix = v.match(/m\[[0-9]+\] = "/g);
-    const prefix = [""];
-    let text = v;
-    const allSpecialCharacters = text.match(/[\.\?\!\)―♪]/g);
-    const splittedSentences = text.split(/[\.\?\!\)―♪]/g);
+    const v = contentList[i].trim();
+    let text = "";
+    let prefix = "";
+    if (isAin) {
+      text = v
+        .replace(/m\[[0-9]+\] = "/g, "")
+        .replace(/"$/g, "")
+        .trim();
+      prefix = v.match(/m\[[0-9]+\] = "/g);
+    } else {
+      prefix = [""];
+      text = v;
+    }
+    const allSpecialCharacters = text.match(/[\.\?\!\)―♪”。…？]/g);
+    const splittedSentences = text.split(/[\.\?\!\)―♪”。…？]/g);
 
+    if (text.trim() === "@@") {
+      translatedContentList.push(prefix[0] + "@@");
+      continue;
+    }
     if (text.trim() === "") {
       translatedContentList.push(prefix[0] + "");
       continue;
@@ -29,10 +42,12 @@ module.exports = function handleWordWrapGlue(
     let finalText =
       prefixedText + temp2 + text.trim().replace(/["\(『「]/g, "");
     translatedContentList.push(
-      prefix[0] + handleWordWrap(maxNumberChars, finalText, lineBreakString)
+      prefix[0] +
+        handleWordWrap(maxNumberChars, finalText, lineBreakString) +
+        (isAin ? '"' : "")
     );
     if (
-      ![".", "?", "!", ")", "―", "♪"].includes(
+      ![".", "?", "!", ")", "―", "♪", "。", "”", "…", "？"].includes(
         text.replace(/[\"」』]/g, "")[text.replace(/[\"」』]/g, "").length - 1]
       )
     ) {
@@ -48,7 +63,10 @@ module.exports = function handleWordWrapGlue(
       }
       translatedContentList[translatedContentList.length - 1] =
         prefix[0] +
-        handleBracket(handleWordWrap(maxNumberChars, textTemp, lineBreakString));
+        handleBracket(
+          handleWordWrap(maxNumberChars, textTemp, lineBreakString)
+        ) +
+        (isAin ? '"' : "");
       temp2 = finalSentences.trim() + " ";
     } else {
       temp2 = "";

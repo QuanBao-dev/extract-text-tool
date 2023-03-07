@@ -5,7 +5,7 @@ const delay = require("./delay");
 const { nanoid } = require("nanoid");
 const handleWordWrap = require("./handleWordWrap");
 (async () => {
-  const listFileName = fs.readdirSync("./cst");
+  const listFileName = fs.readdirSync("./cst_output");
   let start = 0;
   let numberAsync = 1;
   // console.log(await translateOfflineSugoiCt2LongList([
@@ -24,7 +24,7 @@ const handleWordWrap = require("./handleWordWrap");
             .slice(start, start + numberAsync)
             .map(async (fileName) => {
               console.log("Start:", fileName);
-              await translateFileCst(`./cst/${fileName}`);
+              await translateFileCst(`./cst_output/${fileName}`);
             })
         );
         start += numberAsync;
@@ -51,13 +51,13 @@ async function translateFileCst(filePath) {
     let object = {};
     if (message !== undefined) {
       message = handleWordWrap(
-        44,
+        50,
         message
           // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
           // .replace(/<r/g, "")
           // .replace(/\>/g, "")
           // .replace(/<\/s/g, "")
-          .replace(/❛/g, "'"),
+          .replace(/❛/g, "'").replace(/、/g,", "),
         "\r\n"
       );
 

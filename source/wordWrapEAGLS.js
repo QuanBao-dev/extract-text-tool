@@ -9,7 +9,42 @@ const { EAGLS } = require("../setting.json");
 const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
+const { handleWordWrapEAGLS } = require("./handleWordWrapKs");
+const handleWordWrap = require("./handleWordWrap");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
+const containRegExpI = new RegExp(
+  EAGLS.wordWrap.regExpToExcludeSentenceNotNeedTranslatedContain,
+  "i"
+);
+const containRegExpG = new RegExp(
+  EAGLS.wordWrap.regExpToExcludeSentenceNotNeedTranslatedContain,
+  "g"
+);
+const containRegExpG2 = new RegExp(
+  EAGLS.wordWrap.regExpToExcludeSentenceNotNeedTranslatedContain2,
+  "g"
+);
+const exceptRegExpI = new RegExp(
+  EAGLS.wordWrap.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  "i"
+);
+const exceptRegExpG = new RegExp(
+  EAGLS.wordWrap.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  "g"
+);
+const exceptRegExpG2 = new RegExp(
+  EAGLS.wordWrap.regExpToExcludeSentenceNotNeedTranslatedExcept2,
+  "g"
+);
+
+const containTagNameRegExpI = new RegExp(
+  EAGLS.wordWrap.regExpToFilterSentenceContainTagName,
+  "i"
+);
+const addedString = EAGLS.wordWrap.addedString;
+const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
+  EAGLS.wordWrap;
+// [一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+
 (async () => {
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
@@ -35,26 +70,26 @@ const { translateSelectCenterTextList } = require("./translateJapanese");
   //   )
   // );
 
-  console.log(
-    await translateOfflineSugoiCt2LongList(
-      [
-        `&0"「こっち。こっちだよー」"#:NameSuffix`,
-        `&1"「むにゃむにゃ……おっぱいだ　待ってよーあははははは」"`,
-        `&13"澄野撫子。今日も寝坊しかけた俺と違って、昔からしっかり者の姉ちゃんだ。"&14"同い年でありながら、俺は体の隅々まで悲しいかな、今のような具合にしつけられている。"`,
-        `&20"「朝ごはんを:NameSuffixと一緒に食べるのは当然じゃない」"42("DEL","02DrawFc.dat")`,
-        `&53"「へ？　う、うん。(e)俺も姉ちゃんがいつも母さん達に内緒にしてくれる事には感謝してるよ！　ありがとな！」"`,
-        `&28"「ハハハ…」"&29"俺は思わず引きつった笑みを浮かべる。これは、姉ちゃんが何かを訴える時の合図だ。"_Target=@CharC,`,
-        `&46"どこから出したのか、５枚ほどの原稿用紙を差し出す姉ちゃん。それを埋める所要時間は経験から言って２時間～３時間。"#:NameSuffix`,
-        `&34"我ながら分かりやすすぎるリアクションだ。"&35"姉ちゃんは箸をおくと、冷たさの漂う目で俺を見つめた。"_Target=@CharC,`,
-      ],
-      2,
-      false,
-      true,
-      true,
-      "EAGLS"
-    )
-  );
-  await delay(10000000);
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       `&0"「こっち。こっちだよー」"#:NameSuffix`,
+  //       `&1"「むにゃむにゃ……おっぱいだ　待ってよーあははははは」"`,
+  //       `&13"澄野撫子。今日も寝坊しかけた俺と違って、昔からしっかり者の姉ちゃんだ。"&14"同い年でありながら、俺は体の隅々まで悲しいかな、今のような具合にしつけられている。"`,
+  //       `&20"「朝ごはんを:NameSuffixと一緒に食べるのは当然じゃない」"42("DEL","02DrawFc.dat")`,
+  //       `&53"「へ？　う、うん。(e)俺も姉ちゃんがいつも母さん達に内緒にしてくれる事には感謝してるよ！　ありがとな！」"`,
+  //       `&28"「ハハハ…」"&29"俺は思わず引きつった笑みを浮かべる。これは、姉ちゃんが何かを訴える時の合図だ。"_Target=@CharC,`,
+  //       `&46"どこから出したのか、５枚ほどの原稿用紙を差し出す姉ちゃん。それを埋める所要時間は経験から言って２時間～３時間。"#:NameSuffix`,
+  //       `&34"我ながら分かりやすすぎるリアクションだ。"&35"姉ちゃんは箸をおくと、冷たさの漂う目で俺を見つめた。"_Target=@CharC,`,
+  //     ],
+  //     2,
+  //     false,
+  //     true,
+  //     true,
+  //     "EAGLS"
+  //   )
+  // );
+  // await delay(10000000);
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
@@ -115,10 +150,9 @@ const { translateSelectCenterTextList } = require("./translateJapanese");
   // );
   // await delay(10000000);
 
-  const listFileName = fs.readdirSync(EAGLS.translation.folderPath);
+  const listFileName = fs.readdirSync(EAGLS.wordWrap.folderPath);
   let start = 0;
-  let numberAsync = EAGLS.translation.numberOfFiles;
-
+  let numberAsync = EAGLS.wordWrap.numberOfFiles;
   do {
     try {
       do {
@@ -134,15 +168,13 @@ const { translateSelectCenterTextList } = require("./translateJapanese");
               //   "shiftjis"
               // );
               await translateFileKs(
-                `${EAGLS.translation.folderPath}/${fileName}`,
-                EAGLS.translation.isSelects,
-                EAGLS.translation.isTagName,
+                `${EAGLS.wordWrap.folderPath}/${fileName}`,
                 EAGLS.encoding
               );
             })
         );
         start += numberAsync;
-        numberAsync = EAGLS.translation.numberOfFiles;
+        numberAsync = EAGLS.wordWrap.numberOfFiles;
       } while (start < listFileName.length);
       break;
     } catch (error) {
@@ -154,17 +186,21 @@ const { translateSelectCenterTextList } = require("./translateJapanese");
   console.log("Done");
   await delay(10000000);
 })();
-let objectCount = {};
 
-async function translateFileKs(filePath, isSelect, isTagName, encoding) {
+async function translateFileKs(filePath, encoding) {
   const fileContent = await readFile(filePath, encoding);
-  objectCount = {};
-  const dumpFileContent = await readFile(
-    filePath.replace(/csv/g, "txt"),
-    encoding
+  return await writeFile(
+    filePath,
+    handleWordWrapEAGLS(fileContent),
+    "shiftjis"
   );
+  console.time(filePath);
+  // const dumpFileContent = await readFile(
+  //   filePath.replace(/csv/g, "txt"),
+  //   encoding
+  // );
   let dataList = fileContent.split(/\r\n/g);
-  let dumpList = dumpFileContent.split(/\r\n/g);
+  // let dumpList = dumpFileContent.split(/\r\n/g);
   // console.log(dataList);
   // let temp2 = [];
   // dataList.forEach((text) => {
@@ -172,19 +208,22 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   textList.forEach((text) => temp2.push(text));
   // });
   // dataList = [...temp2];
-  let temp = "";
-  if (isSelect) {
-    const translatedFileContent = (
-      await translateSelectCenterTextList(dataList, 1, false)
-    ).join("\r\n");
-    return await writeFile(filePath, translatedFileContent, encoding);
-  }
   let isNewDialog = true;
-  let count3 = 0;
-  let listCount = [];
-  const suffixList = [];
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
+      if (
+        // (rawText.trim().match(containRegExpI) &&
+        //   !rawText.trim().match(exceptRegExpI)) ||
+        // rawText.trim() === ""
+        // index === 0
+        !rawText.match(containRegExpG2)
+        // rawText.match(containTagNameRegExpI)
+        // !rawText.match(containTagNameRegExpI)
+        // false
+      ) {
+        isNewDialog = true;
+        return ans;
+      }
       if (ans.length > 0 && isNewDialog === false) {
         dataList[index - 1] = dataList[index - 1].replace(/\[Cock\]/, "");
         ans[ans.length - 1] = ans[ans.length - 1].replace(/\[Cock\]/, "");
@@ -198,46 +237,125 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       ans.push(rawText.replace(/\[Cock\]/g, ""));
       return ans;
     }, []);
-
-  // translatedTextList = translatedTextList.map((text) => text + "[np]");
-  // console.log(
-  //   checkIsContinue(
-  //     dumpList.filter((text) => text !== ""),
-  //     "射精を促す刺激を、たっぷりと堪能するように、"
-  //   )
-  // );
-  let prefixList = [...rawTextList].reduce((ans, text, index) => {
-    if (text.split(",")[3]) {
-      ans.push(text.split(",").slice(0, 3).join(",") + ",");
-      return ans;
-    }
-    ans.push("");
-    return ans;
-  }, []);
-  /////Replace comma
-  // let translatedTextList = [...rawTextList].map((text) => {
-  //   const temp = text.split(",").slice(4).join("、");
-  //   return temp;
+  ///////Fixed the structure of files + add name character
+  // let temp2 = "";
+  // const translatedTextList = rawTextList.map((text) => {
+  //   if (text.match(/^#/g)) {
+  //     temp2 = text
+  //       .split(",")[0]
+  //       .replace(/#/g, "")
+  //       .replace(":NameSuffix", "Masato");
+  //     if (temp2 !== "") temp2 = "【" + temp2 + "】";
+  //     return text;
+  //   }
+  //   if (text.match(/^&/g)) {
+  //     const splittedTextList = text.split('"');
+  //     splittedTextList[1] = temp2 + splittedTextList[1];
+  //     temp2 = "";
+  //     return splittedTextList.join('"');
+  //   }
+  //   temp2 = "";
+  //   return text;
   // });
-  let translatedTextList = await translateOfflineSugoiCt2LongList(
-    [...rawTextList].map((text) => {
-      return text.split(",")[0].includes("pylm")
-        ? text.split(",")[3].replace(/"/g, "")
-        : text.split(",")[0].replace(/"/g, "");
-    }),
-    2,
-    false,
-    true,
-    true
-  );
+  /////Word wrap for eagls
+  const translatedTextList = rawTextList.map((text) => {
+    const splittedTexts = text.split('"');
+    splittedTexts[1] = handleWordWrap(
+      EAGLS.wordWrap.maxCharPerLines,
+      splittedTexts[1].replace(/\)/g, "）").replace(/\(/g, "（"),
+      "(e)"
+    ).replace(/^((】 )?）)/g, "");
+
+    if (splittedTexts[1].match(/】（/g)) {
+      splittedTexts[1] += "）";
+    }
+    return splittedTexts.join('"');
+    return (
+      splittedTexts.slice(0, 2).join('"') +
+      '"' +
+      "\r\n" +
+      splittedTexts.slice(2).join('"')
+    );
+  });
+  // const translatedTextList = await translateOfflineSugoiCt2LongList(
+  //   rawTextList,
+  //   3,
+  //   false,
+  //   true,
+  //   false
+  // );
+  // const translatedTextList = rawTextList.map((v) => {
+  //   if (v === ".") {
+  //     return "";
+  //   }
+  //   return v;
+  // });
+  //// Word wrap cutting dialogue
+  // const translatedTextList = rawTextList
+  // .map((text)=> text.replace(/, /g,"、"))
+  // .map((text) => {
+  //   const splittedTexts = text.split('"');
+  //   if (splittedTexts[2] === "") {
+  //     return splittedTexts.slice(0, 2).join('"') + '"';
+  //   }
+  //   return (
+  //     splittedTexts.slice(0, 2).join('"') +
+  //     '"' +
+  //     "\r\n" +
+  //     splittedTexts.slice(2).join('"')
+  //   );
+  // });
+  // .map(
+  //   (text) =>
+  //   text.replace(/&/g, "\r\n&")
+  //   // "&" + text.split("&").slice(1).join("\r\n&").split("#").join("\r\n#")
+  // );
+  // console.log(rawTextList)
+  // let translatedTextList = await translateSelectCenterTextList(
+  //   rawTextList,
+  //   2,
+  //   false
+  // );
+
+  // console.log(translatedTextList)
+
+  // let i = 0;
+  // let translatedTextList = [...rawTextList];
+
+  // translatedTextList = rawTextList.map((text) => {
+  //   const prefix = text.match(/m\[[0-9]+\] = "/g);
+  //   return (
+  //     prefix +
+  //     handleWordWrap(
+  //       80,
+  //       text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, ""),
+  //       "\\r\\n"
+  //     ) +
+  //     '"'
+  //   );
+  // });
+  // const translatedTextList = rawTextList;
   // console.log(translatedTextList);
   let count = 0;
   let isDisable = false;
   // return await writeFile(filePath, translatedTextList.join("\n")+"\n", "utf8");
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
+    if (
+      // (rawText.trim().match(containRegExpI) &&
+      //   !rawText.trim().match(exceptRegExpI)) ||
+      // rawText.trim() === ""
+      // !rawText.match(containTagNameRegExpI)
+      // index === 0
+      !rawText.match(containRegExpG2)
+      // rawText.match(containTagNameRegExpI)
+    ) {
+      ans.push(rawText);
+      return ans;
+    }
+
     if (translatedTextList[count] !== undefined) {
       let temp = translatedTextList[count];
-      let prefix = prefixList[count];
+      // let prefix = prefixList[count];
       // if (rawText.match(/(^	)/g)) {
       //   temp = rawText.match(/(	)+/g)[0] + temp;
       // }
@@ -253,7 +371,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // )
         // handleWordWrap(57, temp, "\\n")
         // handleWordWrap(56, temp, "\r\n", listCount[count], undefined)
-        prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
+        // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
+        temp
         // .replace(/,( )?/g, "、")
         // + suffixList[count]
         // .replace(/、/g, ", ")
@@ -263,6 +382,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // .replace(/ō/g, "o")
         // .replace(/[àâ]/g, "a")
       );
+      if (EAGLS.wordWrap.isArtemis) ans.push('					{"rt2"},');
     } else {
       ans.push("");
     }
@@ -276,67 +396,6 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     .join("\r\n");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding);
-}
-function checkIsContinue(dumpList, previousText) {
-  let isContinue = false;
-  let isBr = false;
-  const previousDumpText = dumpList.find((text) => text.includes(previousText));
-  if (previousDumpText) {
-    if (!checkFoundPG(dumpList, previousText)) {
-      isContinue = true;
-    }
-  }
-  return { isContinue, isBr };
-}
-function checkFoundPG(dumpList, text) {
-  let isCheck = false;
-  if (!objectCount[text]) objectCount[text] = 0;
-  objectCount[text] += 1;
-  let dumpTextIndex = -1;
-  let count = 0;
-  for (let i = 0; i < dumpList.length; i++) {
-    const dumpText = dumpList[i];
-    if (dumpText.replace(/<[a-zA-Z0-9]+>/g, "") === text) {
-      count++;
-      if (count === objectCount[text]) {
-        dumpTextIndex = i;
-        break;
-      }
-    }
-  }
-  // console.log(dumpTextIndex)
-  if (dumpTextIndex < 0) return isCheck;
-  if (text) {
-    if (dumpList[dumpTextIndex].includes("<PG>")) {
-      isCheck = true;
-    }
-    if (!isCheck) {
-      do {
-        dumpTextIndex++;
-        if (dumpList[dumpTextIndex] === "<PG>") {
-          isCheck = true;
-        }
-      } while (!isCheck && dumpList[dumpTextIndex].match(/^[{]/g));
-    }
-  }
-  // console.log(isCheck)
-  return isCheck;
-}
-async function fixTranslatedFileKs(filePathTranslated, filePathRaw, encoding) {
-  const fileContent = await readFfile(filePathTranslated, encoding);
-  let dataList = fileContent.split(/\n/i);
-  let check = true;
-  for (let i = 0; i < dataList.length; i++) {
-    if (dataList[i].trim().match(/\[rb/g)) {
-      console.log(dataList[i]);
-      check = false;
-      break;
-    }
-  }
-  // console.log(dataList.length,check);
-  if (check) {
-    fs.unlinkSync(filePathRaw);
-  }
 }
 // [...$0.querySelectorAll(".mainbox")].reduce((ans, curr) => {
 //   const characters = [...curr.querySelectorAll(".chardetails")];

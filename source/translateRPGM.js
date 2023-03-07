@@ -205,7 +205,7 @@ async function translateFileRPGM(filePath, encoding) {
 
   const translatedDialogueList = await translateSelectCenterTextList(
     textDialogueList,
-    2,
+    3,
     true
   );
   const translatedCharacterNameList = await translateSelectCenterTextList(

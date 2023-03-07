@@ -172,7 +172,7 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
             })
         );
         start += numberAsync;
-        numberAsync = ks.translation.numberOfFiles;
+        numberAsync = srp.translation.numberOfFiles;
       } while (start < listFileName.length);
       break;
     } catch (error) {
@@ -195,7 +195,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   const suffixList = [];
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
-      if (!ks.translation.isNoFilter) {
+      if (!srp.translation.isNoFilter) {
         if (
           (rawText.trim().match(containRegExpI) &&
             !rawText.trim().match(exceptRegExpI)) ||
@@ -220,22 +220,23 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     }, []);
   let translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    2,
+    3,
     false,
     true,
-    true
+    true,
+    "srp"
   );
   let count = 0;
   let isDisable = false;
   // return await writeFile(filePath, translatedTextList.join("\n")+"\n", "utf8");
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
-    if (
-      (rawText.trim().match(containRegExpI) &&
-        !rawText.trim().match(exceptRegExpI)) ||
-      rawText.trim() === ""
-    )
-      isDisable = false;
-    if (isDisable) return ans;
+    // if (
+    //   (rawText.trim().match(containRegExpI) &&
+    //     !rawText.trim().match(exceptRegExpI)) ||
+    //   rawText.trim() === ""
+    // )
+    //   isDisable = false;
+    // if (isDisable) return ans;
     if (
       (rawText.trim().match(containRegExpI) &&
         !rawText.trim().match(exceptRegExpI)) ||

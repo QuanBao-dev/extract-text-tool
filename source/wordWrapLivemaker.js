@@ -207,11 +207,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   )
   // );
   let prefixList = [...rawTextList].reduce((ans, text, index) => {
-    if (text.split(",")[3]) {
-      ans.push(text.split(",").slice(0, 3).join(",") + ",");
-      return ans;
-    }
-    ans.push("");
+    ans.push(text.split(",").slice(0, 4).join(",") + ",");
     return ans;
   }, []);
   /////Replace comma
@@ -219,20 +215,48 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   const temp = text.split(",").slice(4).join("、");
   //   return temp;
   // });
-  let translatedTextList = await translateOfflineSugoiCt2LongList(
-    [...rawTextList].map((text) => {
-      return text.split(",")[0].includes("pylm")
+
+  // Wordwrap livemaker
+  let translatedTextList = [...rawTextList].reduce((ans, text, index) => {
+    const { isContinue } = checkIsContinue(
+      dumpList.filter((text) => text !== ""),
+      rawTextList[index - 1]
+        ? rawTextList[index - 1].split(",")[0].includes("pylm")
+          ? rawTextList[index - 1].split(",")[3].replace(/"/g, "")
+          : rawTextList[index - 1].split(",")[0].replace(/"/g, "")
+        : undefined
+    );
+    if (isContinue) {
+      // if (text.match(/("(,)?)/g)) {
+      //   console.log(text);
+      //   ans[ans.length - 1] += text;
+      //   ans[ans.length - 1] = ans[ans.length - 1].replace(/"/g, "");
+      //   return ans;
+      // }
+      let j = 1;
+      if (ans[ans.length - j] === "@@") {
+        do {
+          if (ans[ans.length - j] !== "@@")
+            ans[ans.length - j] += text.split(",")[0].includes("pylm")
+              ? text.split(",")[3].replace(/"/g, "")
+              : text.split(",")[0].replace(/"/g, "");
+          j += 1;
+        } while (ans[ans.length - j] === "@@");
+      }
+
+      ans[ans.length - j] += text.split(",")[0].includes("pylm")
         ? text.split(",")[3].replace(/"/g, "")
         : text.split(",")[0].replace(/"/g, "");
-    }),
-    2,
-    false,
-    true,
-    true
-  );
+      ans[ans.length - j] = ans[ans.length - j].replace(/\"/g, "");
+      ans.push("@@");
+      return ans;
+    }
+    ans.push(text.split(",")[3]);
+    return ans;
+  }, []);
+
   // console.log(translatedTextList);
   let count = 0;
-  let isDisable = false;
   // return await writeFile(filePath, translatedTextList.join("\n")+"\n", "utf8");
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
     if (translatedTextList[count] !== undefined) {

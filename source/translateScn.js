@@ -69,8 +69,17 @@ async function translateScn(filePathInput) {
       selects = await Promise.all(
         selects.map(async (select) => {
           if (!select.text) return select;
-          // select.text = (await translateSelectCenterTextList([select.text]))[0];
-          select.text = select.text.replace(/[\{\}\[\]]/g, '"');
+          select.text = (
+            await translateOfflineSugoiCt2LongList(
+              [select.text],
+              1,
+              false,
+              true,
+              false,
+              "srp"
+            )
+          )[0];
+          // select.text = select.text.replace(/[\{\}\[\]]/g, '"');
           return select;
         })
       );
@@ -88,8 +97,8 @@ async function translateScn(filePathInput) {
     //   return rawText.includes("城にぃ");
     // });
     let contentList = texts.map((text, index) => {
-      return text[2];
-      // return typeof text[8] === "string" ? text[8] : text[2];
+      // return text[2];
+      return typeof text[8] === "string" ? text[8] : text[2];
       // return typeof text[1][0][4] === "string" ? text[1][0][4] : text[1][0][1];
       // return text[1][0][1];
     });
@@ -136,12 +145,20 @@ async function translateScn(filePathInput) {
     let [translatedContentList, translatedTagNameList] = await Promise.all([
       translateOfflineSugoiCt2LongList(
         contentList.map((v) => v.replace(/\\n/g, "")),
-        2,
+        10,
         false,
         true,
-        true
+        true,
+        "srp"
       ),
-      translateOfflineSugoiCt2LongList(tagNameList, 1),
+      translateOfflineSugoiCt2LongList(
+        tagNameList,
+        1,
+        undefined,
+        true,
+        false,
+        "srp"
+      ),
     ]);
     // console.log(translatedContentList);
     // let count = 0;

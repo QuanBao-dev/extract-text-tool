@@ -1,8 +1,6 @@
 const { readFile, writeFile } = require("./handleFile");
 const fs = require("fs");
-const {
-  translateOfflineSugoiCt2LongList,
-} = require("./translateJapanese");
+const { translateOfflineSugoiCt2LongList } = require("./translateJapanese");
 const delay = require("./delay");
 (async () => {
   const listFileName = fs.readdirSync("./cst");
@@ -49,12 +47,15 @@ async function translateFileCst(filePath) {
   const fileContent = await readFile(filePath, "utf8");
   const dataList = JSON.parse(fileContent);
   const messageList = dataList.map(({ message }) =>
-    message.replace(/( )?<[a-z A-Z0-9]+>( )?/g, "")
+    message
+      .replace(/( )?<[a-z A-Z0-9]+>( )?/g, "")
+      .replace(/<\/r>/g, "")
+      .replace(/<r.+>/g, "")
   );
   const nameList = dataList.map(({ name }) => name);
   const translatedMessageList = await translateOfflineSugoiCt2LongList(
     messageList,
-    2,
+    3,
     false,
     true,
     true,

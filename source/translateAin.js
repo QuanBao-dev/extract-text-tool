@@ -9,7 +9,8 @@ const { ain } = require("../setting.json");
 const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
-// const handleWordWrapGlue = require("./handleWordWrapGlue");
+const handleWordWrap = require("./handleWordWrap");
+const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
   ain.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "i"
@@ -88,29 +89,30 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       `m[703] = "「どのぐらい少しかというと、"`,
-  //       `m[704] = "　伊澤先生担当…のはずが、他開発にドナドナになったので、"`,
-  //       `m[705] = "　途中から途中まで…」"`,
-  //       `m[706] = "「中途半端でごめんね、伊澤先生…"`,
-  //       `m[707] = "　えっちもいっこだけ書きました。"`,
-  //       `m[708] = "　先生はいつでも、おっぱい重そうでした。最巨乳！！」"`,
-  //       `m[718] = "「…と一人ひっそりと葛」藤していた"`,
-  //       `m[719] = "　開発に参加してまもなくの頃。"`,
-  //       `m[720] = "　ちょも山さんとお酒を嗜みに行った時に聞いたお話が…"`,
-  //       `m[721] = "：風麟さんとちょも山さんで、お遊びで　　　　　　　　："`,
-  //       `m[722] = "：「各キャラに武器（エモノ）を持たせるなら…」という："`,
-  //       `m[723] = "：お話をしていた時、　　　　　　　　　　　　　　　　："`,
-  //       `m[724] = "：　風麟さんは　　　　　　　　　　　　　　　　　　　："`,
-  //       `m[725] = "：　　　　　圭太の武器はスタンガンです　　　　　　　："`,
-  //       `m[726] = "：　　　　　　　　　　　　　　　　　　とのたまった　："`,
-  //       `m[727] = "「ス　タ　ン　ガ　ン　！」"`,
-  //       `m[7602] = "『コーくん！？"`,
-  //       `m[7603] = "　どうして、最近、来てくれないの？』"`,
+  //       `m[72274] = "『たとえば俺が神様にでもなったら、"`,
+  //       `m[72275] = "　叶うのか』…ってな。"`,
+
+  //       `m[72276] = "…………"`,
+
+  //       `m[72277] = "そんな時だ、俺の前にベゼルが現れた。"`,
+
+  //       `m[72278] = "俺が魔王になって地上を征服すれば、"`,
+  //       `m[72279] = "世界を変えることが出来ると……"`,
+  //       `m[72280] = "ヤツは俺にそう言ったんだ。"`,
+
+  //       `m[72281] = "俺は変わっていった。"`,
+  //       `m[72282] = "臆せず自分を出して、思うこと、"`,
+  //       `m[72283] = "言いたいことが言えるようになった。"`,
+
+  //       `m[72284] = "どうせ変わる世界に遠慮も執着も無いからな。"`,
+  //       `m[72285] = "どれだけ嫌われようが居場所が無くなろうが、"`,
+  //       `m[72286] = "怖いものなんか何も無い。"`,
   //     ],
   //     2,
   //     false,
-  //     false,
-  //     false
+  //     true,
+  //     true,
+  //     "ain"
   //   )
   // );
   // console.log(
@@ -124,12 +126,15 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //   )
   // );
   // console.log(
-  //   handleWordWrap(
-  //     20,
-  //     "The quick brown fox jumps over the lazy dog",
-  //     "\n",
-  //     5,
-  //     undefined
+  //   handleWordWrapGlue(
+  //     [
+  //       `m[61264] = "Are you dissatisfied with the scenario I wrote？It’s a problem before "`,
+  //       `m[61265] = "! "`,
+  //       `m[61266] = "The punch line has changed!"`,
+  //     ],
+  //     10000,
+  //     "\\r\\n",
+  //     true
   //   )
   // );
   // console.log(
@@ -193,7 +198,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   filePath.replace(/csv/g, "txt"),
   //   encoding
   // );
-  let dataList = fileContent.split(/\r\n/g);
+  let dataList = fileContent.split(/\n/g);
   // let dumpList = dumpFileContent.split(/\r\n/g);
   // console.log(dataList);
   // let temp2 = [];
@@ -207,7 +212,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   if (isSelect) {
     const translatedFileContent = (
       await translateSelectCenterTextList(dataList, 1, false)
-    ).join("\r\n");
+    ).join("\n");
     return await writeFile(filePath, translatedFileContent, encoding);
   }
   let isNewDialog = true;
@@ -233,9 +238,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       ans.push(rawText.replace(/\[Cock\]/g, ""));
       return ans;
     }, []);
+  // console.log(rawTextList)
   let translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    2,
+    3,
     false,
     true,
     true,
@@ -246,8 +252,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // let translatedTextList = [...rawTextList].map((v) => {
   //   return handleWordWrap(47, v, "\r\n");
   // });
-  // let i = 0;
+
   // let translatedTextList = [...rawTextList];
+  // let i = 0;
+  // // console.log(translatedTextList)
   // do {
   //   const currentText = translatedTextList[i]
   //     .replace(/m\[[0-9]+\] = "/g, "")
@@ -257,7 +265,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //     .replace(/"$/g, "");
   //   const prefix = translatedTextList[i].match(/m\[[0-9]+\] = "/g)[0];
   //   const nextPrefix = translatedTextList[i + 1].match(/m\[[0-9]+\] = "/g)[0];
-  //   const wordWrappedText = handleWordWrap(44, currentText, "\\n");
+  //   const wordWrappedText = handleWordWrap(72, currentText, "\\n");
   //   const splittedTextList = wordWrappedText.split("\\n");
   //   if (nextText === "@@" && splittedTextList.length > 1) {
   //     translatedTextList[i] =
@@ -280,16 +288,30 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   i++;
   // } while (i < translatedTextList.length - 1);
 
-  
+  // translatedTextList = handleWordWrapGlue(rawTextList, 10000, "\\r\\n",true)
+
   // translatedTextList = rawTextList.map((text) => {
   //   const prefix = text.match(/m\[[0-9]+\] = "/g);
+  //   const textContent = text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "");
+  //   if (text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "") === "@@") {
+  //     return prefix + '"';
+  //   }
   //   return (
   //     prefix +
   //     handleWordWrap(
-  //       80,
-  //       text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, ""),
+  //       73,
+  //       textContent
+  //         .replace(/m\[[0-9]+\] = "/g, "")
+  //         .replace(/"$/g, "")
+  //         .trim(),
   //       "\\r\\n"
-  //     ) +
+  //     )
+  //       .replace(/[「『]/g, "“")
+  //       .replace(/[」』]/g, "”")
+  //       .replace(/…/g, "...")
+  //       .replace(/、/g, ", ")
+  //       .replace(/？/g, "? ")
+  //       .replace(/。/g, ". ") +
   //     '"'
   //   );
   // });
@@ -339,7 +361,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // .filter((text) => text !== "" && text !== ",")
   translatedFileContent = translatedFileContent
     // .slice(0, translatedFileContent.length - 2)
-    .join("\r\n");
+    .join("\n");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding);
 }

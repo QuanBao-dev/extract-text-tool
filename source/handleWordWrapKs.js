@@ -31,106 +31,107 @@ const containTagNameRegExpI = new RegExp(
   "i"
 );
 
-module.exports = function handleWordWrapKs(fileContent) {
-  let blockList = fileContent.split("\r\n@Msgend\r\n").map((block) => {
-    const stringList = block.split("\r\n");
-    return stringList;
-  });
-  let contentsList = blockList.map((block) => {
-    // if (!block[block.length - 1]) return [block[0]];
-    const temp = handleWordWrap(
-      54,
-      block[block.length - 1]
-        .replace(/\[/g, "『")
-        .replace(/\]/g, "』")
-        .replace(/^\*/, "＊"),
-      "[r]"
-    ).split("[r]");
-    if (temp.slice(3).join("[r]") === "") return [temp.slice(0, 3).join("[r]")];
-    return [temp.slice(0, 3).join("[r]"), temp.slice(3).join("[r]")];
-  });
-  
-  let ans = [];
-  contentsList.forEach((contents, index) => {
-    contents.forEach((content, key) => {
-      const block = blockList[index];
-      if (key === 0) {
-        ans.push(
-          block.slice(0, block.length - 1).join("\r\n") + "\r\n" + content
-        );
-      } else {
-        ans.push(
-          "\r\n" +
-            block.map((text) => text.replace(/voice=".+"/g,"")).slice(block.length - 2, block.length - 1).join("\r\n") +
-            "\r\n" +
-            content
-        );
-      }
-    });
-  });
-  return ans.join("\r\n@Msgend\r\n");
-};
-
 // module.exports = function handleWordWrapKs(fileContent) {
-//   // console.log(fileContent.split(/@Hitret id=[0-9]+/));
-//   // const footerList = fileContent.match(/@Hitret id=[0-9]+/g);
-//   let blockList = fileContent
-//     .split(/@Hitret id=[0-9]+/g)
-//     .map((block, index) => {
-//       const stringList = block.split("\n");
-//       return stringList;
-//     });
+//   let blockList = fileContent.split("\r\n@Msgend\r\n").map((block) => {
+//     const stringList = block.split("\r\n");
+//     return stringList;
+//   });
 //   let contentsList = blockList.map((block) => {
-//     if (block.length===1) return [""];
-//     // if(!blockList[block.length - 2) return "";
+//     // if (!block[block.length - 1]) return [block[0]];
 //     const temp = handleWordWrap(
-//       45,
-//       block[block.length - 2]
+//       54,
+//       block[block.length - 1]
 //         .replace(/\[/g, "『")
 //         .replace(/\]/g, "』")
-//         .replace(/^\*/, "＊")
-//         .replace(/　/g, " "),
+//         .replace(/^\*/, "＊"),
 //       "[r]"
 //     ).split("[r]");
 //     if (temp.slice(3).join("[r]") === "") return [temp.slice(0, 3).join("[r]")];
 //     return [temp.slice(0, 3).join("[r]"), temp.slice(3).join("[r]")];
 //   });
+
 //   let ans = [];
-//   let count = 0;
 //   contentsList.forEach((contents, index) => {
 //     contents.forEach((content, key) => {
 //       const block = blockList[index];
-//       count++;
 //       if (key === 0) {
 //         ans.push(
-//           block.slice(0, block.length - 2).join("\n") +
-//             "\n" +
-//             content +
-//             `\n@Hitret id=${count}`
+//           block.slice(0, block.length - 1).join("\r\n") + "\r\n" + content
 //         );
 //       } else {
-//         let temp = block.slice(block.length - 3, block.length - 2).join("\n");
-//         temp = temp.replace(/voice=[A-Z]+[0-9]+/g, "");
-//         ans.push("\n" + temp + "\n" + content + `\n@Hitret id=${count}`);
+//         ans.push(
+//           "\r\n" +
+//             block.map((text) => text.replace(/voice=".+"/g,"")).slice(block.length - 2, block.length - 1).join("\r\n") +
+//             "\r\n" +
+//             content
+//         );
 //       }
 //     });
 //   });
-//   // console.log(
-//   //   blockList.map((block) => {
-//   //     // if (!block[block.length - 1]) return [block[0]];
-//   //     const temp = handleWordWrap(
-//   //       45,
-//   //       block[block.length - 2]
-//   //         .replace(/\[/g, "『")
-//   //         .replace(/\]/g, "』")
-//   //         .replace(/^\*/, "＊"),
-//   //       "[r]"
-//   //     ).split("[r]");
-//   //     return temp;
-//   //   })
-//   // );
-//   return ans.join("\n");
+//   return ans.join("\r\n@Msgend\r\n");
 // };
+
+function handleWordWrapCUBE(fileContent) {
+  // console.log(fileContent.split(/@Hitret id=[0-9]+/));
+  // const footerList = fileContent.match(/@Hitret id=[0-9]+/g);
+  let blockList = fileContent
+    .split(/@Hitret id=[0-9]+/g)
+    .map((block, index) => {
+      const stringList = block.split("\n");
+      return stringList;
+    });
+  let contentsList = blockList.map((block) => {
+    if (block.length === 1) return [""];
+    // if(!blockList[block.length - 2) return "";
+    const temp = handleWordWrap(
+      50,
+      block[block.length - 2]
+        .replace(/\[/g, "『")
+        .replace(/\]/g, "』")
+        .replace(/^\*/, "＊")
+        .replace(/　/g, " "),
+      "[r]"
+    ).split("[r]");
+    if (temp.slice(3).join("[r]") === "") return [temp.slice(0, 3).join("[r]")];
+    return [temp.slice(0, 3).join("[r]"), temp.slice(3).join("[r]")];
+  });
+  let ans = [];
+  let count = 0;
+  contentsList.forEach((contents, index) => {
+    contents.forEach((content, key) => {
+      const block = blockList[index];
+      count++;
+      if (key === 0) {
+        ans.push(
+          block.slice(0, block.length - 2).join("\n") +
+            "\n" +
+            content +
+            `\n@Hitret id=${count}`
+        );
+      } else {
+        let temp = block.slice(block.length - 3, block.length - 2).join("\n");
+        temp = temp.replace(/voice=[A-Z]+[0-9]+/g, "");
+        ans.push("\n" + temp + "\n" + content + `\n@Hitret id=${count}`);
+      }
+    });
+  });
+  // console.log(
+  //   blockList.map((block) => {
+  //     // if (!block[block.length - 1]) return [block[0]];
+  //     const temp = handleWordWrap(
+  //       52,
+  //       block[block.length - 2]
+  //         .replace(/\[/g, "『")
+  //         .replace(/\]/g, "』")
+  //         .replace(/^\*/, "＊"),
+  //       "[r]"
+  //     ).split("[r]");
+  //     return temp;
+  //   })
+  // );
+  return ans.join("\n");
+}
+
 // module.exports = function handleWordWrapKs(fileContent) {
 //   // console.log(fileContent.split(/@Hitret id=[0-9]+/));
 //   // const footerList = fileContent.match(/@Hitret id=[0-9]+/g);
@@ -249,42 +250,48 @@ module.exports = function handleWordWrapKs(fileContent) {
 //   // );
 //   return ans;
 // };
-// module.exports = function handleWordWrapKs(fileContent) {
-//   // EAGLS
-//   const textList = fileContent.split("\r\n");
-//   let count = 0;
-//   const filterTextList = textList
-//     .filter((text) => text.match(/^&/g))
-//     .map((text) => {
-//       const list = text.replace(/\(E\)/g,"(e)").split("(e)");
-//       const temp = [];
-//       let i = 0;
-//       do {
-//         temp.push(
-//           "&" +
-//             count +
-//             (i > 0 ? '"' : "") +
-//             list
-//               .slice(i, i + 3)
-//               .map((text) => text.replace(/&[0-9]+/g, ""))
-//               .join("(e)")
-//         );
-//         i += 3;
-//         count += 1;
-//       } while (i < list.length);
-//       return temp.join('"\r\n');
-//     });
-//   let count2 = 0;
+function handleWordWrapEAGLS(fileContent) {
+  // EAGLS
+  const textList = fileContent.split("\r\n");
+  let count = 0;
+  const filterTextList = textList
+    .filter((text) => text.match(/^&/g))
+    .map((text) => {
+      const list = text
+        .replace(/\(E\)/g, "(e)")
+        .replace(/\:/g, "")
+        .replace(/Name Suffix/g, "Gou")
+        .replace(/NameSuffix/g, "Gou")
+        .split("(e)");
+      const temp = [];
+      let i = 0;
+      do {
+        temp.push(
+          "&" +
+            count +
+            (i > 0 ? '"' : "") +
+            list
+              .slice(i, i + 3)
+              .map((text) => text.replace(/&[0-9]+/g, ""))
+              .join("(e)")
+        );
+        i += 3;
+        count += 1;
+      } while (i < list.length);
+      return temp.join('"\r\n');
+    });
+  let count2 = 0;
 
-//   const finalResult = textList
-//     .map((text) => {
-//       if (text.match(/^&/g)) {
-//         let temp = filterTextList[count2];
-//         count2++;
-//         return temp;
-//       }
-//       return text;
-//     })
-//     .join("\r\n");
-//   return finalResult;
-// };
+  const finalResult = textList
+    .map((text) => {
+      if (text.match(/^&/g)) {
+        let temp = filterTextList[count2];
+        count2++;
+        return temp;
+      }
+      return text;
+    })
+    .join("\r\n");
+  return finalResult;
+}
+module.exports = { handleWordWrapEAGLS, handleWordWrapCUBE };

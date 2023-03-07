@@ -1,8 +1,8 @@
-const { ks } = require("../setting.json");
+const { qlie } = require("../setting.json");
 const handleWordWrap = require("./handleWordWrap");
 
 const containRegExpI = new RegExp(
-  ks.wordWrap.regExpToExcludeSentenceNotNeedTranslatedContain,
+  qlie.wordWrap.regExpToExcludeSentenceNotNeedTranslatedContain,
   "g"
 );
 
@@ -16,7 +16,7 @@ function handleWordWrapQlie(rawText, start = 0, end) {
   const textList = text.split(",");
   if (!textList) return rawText;
   const translatedTextList = textList.map((v) => {
-    return handleWordWrap(55, v, "[r]");
+    return handleWordWrap(qlie.wordWrap.maxCharPerLines, v, "[r]");
   });
   if (!end) end = translatedTextList.length;
   for (let i = start; i < end; i++) {
@@ -25,7 +25,7 @@ function handleWordWrapQlie(rawText, start = 0, end) {
   return text;
 }
 
-module.exports = function handleWordWrapQlieVN(fileContent) {
+function handleWordWrapQlieVN(fileContent) {
   let dataList = fileContent.split(/\r\n/g);
   let count = 0;
   let isCounter = false;
@@ -58,9 +58,11 @@ module.exports = function handleWordWrapQlieVN(fileContent) {
             do {
               ans.push(...texts.slice(j, j + 3));
               if (ans.slice(0, 3).length % 3 === 0) {
-                ans.push(
-                  "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
-                );
+                if (texts.length > 3) {
+                  ans.push(
+                    "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
+                  );
+                }
               }
               j += 3;
             } while (j < texts.length);
@@ -72,4 +74,8 @@ module.exports = function handleWordWrapQlieVN(fileContent) {
     }, [])
     .join("\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n");
   return dataList;
-};
+}
+
+function handleWordWrapQlieVN1() {}
+
+module.exports = { handleWordWrapQlieVN, handleWordWrapQlieVN1 };

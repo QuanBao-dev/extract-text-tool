@@ -5,43 +5,43 @@ const {
   translateOfflineSugoiCt2LongList,
   excludeTranslateText,
 } = require("./translateJapanese");
-const { ks } = require("../setting.json");
+const { pinpoint } = require("../setting.json");
 const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "i"
 );
 const containRegExpG = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "g"
 );
 const containRegExpG2 = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain2,
+  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedContain2,
   "g"
 );
 const exceptRegExpI = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
   "i"
 );
 const exceptRegExpG = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
   "g"
 );
 const exceptRegExpG2 = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
+  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
   "g"
 );
 
 const containTagNameRegExpI = new RegExp(
-  ks.translation.regExpToFilterSentenceContainTagName,
+  pinpoint.translation.regExpToFilterSentenceContainTagName,
   "i"
 );
-const addedString = ks.translation.addedString;
+const addedString = pinpoint.translation.addedString;
 const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
-  ks.translation;
+  pinpoint.translation;
 // [一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+
 (async () => {
   // console.log(
@@ -166,9 +166,9 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // );
   // await delay(10000000);
 
-  const listFileName = fs.readdirSync(ks.translation.folderPath);
+  const listFileName = fs.readdirSync(pinpoint.translation.folderPath);
   let start = 0;
-  let numberAsync = ks.translation.numberOfFiles;
+  let numberAsync = pinpoint.translation.numberOfFiles;
 
   do {
     try {
@@ -185,15 +185,15 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
               //   "shiftjis"
               // );
               await translateFileKs(
-                `${ks.translation.folderPath}/${fileName}`,
-                ks.translation.isSelects,
-                ks.translation.isTagName,
-                ks.encoding
+                `${pinpoint.translation.folderPath}/${fileName}`,
+                pinpoint.translation.isSelects,
+                pinpoint.translation.isTagName,
+                pinpoint.encoding
               );
             })
         );
         start += numberAsync;
-        numberAsync = ks.translation.numberOfFiles;
+        numberAsync = pinpoint.translation.numberOfFiles;
       } while (start < listFileName.length);
       break;
     } catch (error) {
@@ -329,7 +329,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   }
   if (isSelect) {
     const translatedFileContent = (
-      await translateSelectCenterTextList(dataList, 3, false, ks, "srp")
+      await translateSelectCenterTextList(dataList, 3, false, pinpoint, "srp")
     ).join("\r\n");
     return await writeFile(filePath, translatedFileContent, encoding);
   }
@@ -340,17 +340,17 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let isScript = false;
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
-      if (!ks.translation.isNoFilter) {
+      if (!pinpoint.translation.isNoFilter) {
         if (rawText.includes("endscript")) {
           isScript = false;
         }
         if (
-          // (rawText.trim().match(containRegExpI) &&
-          //   !rawText.trim().match(exceptRegExpI)) ||
-          // rawText.trim() === "" ||
-          // isScript
+          (rawText.trim().match(containRegExpI) &&
+            !rawText.trim().match(exceptRegExpI)) ||
+          rawText.trim() === "" ||
+          isScript
           // index === 0
-          !rawText.match(containRegExpG2)
+          // !rawText.match(containRegExpG2)
           // rawText.match(containTagNameRegExpI)
           // !rawText.match(containTagNameRegExpI)
           // false
@@ -372,7 +372,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       return ans;
     }, [])
     .reduce((ans, rawText) => {
-      if (ks.translation.isNoFilter) {
+      if (pinpoint.translation.isNoFilter) {
         ans.push(rawText.replace(/\[Cock\]/g, ""));
         return ans;
       }
@@ -425,8 +425,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     3,
     false,
     true,
-    false,
-    "yuris"
+    true,
+    "kiriruby"
   );
   // const translatedTextList = rawTextList.reduce((ans, curr) => {
   //   if (curr.trim() === "") return ans;
@@ -621,7 +621,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // return await writeFile(filePath, translatedTextList.join("\n")+"\n", "utf8");
   isScript = false;
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
-    if (!ks.translation.isNoFilter) {
+    if (!pinpoint.translation.isNoFilter) {
       if (rawText.includes("endscript")) {
         isScript = false;
       }
@@ -680,7 +680,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // .replace(/ō/g, "o")
         // .replace(/[àâ]/g, "a")
       );
-      if (ks.translation.isArtemis) ans.push('					{"rt2"},');
+      if (pinpoint.translation.isArtemis) ans.push('					{"rt2"},');
     } else {
       ans.push("");
     }

@@ -8,21 +8,22 @@ const fs = require("fs");
 const delay = require("./delay");
 
 (async () => {
-  console.log(
-    await translateOfflineSugoiCt2LongList(
-      [
-        "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
-        "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
-        "緑野の瑞風…Shaonが使う回復系の天眷。対象１体を回復する。怪我をしてない対象に、この天眷をかけると生命力が溢れ各能力が上昇する。",
-        "「かおることか呼ばないで。イラッとくるから」",
-        "少なくともこの俺……\n\A\Bはそう思っている。"
-      ],
-      2,
-      undefined,
-      true,
-      true
-    )
-  );
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       "緑野の瑞風…Shaonが使う回復系の天眷。対象１体を回復する。怪我をしてない対象に、この天眷をかけると生命力が溢れ各能力が上昇する。",
+  //       "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
+  //       "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
+  //       "「かおることか呼ばないで。イラッとくるから」",
+  //       "少なくともこの俺……\n\A\Bはそう思っている。"
+  //     ],
+  //     2,
+  //     undefined,
+  //     true,
+  //     true,
+  //     "srp"
+  //   )
+  // );
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
@@ -40,7 +41,7 @@ const delay = require("./delay");
   //     true
   //   )
   // );
-  await delay(10000000);
+  // await delay(10000000);
 
   try {
     const listFileName = fs.readdirSync(bsxx.translation.folderPath);
@@ -92,7 +93,8 @@ async function translateFileBsxx(filePath) {
     bsxx.translation.numberOfSentences,
     false,
     true,
-    true
+    true,
+    "srp"
   );
   const translatedContentText = narrowedContentText.reduce((ans, curr) => {
     ans.push(
