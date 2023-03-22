@@ -36,6 +36,7 @@ module.exports = function handleWordWrap(
     .replace(/ +/g, " ")
     .replace(/\["text"\] = \{\[\[/g, "")
     .replace(/\]\]\},/g, "")
+    // .replace(/\.\.\./g," ...")
     // .replace(/,( )?/g, "、")
     .replace(/&/g, "＆")
     .replace(/、/g, ", ");
@@ -59,6 +60,7 @@ module.exports = function handleWordWrap(
     if (sum > maxNumberOfChar && count < limitBreak - 1) {
       ans = ans.slice(0, ans.length - 1);
       sum = (word + " ").length;
+      // lineBreakString += " ";
       if (lineBreakString === " ") {
         lineBreakString = Array.from(
           Array(maxNumberOfChar - (ans.length - 1)).keys()
@@ -80,16 +82,18 @@ module.exports = function handleWordWrap(
   // .replace(/”,$/g, '",');
   // .replace(/,( )?/g, "、")
   // .replace(/、/g, ", ");
-  if (
-    finalResult.split(lineBreakString).length < limitBreak &&
-    limitBreak !== 1000
-  ) {
-    finalResult += Array.from(
-      Array(limitBreak - finalResult.split(lineBreakString).length).keys()
-    )
-      .map(() => lineBreakString)
-      .join("---");
-  }
+
+  // if (
+  //   finalResult.split(lineBreakString).length < limitBreak &&
+  //   limitBreak !== 1000
+  // ) {
+  //   finalResult += Array.from(
+  //     Array(limitBreak - finalResult.split(lineBreakString).length).keys()
+  //   )
+  //     .map(() => lineBreakString)
+  //     .join("---");
+  // }
+
   // return `\t\t["text"] = {[[` + finalResult + `]]},`;
   return finalResult.replace(/\\k/g, "\\k\n")
   // .replace(/,( )?/g, "、");

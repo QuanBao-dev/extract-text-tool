@@ -89,24 +89,8 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       `m[72274] = "『たとえば俺が神様にでもなったら、"`,
-  //       `m[72275] = "　叶うのか』…ってな。"`,
-
-  //       `m[72276] = "…………"`,
-
-  //       `m[72277] = "そんな時だ、俺の前にベゼルが現れた。"`,
-
-  //       `m[72278] = "俺が魔王になって地上を征服すれば、"`,
-  //       `m[72279] = "世界を変えることが出来ると……"`,
-  //       `m[72280] = "ヤツは俺にそう言ったんだ。"`,
-
-  //       `m[72281] = "俺は変わっていった。"`,
-  //       `m[72282] = "臆せず自分を出して、思うこと、"`,
-  //       `m[72283] = "言いたいことが言えるようになった。"`,
-
-  //       `m[72284] = "どうせ変わる世界に遠慮も執着も無いからな。"`,
-  //       `m[72285] = "どれだけ嫌われようが居場所が無くなろうが、"`,
-  //       `m[72286] = "怖いものなんか何も無い。"`,
+  //       `m[72286] = "むしろ、さらなる快楽を求めるように、浅ましく\${ruby text=うごめ }蠢\${/ruby}いていた。"`,
+  //       `m[24983] = "身体の深奥に、新たな生命の\${ruby text=ほうが }萌芽\${/ruby}を感じる。"`
   //     ],
   //     2,
   //     false,
@@ -239,14 +223,14 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       return ans;
     }, []);
   // console.log(rawTextList)
-  let translatedTextList = await translateOfflineSugoiCt2LongList(
-    rawTextList,
-    3,
-    false,
-    true,
-    true,
-    "ain"
-  );
+  // let translatedTextList = await translateOfflineSugoiCt2LongList(
+  //   rawTextList,
+  //   3,
+  //   false,
+  //   true,
+  //   true,
+  //   "ain"
+  // );
 
   // console.log(translatedTextList)
   // let translatedTextList = [...rawTextList].map((v) => {
@@ -265,7 +249,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //     .replace(/"$/g, "");
   //   const prefix = translatedTextList[i].match(/m\[[0-9]+\] = "/g)[0];
   //   const nextPrefix = translatedTextList[i + 1].match(/m\[[0-9]+\] = "/g)[0];
-  //   const wordWrappedText = handleWordWrap(72, currentText, "\\n");
+  //   const wordWrappedText = handleWordWrap(1000, currentText, "\\n");
   //   const splittedTextList = wordWrappedText.split("\\n");
   //   if (nextText === "@@" && splittedTextList.length > 1) {
   //     translatedTextList[i] =
@@ -290,31 +274,31 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
 
   // translatedTextList = handleWordWrapGlue(rawTextList, 10000, "\\r\\n",true)
 
-  // translatedTextList = rawTextList.map((text) => {
-  //   const prefix = text.match(/m\[[0-9]+\] = "/g);
-  //   const textContent = text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "");
-  //   if (text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "") === "@@") {
-  //     return prefix + '"';
-  //   }
-  //   return (
-  //     prefix +
-  //     handleWordWrap(
-  //       73,
-  //       textContent
-  //         .replace(/m\[[0-9]+\] = "/g, "")
-  //         .replace(/"$/g, "")
-  //         .trim(),
-  //       "\\r\\n"
-  //     )
-  //       .replace(/[「『]/g, "“")
-  //       .replace(/[」』]/g, "”")
-  //       .replace(/…/g, "...")
-  //       .replace(/、/g, ", ")
-  //       .replace(/？/g, "? ")
-  //       .replace(/。/g, ". ") +
-  //     '"'
-  //   );
-  // });
+  translatedTextList = rawTextList.map((text) => {
+    const prefix = text.match(/m\[[0-9]+\] = "/g);
+    const textContent = text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "");
+    if (text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "") === "@@") {
+      return prefix + '"';
+    }
+    return (
+      prefix +
+      handleWordWrap(
+        83,
+        textContent
+          .replace(/m\[[0-9]+\] = "/g, "")
+          .replace(/"$/g, "")
+          .trim(),
+        "\\r\\n"
+      )
+        .replace(/[「『]/g, "“")
+        .replace(/[」』]/g, "”")
+        .replace(/…/g, "...")
+        .replace(/、/g, ", ")
+        .replace(/？/g, "? ")
+        .replace(/。/g, ". ") +
+      '"'
+    );
+  });
   // const translatedTextList = rawTextList;
   // console.log(translatedTextList);
   let count = 0;

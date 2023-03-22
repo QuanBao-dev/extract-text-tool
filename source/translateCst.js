@@ -7,13 +7,15 @@ const delay = require("./delay");
   let start = 0;
   let numberAsync = 1;
   // console.log(
-  //   await translateSelectCenterTextList(
+  //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "整った顔は、目を閉じているとどこか和風人形めいた美しさがある。",
-  //       "ぁ…。",
-  //       "〈真樹夫〉ぁ…。"
+  //       "……仕事も終わったことだし、≪役所／ギルド≫に報告に行くブー"
   //     ],
-  //     4
+  //     4,
+  //     false,
+  //     true,
+  //     false,
+  //     "cst"
   //   )
   // );
   // await delay(1000000);
@@ -53,32 +55,59 @@ async function translateFileCst(filePath) {
       .replace(/<r.+>/g, "")
   );
   const nameList = dataList.map(({ name }) => name);
+  const namesList = dataList.map(({ names }) => names);
   const translatedMessageList = await translateOfflineSugoiCt2LongList(
-    messageList,
+    messageList.map((message) => {
+      const specialList = message.match(
+        /\[[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/]+\]/g
+      );
+      if (specialList)
+        for (let i = 0; i < specialList.length; i++) {
+          const special = specialList[i].split("/")[0];
+          message = message.replace(specialList[i], special.replace("[", ""));
+        }
+      return message;
+    }),
     3,
     false,
     true,
-    true,
+    false,
     "cst"
   );
-  const translatedNameList = await translateOfflineSugoiCt2LongList(
-    nameList,
+  const translatedNameList = (
+    await translateOfflineSugoiCt2LongList(
+      nameList,
+      1,
+      false,
+      false,
+      false,
+      "cst"
+    )
+  ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
+  // const translatedNameList = nameList;
+  const translatedNamesList = await translateOfflineSugoiCt2LongList(
+    namesList,
     1,
     false,
     false,
     false,
     "cst"
   );
+  // const translatedNamesList = namesList;
   const ans = translatedMessageList.reduce((result, translatedMessage, key) => {
     const name = translatedNameList[key];
+    const names = translatedNamesList[key];
     const object = {};
     if (name) object.name = name;
+    if (names) object.names = names;
     if (translatedMessage) object.message = translatedMessage;
     result.push(object);
     return result;
   }, []);
   // for (let i = 0; i < dataList.length; i++) {
   //   let { message, name } = dataList[i];
+  //   let translatedName = translatedNameList[i];
+  //   let translatedMessage = translatedMessageList[i];
   //   let object = {};
   //   if (message !== undefined) {
   //     const specialList = message.match(
@@ -89,14 +118,9 @@ async function translateFileCst(filePath) {
   //         const special = specialList[i].split("/")[0];
   //         message = message.replace(specialList[i], special.replace("[", ""));
   //       }
-  //     message = (
-  //       await translateOfflineSugoiCt2LongList([message], 6, false, false, true)
-  //     )[0];
+  //     message = translatedMessage;
   //   }
-  //   if (name !== undefined)
-  //     name = (
-  //       await translateOfflineSugoiCt2LongList([name], 1, false, false)
-  //     )[0].replace(/@/g, "＠");
+  //   if (name !== undefined) name = translatedName.replace(/@/g, "＠");
   //   if (name !== undefined) object.name = name;
   //   if (message !== undefined) object.message = message;
   //   ans.push(object);

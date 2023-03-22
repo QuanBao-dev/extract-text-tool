@@ -74,7 +74,8 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //       `&16267"「ふっ、完璧だな……」"#:NameSuffix`,
   //       `&16268"焼き鮭にキャベツの千切り、ほうれん草のお浸し、そして白米に味噌汁。"`,
   //       `&16269"和風の朝ごはん。"_BGMMode=3`,
-  //       `&1076"俺達姉弟が過去に囚われているんだと。"}1;122,2(_Choices2,1,=,){`
+  //       `&1076"俺達姉弟が過去に囚われているんだと。"}1;122,2(_Choices2,1,=,){`,
+  //       `&28320"「義理の妹ってだけですごいのに、それがよりにもよって、クラス人気ナンバー１のみこ嬢とは！　やりおるな、天坂:NameSuffix氏！！」"`
   //     ],
   //     3,
   //     false,
@@ -234,7 +235,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     }, []);
   let translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    3,
+    2,
     false,
     true,
     true,

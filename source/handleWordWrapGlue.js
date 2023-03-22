@@ -41,6 +41,7 @@ module.exports = function handleWordWrapGlue(
       : "";
     let finalText =
       prefixedText + temp2 + text.trim().replace(/["\(『「]/g, "");
+    temp2 = "";
     translatedContentList.push(
       prefix[0] +
         handleWordWrap(maxNumberChars, finalText, lineBreakString) +

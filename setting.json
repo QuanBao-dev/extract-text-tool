@@ -1,22 +1,26 @@
 {
   "replacedCharsBeforeTranslation": {
-    "別所 翔太": "Bessho Shouta",
-    "吉畑 菜緒": "Yoshihata Nao",
-    "吉畑 夏妃": "Yoshihata Natsuhi",
-    "吉畑 徹": "Yoshihata Tooru",
-    "浅間 望美": "Asama Nozomi",
-    "千本 陵": "Chimoto Ryou",
-    "富士 由香里": "Fuji Yukari"
+    "龍堂寺 士門": "Ryuudouji Shimon",
+    "観嶋 かごめ": "Mishima Kagome",
+    "竜崎 さやか": "Ryuuzaki Sayaka",
+    "竜崎 すずか": "Ryuuzaki Suzuka",
+    "桜井 穂波": "Sakurai Honami",
+    "純谷 茜": "Sumitani Akane",
+    "渡根川 麗": "Tonegawa Urara",
+    "宇都宮 智香子": "Utsunomiya Chikako"
   },
-  "replacedCharsAfterTranslation": {},
-  "replacedExactCharsAfterTranslation": {},
+  "replacedCharsAfterTranslation": {
+    
+  },
+  "replacedExactCharsAfterTranslation": {
+  },
   "bsxx": {
     "translation": {
       "folderPath": "./Bsxx",
       "numberOfSentences": 3
     },
     "wordWrap": {
-      "maxCharPerLines": 81,
+      "maxCharPerLines": 71,
       "folderPath": "./Bsxx_output"
     }
   },
@@ -32,26 +36,26 @@
   },
   "scn": {
     "translation": {
-      "folderPath": "./scn_output",
+      "folderPath": "./scn1",
       "numberOfSentences": 150,
-      "isSelects": true
+      "isSelects": false
     },
     "wordWrap": {
-      "maxCharPerLines": 49,
-      "folderPath": "./scn_output_output"
+      "maxCharPerLines": 47,
+      "folderPath": "./scn_output"
     }
   },
   "artemisAster": {
     "encoding": "utf8",
     "translation": {
-      "folderPath": "./ks",
+      "folderPath": "./ks_output_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 20,
       "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "name = ",
+      "regExpToFilterSentenceContainTagName": "savetitle",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(astver))|([{}])|(linkback =)|(linknext =)|(line =)|(hide =)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(astver))|([{}])|(linkback =)|(linknext =)|(line =)|(hide =)|(\\{\"exfont\")",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|({\"rt2\"})|({\"(/)?ruby\"(, text=\"[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆、 　 ♡＝]+\")?})",
       "addedString": "[T_NEXT]\\",
       "addedStringAfterTranslation": "\",",
@@ -59,9 +63,34 @@
       "isArtemis": true
     },
     "wordWrap": {
-      "maxCharPerLines": 267,
-      "folderPath": "./ks",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(astver))|([{}])|(linkback =)|(linknext =)|(line =)|(hide =)",
+      "maxCharPerLines": 160,
+      "folderPath": "./ks_output_output",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(astver))|([{}])|(linkback =)|(linknext =)|(line =)|(hide =)|(\\{\"exfont\")",
+      "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
+      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+    }
+  },
+  "Eroit": {
+    "encoding": "shiftjis",
+    "translation": {
+      "folderPath": "./Eroit_output_output",
+      "numberOfFiles": 1,
+      "numberOfSentences": 20,
+      "isSelects": false,
+      "isTagName": false,
+      "regExpToFilterSentenceContainTagName": "",
+      "regExpToExcludeSentenceNotNeedTranslatedContain2": "^●",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "",
+      "addedString": "",
+      "addedStringAfterTranslation": "",
+      "addedPrefixAfterTranslation": "",
+      "isArtemis": false
+    },
+    "wordWrap": {
+      "maxCharPerLines": 160,
+      "folderPath": "./ks_output_output",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(astver))|([{}])|(linkback =)|(linknext =)|(line =)|(hide =)|(\\{\"exfont\")",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
@@ -121,10 +150,10 @@
   "CUBE": {
     "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./CUBE_output_output",
+      "folderPath": "./CUBE",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
       "regExpToFilterSentenceContainTagName": "(@AddSelect)|(@chapter)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(\\@)",
@@ -144,6 +173,7 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
+
   "shina": {
     "encoding": "shiftjis",
     "translation": {
@@ -178,7 +208,7 @@
       "numberOfSentences": 300,
       "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(^#)|(_Character)",
+      "regExpToFilterSentenceContainTagName": "(^#)|(_Character)|(^(47\\())",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "(^&)",
@@ -189,7 +219,7 @@
       "isQlie": false
     },
     "wordWrap": {
-      "maxCharPerLines": 48,
+      "maxCharPerLines": 42,
       "numberOfFiles": 1,
       "folderPath": "./EAGLS_output_output_output_output_output",
       "regExpToFilterSentenceContainTagName": "^【",
@@ -229,12 +259,12 @@
   "pinpoint": {
     "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./pinpoint",
+      "folderPath": "./pinpoint_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": false,
+      "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(\\|)|(@labelopt)|(【)|(@Msg)|(@nm t=\")|(@exlink)",
+      "regExpToFilterSentenceContainTagName": "(\\|)|(@labelopt)|(【)|(@Msg)|(@nm t=\")|(@exlink)|(@overlap_ch)|(\\[Talk name)|(\\[macCmd)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(//)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[r\\]))|(^(\\[haret\\]))|(\\[m_tips)",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "",
@@ -260,7 +290,7 @@
       "numberOfSentences": 300
     },
     "wordWrap": {
-      "maxCharPerLines": 54,
+      "maxCharPerLines": 80,
       "numberOfFiles": 1,
       "folderPath": "./rpgm_1"
     }
@@ -334,7 +364,7 @@
   "ain": {
     "encoding": "utf8",
     "translation": {
-      "folderPath": "./ain",
+      "folderPath": "./ain_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
       "regExpToFilterSentenceContainTagName": "^(m\\[)"
@@ -347,7 +377,7 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "ks": {
+  "csa": {
     "encoding": "utf8",
     "translation": {
       "folderPath": "./csa_output_output",
@@ -367,8 +397,8 @@
       "isNoFilter": true
     },
     "wordWrap": {
-      "maxCharPerLines": 57,
-      "folderPath": "./srp_output",
+      "maxCharPerLines": 48,
+      "folderPath": "./pinpoint_output_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret",
@@ -506,6 +536,33 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
+  "ks": {
+    "encoding": "shiftjis",
+    "translation": {
+      "folderPath": "./ks",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300,
+      "isSelects": false,
+      "isTagName": false,
+      "regExpToFilterSentenceContainTagName": "\\[backlogtext_set",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^;)|(^(\\[))|(^(@))|(^(\\*))",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept2": "(\\[T_NEXT\\]\\\\)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
+      "addedString": "[T_NEXT]\\",
+      "addedStringAfterTranslation": "",
+      "addedPrefixAfterTranslation": "",
+      "isArtemis": false,
+      "isQlie": false
+    },
+    "wordWrap": {
+      "maxCharPerLines": 54,
+      "folderPath": "./ks",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))|(//)|(^:)",
+      "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
+      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+    }
+  },
   "Entis": {
     "encoding": "utf8",
     "translation": {
@@ -597,8 +654,8 @@
       "numberOfSentences": 300,
       "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "^(SELECT)|^(【)|^(CS)",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(@)|(^(BG))|(^(ST))|(^(CG))|((AS)$)|(^(ST))|(^(MW))|(^(\\*))|(^(CS))|(^(DAY))|(^(WA))|(^(SC))|(^(MS))|(^(SE))|(^(SELECT))|(^(VO))|(^(EV))|(^(goto))|(^(ZM))|(^(ED))|(^(XM))|(^(MV))|(^(string))|(^(if))|(^(cal))|(^(TL))|(^(ER))|(^(systemEffect))|(^(sp))|(^(systemWait))|(^(sp_d))|(^(return))|(^(gosub))|(^(setWindowVisible))",
+      "regExpToFilterSentenceContainTagName": "^(SELECT)|^(【)|^(CS)|(^(MS.HS))",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^@)|(^(BG))|(^(ST))|(^(CG))|((AS)$)|(^(ST))|(^(MW))|(^(\\*))|(^(CS))|(^(DAY))|(^(WA))|(^(SC))|(^(MS))|(^(SE))|(^(SELECT))|(^(VO))|(^(EV))|(^(goto))|(^(ZM))|(^(ED))|(^(XM))|(^(MV))|(^(string))|(^(if))|(^(cal))|(^(TL))|(^(ER))|(^(systemEffect))|(^(sp))|(^(systemWait))|(^(sp_d))|(^(return))|(^(gosub))|(^(setWindowVisible))",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
       "addedString": "[T_NEXT]\\",

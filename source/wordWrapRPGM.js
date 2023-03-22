@@ -73,7 +73,7 @@ async function wordWrapRPGM(filePath, encoding) {
       finalText = data[i];
       i--;
     }
-    return handleWordWrap(62, temp || "", "\r\n");
+    return handleWordWrap(rpgm.wordWrap.maxCharPerLines, temp || "", "\r\n");
   });
   const wordWrapDataList = dataRawList.map((data, index) => {
     let indexEndString = data.findIndex((v) => v.includes("> END STRING"));

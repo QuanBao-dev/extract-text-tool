@@ -144,14 +144,16 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //   )
   // );
   // console.log(
-  //   await translateSelectCenterTextList(
+  //   await translateOfflineSugoiCt2LongList(
   //     [
   //       "【夕里@？？？,S001_A01_0009】「貴方が夜空を見上げた時、ひときわ大きく瞬いた星、[n]それがアタシなの」",
+  //       "【ポンセ@司会ポンセ,S056_B2_0001】「第一のカード。ルールは武あり天あり！[n]北部ストームで育ったハイテンションファイター！　[n]スタイケン！！　既に８勝を挙げています！」"
   //     ],
-  //     1,
+  //     3,
+  //     false,
   //     true,
-  //     whale,
-  //     "srp"
+  //     true,
+  //     "whale"
   //   )
   // );
   // await delay(10000000);

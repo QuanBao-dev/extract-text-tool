@@ -47,20 +47,50 @@ async function translateFileCst(filePath) {
   const ans = [];
   const listOfChoice = ["(^([『「」』]))", "(([『「」』])$)"];
   for (let i = 0; i < dataList.length; i++) {
-    let { message, name } = dataList[i];
+    let { message, name, names } = dataList[i];
     let object = {};
+    // if (name !== undefined) {
+    //   // name = name.replace(/“/g, "【").replace(/”/g, "】");
+    //   name = "【" + name.split("/")[0].replace(/\./g, "") + "】";
+    // }
     if (message !== undefined) {
+      const rawMessage = message;
       message = handleWordWrap(
-        50,
-        message
-          // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
-          // .replace(/<r/g, "")
-          // .replace(/\>/g, "")
-          // .replace(/<\/s/g, "")
-          .replace(/❛/g, "'").replace(/、/g,", "),
-        "\r\n"
-      );
-
+        73,
+        message.replace(/,( )?/g, "、"),
+        // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
+        // .replace(/<r/g, "")
+        // .replace(/\>/g, "")
+        // .replace(/<\/s/g, "")
+        // .replace(/❛/g, "'")
+        // .replace(/、/g, ", ")
+        "\r\n",
+        undefined,
+        // name ? 64 - name.length - 2 : undefined
+        undefined
+      ).replace(/#/g, "＃").replace(/\(/g, "（").replace(/\)/g, "）");
+      // if (message.split("\r\n").length > 3) {
+      //   message = rawMessage.replace(/#/g, "＃");
+      // }
+      // message = message
+      //   .trim()
+      //   .replace(/,( )?/g, "、")
+      //   .split(" ")
+      //   .map((v) => {
+      //     // if (v === "") return v;
+      //     // if (v.includes("[") || v.includes("]")) {
+      //     //   return v
+      //     //     .trim()
+      //     //     // .replace(/fs/g, "")
+      //     //     // .replace(/\\/g, "")
+      //     //     // .replace(/\:/g, "")
+      //     //     // .replace(/[\[\]]/g, "");
+      //     // }
+      //     return v;
+      //     // return `[${v}]`;
+      //   })
+      //   .filter((v) => v !== "")
+      //   .join("　");
       // const specialList = message.match(
       //   /\[[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/]+\]/g
       // );
@@ -88,6 +118,7 @@ async function translateFileCst(filePath) {
       // }
     }
     if (name !== undefined) object.name = name;
+    if (names !== undefined) object.names = names;
     if (message !== undefined) object.message = message;
     ans.push(object);
     console.log(`${i + 1}/${dataList.length}`);

@@ -260,15 +260,17 @@ async function translateFileKs(filePath, encoding) {
   /////Word wrap for eagls
   const translatedTextList = rawTextList.map((text) => {
     const splittedTexts = text.split('"');
+    if(!splittedTexts[1]) return text;
     splittedTexts[1] = handleWordWrap(
       EAGLS.wordWrap.maxCharPerLines,
-      splittedTexts[1].replace(/\)/g, "）").replace(/\(/g, "（"),
+      splittedTexts[1],
       "(e)"
-    ).replace(/^((】 )?）)/g, "");
+    )
+    // .replace(/^((】 )?）)/g, "");
 
-    if (splittedTexts[1].match(/】（/g)) {
-      splittedTexts[1] += "）";
-    }
+    // if (splittedTexts[1].match(/】（/g)) {
+    //   splittedTexts[1] += "）";
+    // }
     return splittedTexts.join('"');
     return (
       splittedTexts.slice(0, 2).join('"') +
@@ -307,8 +309,8 @@ async function translateFileKs(filePath, encoding) {
   // });
   // .map(
   //   (text) =>
-  //   text.replace(/&/g, "\r\n&")
-  //   // "&" + text.split("&").slice(1).join("\r\n&").split("#").join("\r\n#")
+  //   // text.replace(/&/g, "\r\n&")
+  //   "&" + text.split("&").slice(1).join("\r\n&").split("#").join("\r\n#")
   // );
   // console.log(rawTextList)
   // let translatedTextList = await translateSelectCenterTextList(

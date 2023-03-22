@@ -93,7 +93,7 @@ async function translateFileBsxx(filePath) {
     bsxx.translation.numberOfSentences,
     false,
     true,
-    true,
+    false,
     "srp"
   );
   const translatedContentText = narrowedContentText.reduce((ans, curr) => {

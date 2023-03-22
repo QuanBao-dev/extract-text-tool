@@ -105,13 +105,23 @@ const delay = require("./delay");
   // );
   // await delay(10000000);
   // console.log(
-  //   await translateSelectCenterTextList(
+  //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "「私なんかより、グイーネの方がよほど人を導くのが上手い。　紋章は私を先に選んでしまって後悔してるだろうな。」",
-  //       "「どうせならあいつらも呼んで『やれ』ばよかったかな？『一緒に大陸を救った英雄様を調教しましょう！』ってなぁはっはっはっはっは！！」",
+  //       "\\et[3]\\ed[220]\\a・・【虚妄に附く潮流】・・　・・・・【罪咎より逃奔せんと血塗れ縺れた】・・・！\\!",
+  //       "「ああ、どれだけの強敵か知らないが残滓や大王に比べれば可愛い物だろう。はやく助け出してやろう！」",
+  //       "看守は遠慮しながらゲオルイースの尻肉に触れる。",
+  //       "ゲオルイース",
+  //       "「それにつけてもこのモンスター・・・よくも私のトキメキを奪ってくれたわね・・・！お尻の下にある宝物を取ったら燃やしてやるわ・・！」",
+  //       "それは彼女に・・・・一筋として光を与え得ないのだから・・・。\\!\\fo[120]",
+  //       "\"CG02_01\"",
+  //       "/^[\\!\\$]./",
+  //       "%w(l)"
   //     ],
   //     2,
-  //     true
+  //     false,
+  //     true,
+  //     true,
+  //     "rpgmvxace"
   //   )
   // );
   // await delay(10000000);
@@ -154,7 +164,13 @@ const delay = require("./delay");
   await delay(10000000);
 })();
 let objectCount = {};
-
+const dataBracketList = [
+  ["「", "」"],
+  ["『", "』"],
+  ["（", "）"],
+  ["【", "】"],
+  ["{", "}"],
+];
 async function translateFileRPGM(filePath, encoding) {
   const fileContent = await readFile(filePath, encoding);
   objectCount = {};
@@ -180,38 +196,61 @@ async function translateFileRPGM(filePath, encoding) {
     let i = indexEndString - 1;
     let finalText = "";
     while (data[i] && !data[i].includes(">")) {
+      if (data[i].match(/^[【－]/g)) {
+        if (data[i].match(/^【/g) && data[i].match(/】$/g)) break;
+        if (data[i].match(/^－/g) && data[i].match(/－$/g)) break;
+      }
       if (data[i + 1].match(/^[「『（【{\\]/g)) {
-        if (!data[i + 1].slice(0,data[i + 1].length - 1).match(/[】』」）}]/g)) {
+        if (data[i + 1].match(/^[\\]/g)) {
           break;
         }
+        let check = false;
+        for (let j = 0; j < dataBracketList.length; j++) {
+          const openBracketReg = new RegExp("^"+dataBracketList[j][0], "g");
+          const closeBracketReg = new RegExp(dataBracketList[j][1], "g");
+          if (
+            data[i + 1]
+              .slice(0, data[i + 1].length - 1)
+              .match(openBracketReg) &&
+            !data[i + 1].slice(0, data[i + 1].length - 1).match(closeBracketReg)
+          ) {
+            check = true;
+            break;
+          }
+        }
+        if (check) break;
       }
       temp = data[i] + temp.trim();
       finalText = data[i];
       i--;
     }
-    if (data[i + 1] && data[i + 1].match(/^[「『（【{\\]/g)) {
+    if (data[i]) {
       characterNameList.push(data[i] || "");
     } else {
       characterNameList.push("");
     }
     return temp;
   });
-  // console.log(textDialogueList)
   // const characterNameList = dataRawList.map((data) => {
   //   return data[0];
   // });
   // const translatedDialogueList = textDialogueList;
   // const translatedCharacterNameList = characterNameList;
-
-  const translatedDialogueList = await translateSelectCenterTextList(
+  const translatedDialogueList = await translateOfflineSugoiCt2LongList(
     textDialogueList,
-    3,
-    true
+    2,
+    false,
+    true,
+    true,
+    "rpgmvxace"
   );
-  const translatedCharacterNameList = await translateSelectCenterTextList(
+  const translatedCharacterNameList = await translateOfflineSugoiCt2LongList(
     characterNameList,
-    1,
-    false
+    2,
+    false,
+    true,
+    false,
+    "rpgmvxace"
   );
   let isDialogueNext = false;
   const dataList = dataRawList.map((data) => {

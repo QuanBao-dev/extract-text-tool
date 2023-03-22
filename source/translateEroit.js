@@ -5,43 +5,43 @@ const {
   translateOfflineSugoiCt2LongList,
   excludeTranslateText,
 } = require("./translateJapanese");
-const { pinpoint } = require("../setting.json");
+const { ks } = require("../setting.json");
 const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
-  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "i"
 );
 const containRegExpG = new RegExp(
-  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "g"
 );
 const containRegExpG2 = new RegExp(
-  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedContain2,
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain2,
   "g"
 );
 const exceptRegExpI = new RegExp(
-  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
   "i"
 );
 const exceptRegExpG = new RegExp(
-  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
   "g"
 );
 const exceptRegExpG2 = new RegExp(
-  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
+  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
   "g"
 );
 
 const containTagNameRegExpI = new RegExp(
-  pinpoint.translation.regExpToFilterSentenceContainTagName,
+  ks.translation.regExpToFilterSentenceContainTagName,
   "i"
 );
-const addedString = pinpoint.translation.addedString;
+const addedString = ks.translation.addedString;
 const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
-  pinpoint.translation;
+  ks.translation;
 // [一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+
 (async () => {
   // console.log(
@@ -133,9 +133,10 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       `「[m_tips t="35_フィルム速度"]フィルム速度[em_tips]、[m_tips t="36_シャッター角"]シャッター角[em_tips]、絞りはそのままで。……ズームは多少、いじってみてもいいよ」[np]`,
-  //       `　[ruby text="　う ろ ん"]胡乱げな眼差しで、美月はわたしをみつめる。[np]`,
-  //       `　薄く息を吐いて、腹筋を引き締めた。知らぬ間に、背筋が伸びる。[ruby text="ふく"]脹ら[ruby text="はぎ"]脛に力をこめ、大地を踏みしめる。[np]`
+  //       // `「[m_tips t="35_フィルム速度"]フィルム速度[em_tips]、[m_tips t="36_シャッター角"]シャッター角[em_tips]、絞りはそのままで。……ズームは多少、いじってみてもいいよ」[np]`,
+  //       // `　[ruby text="　う ろ ん"]胡乱げな眼差しで、美月はわたしをみつめる。[np]`,
+  //       // `　薄く息を吐いて、腹筋を引き締めた。知らぬ間に、背筋が伸びる。[ruby text="ふく"]脹ら[ruby text="はぎ"]脛に力をこめ、大地を踏みしめる。[np]`,
+  //       "私のことを,{ruby, text=・・・},大嫌う,{/ruby},人間を,{ruby, text=・・・・・},大好かせて,{/ruby},こそ、恋愛という土俵 で、私は強敵を倒したことになる"
   //     ],
   //     4,
   //     false,
@@ -164,11 +165,23 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateSelectCenterTextList(["\\c[lexn]リベレーター"], 1)
   // );
+
+  // console.log(await translateOfflineSugoiCt2LongList(
+  //   [
+  //     "●00003380●「でも、まだすべての脅威が消え去ったわけじゃない。いずれ第二、第三の阿久津が必ず現れるはずよ」",
+  //     "●00000062●「\\{阿久津|あくつ}\\{京真|きょうま}っ、今日こそ貴方との決着をつけさせてもらうわ！」"
+  //   ],
+  //   3,
+  //   false,
+  //   true,
+  //   true,
+  //   "Eroit"
+  // ))
   // await delay(10000000);
 
-  const listFileName = fs.readdirSync(pinpoint.translation.folderPath);
+  const listFileName = fs.readdirSync(ks.translation.folderPath);
   let start = 0;
-  let numberAsync = pinpoint.translation.numberOfFiles;
+  let numberAsync = ks.translation.numberOfFiles;
 
   do {
     try {
@@ -185,15 +198,15 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
               //   "shiftjis"
               // );
               await translateFileKs(
-                `${pinpoint.translation.folderPath}/${fileName}`,
-                pinpoint.translation.isSelects,
-                pinpoint.translation.isTagName,
-                pinpoint.encoding
+                `${ks.translation.folderPath}/${fileName}`,
+                ks.translation.isSelects,
+                ks.translation.isTagName,
+                ks.encoding
               );
             })
         );
         start += numberAsync;
-        numberAsync = pinpoint.translation.numberOfFiles;
+        numberAsync = ks.translation.numberOfFiles;
       } while (start < listFileName.length);
       break;
     } catch (error) {
@@ -227,11 +240,119 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // dataList = [...temp2];
   let temp = "";
   console.time(filePath);
+  if (isTagName) {
+    const { rawTextList, alternativeTextList } = dataList.reduce(
+      (ans, rawText) => {
+        if (rawText === "") return ans;
+        if (
+          rawText.match(containTagNameRegExpI) &&
+          rawText.match(
+            /\/[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆]+/g
+          )
+        ) {
+          // console.log(ans);
+          ans.alternativeTextList.push(
+            rawText.match(
+              /\/[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆]+/g
+            )[0]
+          );
+        }
+
+        if (
+          rawText.match(containTagNameRegExpI) &&
+          !rawText.match(
+            /\/[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆]+/g
+          )
+        ) {
+          ans.rawTextList.push(
+            rawText.match(
+              /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆]+/g
+            )[0]
+          );
+        }
+
+        return ans;
+      },
+      { alternativeTextList: [], rawTextList: [] }
+    );
+    const translatedTextList = await translateOfflineSugoiLongList(
+      rawTextList,
+      300
+    );
+    const translatedAlternativeTextList = await translateOfflineSugoiLongList(
+      alternativeTextList,
+      300
+    );
+    let count = 0;
+    let count2 = 0;
+    const translatedContentFile = dataList
+      .map((rawText) => {
+        if (!rawText.match(containTagNameRegExpI)) return rawText;
+        if (
+          rawText.match(
+            /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆]+/g
+          ) &&
+          !rawText.match(
+            /\/[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆]+/g
+          )
+        ) {
+          rawText = rawText.replace(
+            /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆]+/g,
+            translatedTextList[count2].replace("Voice of the Heart", "心の声")
+          );
+          count2++;
+        }
+        if (
+          rawText.match(
+            /\/[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆]+/g
+          )
+        ) {
+          rawText = rawText.replace(
+            /\/[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆]+/g,
+            translatedAlternativeTextList[count]
+              .replace("/ ", "/")
+              .replace("The Voice of the Heart", "心の声")
+          );
+          count++;
+        }
+        let text = rawText
+          .match(
+            /[一-龠ぁ-ゔァ-ヴーA-Zａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ -ﾟ〟！～『「」』？＆]+/g
+          )[0]
+          .replace(/name=/g, 'name="');
+        if (rawText.match(/(^	)/g)) text = rawText.match(/(	)+/g)[0] + text;
+
+        if (text.match(/ voice=/g)) {
+          text = text.replace(/ voice=/g, '" voice=');
+        }
+        if (rawText.match(/name=/i)) {
+          // text = "@Talk " + text;
+          if (!text.match(/ voice=/g)) {
+            text += '"';
+          }
+        }
+        return text;
+      })
+      .join("\r\n");
+    return await writeFile(
+      filePath,
+      translatedContentFile.replace(/\?\?\?/g, "? ? ?"),
+      encoding
+    );
+  }
   if (isSelect) {
     const translatedFileContent = (
-      await translateSelectCenterTextList(dataList, 3, false, pinpoint, "srp")
+      await translateSelectCenterTextList(dataList, 3, false, ks, "srp")
     ).join("\r\n");
-    return await writeFile(filePath, translatedFileContent, encoding);
+    return await writeFile(
+      filePath,
+      translatedFileContent,
+      // .replace(/,/g, " ,"),
+      // .replace(/\./g, " .")
+      // .replace(/ \. \. \./g, "...")
+      // .replace(/’/g, " ’")
+      encoding
+    );
   }
   let isNewDialog = true;
   let count3 = 0;
@@ -240,24 +361,18 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let isScript = false;
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
-      if (!pinpoint.translation.isNoFilter) {
-        if (rawText.includes("endscript")) {
-          isScript = false;
-        }
+      if (!ks.translation.isNoFilter) {
         if (
-          (rawText.trim().match(containRegExpI) &&
-            !rawText.trim().match(exceptRegExpI)) ||
-          rawText.trim() === "" ||
-          isScript
+          // (rawText.trim().match(containRegExpI) &&
+          //   !rawText.trim().match(exceptRegExpI)) ||
+          // rawText.trim() === "" ||
+          // isScript
           // index === 0
-          // !rawText.match(containRegExpG2)
+          !rawText.match(containRegExpG2)
           // rawText.match(containTagNameRegExpI)
           // !rawText.match(containTagNameRegExpI)
           // false
         ) {
-          if (rawText.includes("iscript")) {
-            isScript = true;
-          }
           isNewDialog = true;
           return ans;
         }
@@ -272,21 +387,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       return ans;
     }, [])
     .reduce((ans, rawText) => {
-      if (pinpoint.translation.isNoFilter) {
-        ans.push(rawText.replace(/\[Cock\]/g, ""));
-        return ans;
-      }
-      count3++;
-      temp += rawText.trim() === "---" ? "" : rawText.trim();
-      if (rawText.match(/\[Cock\]/)) {
-        // suffixList.push(
-        //   temp.match(/(\[[a-zA-Z =\[\]_]+\]+)$/g)[0].replace(/\[Cock\]/g, "")
-        // );
-        ans.push(temp.replace(/\[Cock\]/g, "").replace(/／/g,"").trim());
-        temp = "";
-        listCount.push(count3);
-        count3 = 0;
-      }
+      ans.push(rawText.replace(/\[Cock\]/g, ""));
       return ans;
     }, []);
 
@@ -326,7 +427,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     false,
     true,
     false,
-    "kiriruby"
+    "Eroit"
   );
   // const translatedTextList = rawTextList.reduce((ans, curr) => {
   //   if (curr.trim() === "") return ans;
@@ -521,34 +622,14 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // return await writeFile(filePath, translatedTextList.join("\n")+"\n", "utf8");
   isScript = false;
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
-    if (!pinpoint.translation.isNoFilter) {
-      if (rawText.includes("endscript")) {
-        isScript = false;
-      }
+    if (!ks.translation.isNoFilter) {
       if (
-        (rawText.trim().match(containRegExpI) &&
-          !rawText.trim().match(exceptRegExpI)) ||
-        rawText.trim() === "" ||
-        isScript
-        // !rawText.match(containRegExpG2)
-        // rawText.match(containTagNameRegExpI)
+        !rawText.match(containRegExpG2)
       ) {
-        if (rawText.includes("iscript")) {
-          isScript = true;
-        }
-        isDisable = false;
-      }
-      if (isDisable) return ans;
-      if (
-        (rawText.trim().match(containRegExpI) &&
-          !rawText.trim().match(exceptRegExpI)) ||
-        rawText.trim() === "" ||
-        isScript
-        // !rawText.match(containTagNameRegExpI)
-        // index === 0
-        // !rawText.match(containRegExpG2)
-        // rawText.match(containTagNameRegExpI)
-      ) {
+        // if (rawText === '\t\t\t\t\t{"exfont"},') {
+        //   ans[ans.length - 1] = rawText;
+        //   return ans;
+        // }
         ans.push(rawText);
         return ans;
       }
@@ -560,28 +641,33 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       //   temp = rawText.match(/(	)+/g)[0] + temp;
       // }
       temp = temp;
-      ans.push(
-        // handleWordWrap(
-        //   Math.floor(temp.length / listCount[count]) < 41
-        //     ? Math.floor(temp.length / listCount[count])
-        //     : 46,
-        //   temp,
-        //   "\r\n",
-        //   listCount[count]
-        // )
-        // handleWordWrap(57, temp, "\\n")
-        // handleWordWrap(56, temp, "\r\n", listCount[count], undefined)
-        // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
-        temp
-        // .replace(/,( )?/g, "、")
-        // .replace(/、/g, ", ")
-        // .replace(/[◆✩♥♡●♪]/g, "")
-        // .replace(/❛/g, "’")
-        // .replace(/é/g, "e")
-        // .replace(/ō/g, "o")
-        // .replace(/[àâ]/g, "a")
-      );
-      if (pinpoint.translation.isArtemis) ans.push('					{"rt2"},');
+      if (temp === "") {
+        ans.push('					{"rt2"},');
+      } else {
+        ans.push(
+          // handleWordWrap(
+          //   Math.floor(temp.length / listCount[count]) < 41
+          //     ? Math.floor(temp.length / listCount[count])
+          //     : 46,
+          //   temp,
+          //   "\r\n",
+          //   listCount[count]
+          // )
+          // handleWordWrap(57, temp, "\\n")
+          // handleWordWrap(56, temp, "\r\n", listCount[count], undefined)
+          // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
+          // '					"' + temp + '",'
+          temp
+          // .replace(/,( )?/g, "、")
+          // .replace(/、/g, ", ")
+          // .replace(/[◆✩♥♡●♪]/g, "")
+          // .replace(/❛/g, "’")
+          // .replace(/é/g, "e")
+          // .replace(/ō/g, "o")
+          // .replace(/[àâ]/g, "a")
+        );
+        if (ks.translation.isArtemis) ans.push('					{"rt2"},');
+      }
     } else {
       ans.push("");
     }

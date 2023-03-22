@@ -33,7 +33,7 @@ const containRegExpI = new RegExp(
 })();
 
 async function wordWrapKs(filePath) {
-  const fileContent = await readFile(filePath, "shiftjis");
+  const fileContent = await readFile(filePath, "utf8");
 
   // await writeFile(filePath, fileContent, "shiftjis");
   // const fileContent2 = await readFile(
@@ -49,12 +49,17 @@ async function wordWrapKs(filePath) {
   //   "gbk"
   // );
   // return await writeFile(filePath, fileContent2, "utf8");
-  // return await writeFile(filePath, handleWordWrapArtemis(fileContent), "utf8");
+  return await writeFile(filePath, handleWordWrapArtemis(fileContent), "utf8");
   // return await writeFile(filePath, handleWordWrapArtemis2(fileContent), "utf8");
   // return await writeFile(filePath, handleWordWrapQlieVN(fileContent), "utf16");
   // await writeFile(filePath, handleWordWrapShina(fileContent), "shiftjis");
   // return await writeFile(filePath, handleWordWrapKs(fileContent), "shiftjis");
-  return await writeFile(filePath, handleWordWrapSrp(fileContent), "shiftjis");
+  // return await writeFile(
+  //   filePath,
+  //   handleWordWrapKs.handleWordWrapPoison(fileContent),
+  //   "shiftjis"
+  // );
+  // return await writeFile(filePath, handleWordWrapSrp(fileContent), "shiftjis");
   const dataList = fileContent.split(/\r\n/i);
   let isHighLight = false;
   const rawTextList = dataList.reduce((ans, rawText) => {
