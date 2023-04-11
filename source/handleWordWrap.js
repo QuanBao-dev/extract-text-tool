@@ -8,6 +8,7 @@ module.exports = function handleWordWrap(
 ) {
   let count = 0;
   const rawMaxNumberOfChar = maxNumberOfChar;
+  const rawLineBreakString = lineBreakString;
   // const tagName = text.match(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g)
   //   ? text.match(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g)[0]
   //   : "";
@@ -39,12 +40,15 @@ module.exports = function handleWordWrap(
     // .replace(/\.\.\./g," ...")
     // .replace(/,( )?/g, "、")
     .replace(/&/g, "＆")
-    .replace(/、/g, ", ");
+    // .replace(/、/g, ", ")
+    .replace(/’/g, "'")
+    .replace(/”」/g, "」");
   // filteredText = replaceTagName(filteredText, [2], "g");
   // filteredText = replaceTagName(filteredText, [3], "gi");
   const words = filteredText.split(" ");
   let ans = "";
   let sum = 0;
+  let temp = 0;
   let count2 = 0;
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
@@ -61,13 +65,15 @@ module.exports = function handleWordWrap(
       ans = ans.slice(0, ans.length - 1);
       sum = (word + " ").length;
       // lineBreakString += " ";
+      if (rawLineBreakString === " ") lineBreakString = " ";
       if (lineBreakString === " ") {
         lineBreakString = Array.from(
-          Array(maxNumberOfChar - (ans.length - 1)).keys()
+          Array(maxNumberOfChar - (ans.length - 1 - temp)).keys()
         )
           .map(() => " ")
           .join("");
       }
+      temp = (ans + lineBreakString).length;
       ans += lineBreakString + word + " ";
       priorityWordWrap = undefined;
       count++;
@@ -91,10 +97,40 @@ module.exports = function handleWordWrap(
   //     Array(limitBreak - finalResult.split(lineBreakString).length).keys()
   //   )
   //     .map(() => lineBreakString)
-  //     .join("---");
+  //     .join("MTLTOOL");
   // }
 
   // return `\t\t["text"] = {[[` + finalResult + `]]},`;
-  return finalResult.replace(/\\k/g, "\\k\n")
+  return finalResult.replace(/\\k/g, "\\k\n");
   // .replace(/,( )?/g, "、");
 };
+
+function handleBracket(text) {
+  const listOfChoice = [
+    `[…。♪:：〟！～『「」』？]`,
+    "…",
+    "(([『「」』])$)|(^([『「」』]))",
+    "(^([『「」』]))",
+    "(([『「」』])$)",
+  ];
+  let temp = text;
+  if (
+    !text.trim().match(new RegExp(listOfChoice[3], "g")) &&
+    text.trim().match(new RegExp(listOfChoice[4], "g"))
+  ) {
+    if (text.trim().match(new RegExp(listOfChoice[4], "g"))[0] === "」")
+      temp = "「" + temp;
+    if (text.trim().match(new RegExp(listOfChoice[4], "g"))[0] === "』")
+      temp = "『" + temp;
+  }
+  // if (
+  //   text.trim().match(new RegExp(listOfChoice[4], "g")) &&
+  //   !text.trim().match(new RegExp(listOfChoice[3], "g"))
+  // ) {
+  //   if (text.trim().match(new RegExp(listOfChoice[4], "g"))[0] === "」")
+  //     temp = "「" + temp;
+  //   if (text.trim().match(new RegExp(listOfChoice[4], "g"))[0] === "』")
+  //     temp = "『" + temp;
+  // }
+  return temp
+}

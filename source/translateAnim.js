@@ -6,7 +6,7 @@ const {
   translateOfflineSugoiCt2LongList,
 } = require("./translateJapanese");
 const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
-const handleWordWrap = require("./handleWordWrap");
+// const handleWordWrap = require("./handleWordWrap");
 const converter = new AFHConvert();
 (async () => {
   // console.log(
@@ -83,27 +83,27 @@ const converter = new AFHConvert();
   // } while (i < translatedTextList.length - 1);
   // console.log(rawTextList)
   const translationList = await translateOfflineSugoiCt2LongList(
-    rawTextList.map((text) => text.replace(/◆/g, "")),
+    rawTextList.map((text) => text.replace(/◆/g, ""))
     // .map((v) => json[v])
     // .filter(
     //   (rawText) => !rawText.match(/_/g)
     //   && rawText !== "@@" && rawText !== ""
     //   // (rawText) => json[rawText] !== ""
     // ),
-    // .map((rawText) => {
-    //   let textList = rawText.match(
-    //     /@\[[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆:]+\]/g
-    //   );
-    //   if (!textList) return rawText;
-    //   for (let i = 0; i < textList.length; i++) {
-    //     rawText = rawText.replace(
-    //       textList[i],
-    //       textList[i].split(":")[1].replace("@[", "").replace("]", "")
-    //     );
-    //   }
-    //   return rawText;
-    // })
-    3,
+    .map((rawText) => {
+      let textList = rawText.match(
+        /@\[[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆:]+\]/g
+      );
+      if (!textList) return rawText;
+      for (let i = 0; i < textList.length; i++) {
+        rawText = rawText.replace(
+          textList[i],
+          textList[i].split(":")[1].replace("@[", "").replace("]", "")
+        );
+      }
+      return rawText;
+    }),
+    2,
     false,
     true,
     true,

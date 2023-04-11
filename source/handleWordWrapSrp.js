@@ -29,7 +29,11 @@ module.exports = function handleWordWrapSrp(fileContent) {
     return "";
   });
   ans = ans.reduce((result, data, index) => {
-    if (data.length === 4 || data[0] === "00003000"|| data[0] === "00001000") {
+    if (data[0] === "00000500") {
+      result.push(data.join("\n"));
+      return result;
+    }
+    if (data.length === 4 || data[0] === "00003000" || data[0] === "00001000") {
       const temp = [];
       const blockText = blockTextList[index];
       for (let j = 0; j < blockText.length; j++) {
@@ -44,7 +48,9 @@ module.exports = function handleWordWrapSrp(fileContent) {
         } else {
           temp.push(
             [
-              data[0] === "00003000"|| data[0] === "00001000" ? "00000000" : data[0],
+              data[0] === "00003000" || data[0] === "00001000"
+                ? `00002000`
+                : data[0],
               ...data.slice(1, data.length - 2),
               blockText[j],
             ].join("\n")

@@ -17,7 +17,7 @@ module.exports = function handleWordWrapShina(fileContent) {
         acc.push(block);
         return acc;
       }
-      let temp = handleWordWrap(40, block, "\r\n");
+      let temp = handleWordWrap(56, block, "\r\n");
       temp = temp.split("\r\n").map((text) => {
         if (text.match(containRegExpI) || text === "") {
           return text;

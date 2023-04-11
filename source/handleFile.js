@@ -18,11 +18,12 @@ async function writeFile(filePathInput, text, encoding) {
     // const fileContentRaw = await readFile(filePathInput, "ISO8859-1");
     let dataTextList = text.split("\r\n");
     dataTextList = dataTextList.map((text, key) => {
+      // return iconv.encode(
+      //   // fileContentRaw.split("\r\n")[key] + "\r\n",
+      //   text,
+      //   "ISO8859-1"
+      // );
       // if (key === 0) {
-      //   return iconv.encode(
-      //     fileContentRaw.split("\r\n")[key] + "\r\n",
-      //     "ISO8859-1"
-      //   );
       // }
       return iconv.encode(text + "\r\n", encoding);
     });

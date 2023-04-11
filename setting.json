@@ -1,18 +1,25 @@
 {
   "replacedCharsBeforeTranslation": {
-    "龍堂寺 士門": "Ryuudouji Shimon",
-    "観嶋 かごめ": "Mishima Kagome",
-    "竜崎 さやか": "Ryuuzaki Sayaka",
-    "竜崎 すずか": "Ryuuzaki Suzuka",
-    "桜井 穂波": "Sakurai Honami",
-    "純谷 茜": "Sumitani Akane",
-    "渡根川 麗": "Tonegawa Urara",
-    "宇都宮 智香子": "Utsunomiya Chikako"
+    "綾瀬 涼風": "Ayase Suzuka",
+    "吉川 一翔": "Yoshikawa Kazuto",
+    "興津 凛太郎": "Okitsu Rintarou",
+    "佐倉 乃愛": "Sakura Noa"
   },
-  "replacedCharsAfterTranslation": {
-    
-  },
+  "replacedCharsAfterTranslation": {},
   "replacedExactCharsAfterTranslation": {
+    "No, no, no.": "No",
+    "Yes, sir.": "Yes"
+  },
+
+  "yuris": {
+    "translation": {
+      "folderPath": "./yuris_output_output",
+      "numberOfSentences": 3
+    },
+    "wordWrap": {
+      "maxCharPerLines": 69,
+      "folderPath": "./yuris_output"
+    }
   },
   "bsxx": {
     "translation": {
@@ -20,7 +27,7 @@
       "numberOfSentences": 3
     },
     "wordWrap": {
-      "maxCharPerLines": 71,
+      "maxCharPerLines": 69,
       "folderPath": "./Bsxx_output"
     }
   },
@@ -36,12 +43,12 @@
   },
   "scn": {
     "translation": {
-      "folderPath": "./scn1",
+      "folderPath": "./scn_output_output",
       "numberOfSentences": 150,
-      "isSelects": false
+      "isSelects": true
     },
     "wordWrap": {
-      "maxCharPerLines": 47,
+      "maxCharPerLines": 54,
       "folderPath": "./scn_output"
     }
   },
@@ -96,14 +103,14 @@
     }
   },
   "qlie": {
-    "encoding": "utf16",
+    "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./qlie_output",
+      "folderPath": "./qlie_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
       "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(^【)|(^\\^select)",
+      "regExpToFilterSentenceContainTagName": "(^\\^select)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^\\^)|(^@)|(^％)|(^(\\\\))|(^#)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "#@#@$@$",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
@@ -114,22 +121,22 @@
       "isQlie": true
     },
     "wordWrap": {
-      "maxCharPerLines": 54,
-      "folderPath": "./qlie_output_output",
+      "maxCharPerLines": 56,
+      "folderPath": "./qlie_output_output_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^\\^)|(^@)|(^％)|(^(\\\\))|(■)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "SystemC": {
+  "systemC": {
     "encoding": "utf8",
     "translation": {
-      "folderPath": "./ks_output_output_output_output",
+      "folderPath": "./ks_output",
       "numberOfFiles": 1,
       "numberOfSentences": 150,
-      "isSelects": false,
+      "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(（[０-９]+）)",
+      "regExpToFilterSentenceContainTagName": "(　（[０-９]+）)$",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(MV_)|(LB_)|(KM_)|(EF_)|(SC_)|(（[０-９]+）)|(_)|(\\/)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "DS#SA",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
@@ -257,14 +264,14 @@
     }
   },
   "pinpoint": {
-    "encoding": "shiftjis",
+    "encoding": "utf8",
     "translation": {
-      "folderPath": "./pinpoint_output",
+      "folderPath": "./pinpoint_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(\\|)|(@labelopt)|(【)|(@Msg)|(@nm t=\")|(@exlink)|(@overlap_ch)|(\\[Talk name)|(\\[macCmd)",
+      "regExpToFilterSentenceContainTagName": "(\\|)|(@labelopt)|(【)|(@Msg)|(@nm t=\")|(@exlink)|(@overlap_ch)|(\\[Talk name)|(\\[macCmd)|(\\[NAME_)|(SELECT_CENTER)|(text=)|(\\[eval exp=)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(//)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[r\\]))|(^(\\[haret\\]))|(\\[m_tips)",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "",
@@ -276,7 +283,33 @@
     },
     "wordWrap": {
       "maxCharPerLines": 54,
-      "folderPath": "./ks_output",
+      "folderPath": "./pinpoint_output_output_output",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
+      "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
+      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+    }
+  },
+  "pinpoint": {
+    "encoding": "shiftjis",
+    "translation": {
+      "folderPath": "./ks",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300,
+      "isSelects": false,
+      "isTagName": false,
+      "regExpToFilterSentenceContainTagName": "(\\|)|(@labelopt)|(【)|(@Msg)|(@nm t=\")|(@exlink)|(@overlap_ch)|(\\[Talk name)|(\\[macCmd)|(\\[NAME_)|(SELECT_CENTER)|(text=)|(\\[eval exp=)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(//)",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[r\\]))|(^(\\[haret\\]))|(\\[m_tips)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain2": "",
+      "addedString": "[T_NEXT]\\",
+      "addedStringAfterTranslation": "",
+      "addedPrefixAfterTranslation": "",
+      "isArtemis": false,
+      "isQlie": false
+    },
+    "wordWrap": {
+      "maxCharPerLines": 54,
+      "folderPath": "./pinpoint_output_output_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
@@ -288,6 +321,22 @@
       "folderPath": "./rpgm",
       "numberOfFiles": 1,
       "numberOfSentences": 300
+    },
+    "wordWrap": {
+      "maxCharPerLines": 80,
+      "numberOfFiles": 1,
+      "folderPath": "./rpgm_1"
+    }
+  },
+  "rpgmmv": {
+    "encoding": "utf8",
+    "translation": {
+      "folderPath": "./rpgmmv_2_output_output",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300,
+      "isMenu": false,
+      "isMenu2": true,
+      "isSelect": false
     },
     "wordWrap": {
       "maxCharPerLines": 80,
@@ -431,16 +480,16 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "artemis": {
-    "encoding": "shiftjis",
+  "ks": {
+    "encoding": "utf8",
     "translation": {
-      "folderPath": "./ks_output_output",
+      "folderPath": "./ks_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
       "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "\\[name",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(scenario\\[))|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))|(^(/))",
+      "regExpToFilterSentenceContainTagName": "(^#)|(^\\[voconfig)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(scenario\\[))|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))|(^(/))|(^#)|(\\[dummy\\])|(\\[rt\\])",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(^(\\[ruby))|(^(\\[咲奈))",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "\\[\"label\"\\] = \\[\\[select",
       "addedString": "",
@@ -452,7 +501,7 @@
     "wordWrap": {
       "maxCharPerLines": 42,
       "folderPath": "./ks_output",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "\t\t\\[\"text\"\\] = ",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(scenario\\[))|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))|(^(/))|(^#)|(\\[dummy\\])|(\\[rt\\])",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
@@ -536,7 +585,7 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "ks": {
+  "Kiri": {
     "encoding": "shiftjis",
     "translation": {
       "folderPath": "./ks",
@@ -544,7 +593,7 @@
       "numberOfSentences": 300,
       "isSelects": false,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "\\[backlogtext_set",
+      "regExpToFilterSentenceContainTagName": "(\\[seladd)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^;)|(^(\\[))|(^(@))|(^(\\*))",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))",
       "regExpToExcludeSentenceNotNeedTranslatedExcept2": "(\\[T_NEXT\\]\\\\)",
@@ -638,7 +687,7 @@
       "isQlie": false
     },
     "wordWrap": {
-      "maxCharPerLines": 65,
+      "maxCharPerLines": 64,
       "maxLinePerDialog": 2,
       "folderPath": "./srp_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",

@@ -51,13 +51,22 @@ async function translateFileCst(filePath) {
     let object = {};
     // if (name !== undefined) {
     //   // name = name.replace(/“/g, "【").replace(/”/g, "】");
-    //   name = "【" + name.split("/")[0].replace(/\./g, "") + "】";
+    //   name = name
+    //     .split("/")[0]
+    //     .replace(/\./g, "")
+    //     .replace(/“/g, "")
+    //     .replace(/”/g, "")
+    //     .replace(/m/g, "m ")
+    //     .replace(/M/g, "M ")
+    //     .replace(/G/g, "G ")
+    //     .replace(/w/g, "w ")
+    //     .replace(/W/g, "W ");
     // }
     if (message !== undefined) {
       const rawMessage = message;
       message = handleWordWrap(
-        73,
-        message.replace(/,( )?/g, "、"),
+        56,
+        message,
         // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
         // .replace(/<r/g, "")
         // .replace(/\>/g, "")
@@ -66,12 +75,19 @@ async function translateFileCst(filePath) {
         // .replace(/、/g, ", ")
         "\r\n",
         undefined,
-        // name ? 64 - name.length - 2 : undefined
-        undefined
-      ).replace(/#/g, "＃").replace(/\(/g, "（").replace(/\)/g, "）");
-      // if (message.split("\r\n").length > 3) {
-      //   message = rawMessage.replace(/#/g, "＃");
-      // }
+        name ? 56 - name.length - 2 : undefined
+        // undefined
+      )
+        .replace(/#/g, "＃")
+        .replace(/@/g, "＠");
+      // .replace(/m/g, "m ")
+      // .replace(/M/g, "M ")
+      // .replace(/G/g, "G ")
+      // .replace(/w/g, "w ")
+      // .replace(/W/g, "W ");
+      if (message.split("\r\n").length > 3) {
+        message = rawMessage.replace(/#/g, "＃");
+      }
       // message = message
       //   .trim()
       //   .replace(/,( )?/g, "、")

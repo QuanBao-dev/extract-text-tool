@@ -56,28 +56,11 @@ async function translateFileCst(filePath) {
   );
   const nameList = dataList.map(({ name }) => name);
   const namesList = dataList.map(({ names }) => names);
-  const translatedMessageList = await translateOfflineSugoiCt2LongList(
-    messageList.map((message) => {
-      const specialList = message.match(
-        /\[[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/]+\]/g
-      );
-      if (specialList)
-        for (let i = 0; i < specialList.length; i++) {
-          const special = specialList[i].split("/")[0];
-          message = message.replace(specialList[i], special.replace("[", ""));
-        }
-      return message;
-    }),
-    3,
-    false,
-    true,
-    false,
-    "cst"
-  );
+  // console.log(nameList)
   const translatedNameList = (
     await translateOfflineSugoiCt2LongList(
       nameList,
-      1,
+      2,
       false,
       false,
       false,
@@ -87,12 +70,32 @@ async function translateFileCst(filePath) {
   // const translatedNameList = nameList;
   const translatedNamesList = await translateOfflineSugoiCt2LongList(
     namesList,
-    1,
+    2,
     false,
     false,
     false,
     "cst"
   );
+
+  const translatedMessageList = await translateOfflineSugoiCt2LongList(
+    messageList.map((message) => {
+      const specialList = message.match(
+        /≪[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+≫/g
+      );
+      if (specialList)
+        for (let i = 0; i < specialList.length; i++) {
+          const special = specialList[i].split("／")[0];
+          message = message.replace(specialList[i], special.replace("≪", ""));
+        }
+      return message;
+    }),
+    2,
+    false,
+    true,
+    false,
+    "cst"
+  );
+  // const translatedMessageList = messageList
   // const translatedNamesList = namesList;
   const ans = translatedMessageList.reduce((result, translatedMessage, key) => {
     const name = translatedNameList[key];

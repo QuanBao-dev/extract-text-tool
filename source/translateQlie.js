@@ -44,7 +44,6 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   qlie.translation;
 // [一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+
 (async () => {
-
   const listFileName = fs.readdirSync(qlie.translation.folderPath);
   let start = 0;
   let numberAsync = qlie.translation.numberOfFiles;
@@ -94,7 +93,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   console.time(filePath);
   if (isSelect) {
     const translatedFileContent = (
-      await translateSelectCenterTextList(dataList, 3, false, qlie, "srp",true)
+      await translateSelectCenterTextList(dataList, 3, false, qlie, "srp", true)
     ).join("\r\n");
     return await writeFile(filePath, translatedFileContent, encoding);
   }
@@ -132,13 +131,21 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       }
       return ans;
     }, []);
-  const translatedTextList = await translateOfflineSugoiCt2LongList(
+  // const translatedTextList = await translateOfflineSugoiCt2LongList(
+  //   rawTextList,
+  //   2,
+  //   false,
+  //   true,
+  //   true,
+  //   "qlie"
+  // );
+  const translatedTextList = await translateSelectCenterTextList(
     rawTextList,
-    3,
+    2,
     false,
-    true,
-    true,
-    "srp"
+    qlie,
+    "qlie",
+    true
   );
   let count = 0;
   let isDisable = false;
@@ -190,7 +197,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // handleWordWrap(56, temp, "\r\n", listCount[count], undefined)
         // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
         temp
-        // .replace(/,( )?/g, "、")
+        // .replace(/,( )?/g, "、") 
         // .replace(/、/g, ", ")
         // .replace(/[◆✩♥♡●♪]/g, "")
         // .replace(/❛/g, "’")

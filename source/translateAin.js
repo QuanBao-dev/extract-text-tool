@@ -225,80 +225,78 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // console.log(rawTextList)
   // let translatedTextList = await translateOfflineSugoiCt2LongList(
   //   rawTextList,
-  //   3,
+  //   2,
   //   false,
   //   true,
   //   true,
   //   "ain"
   // );
 
-  // console.log(translatedTextList)
   // let translatedTextList = [...rawTextList].map((v) => {
-  //   return handleWordWrap(47, v, "\r\n");
+  //   return handleWordWrap(43, v, "\\r\\n");
   // });
 
-  // let translatedTextList = [...rawTextList];
-  // let i = 0;
-  // // console.log(translatedTextList)
-  // do {
-  //   const currentText = translatedTextList[i]
-  //     .replace(/m\[[0-9]+\] = "/g, "")
-  //     .replace(/"$/g, "");
-  //   const nextText = translatedTextList[i + 1]
-  //     .replace(/m\[[0-9]+\] = "/g, "")
-  //     .replace(/"$/g, "");
-  //   const prefix = translatedTextList[i].match(/m\[[0-9]+\] = "/g)[0];
-  //   const nextPrefix = translatedTextList[i + 1].match(/m\[[0-9]+\] = "/g)[0];
-  //   const wordWrappedText = handleWordWrap(1000, currentText, "\\n");
-  //   const splittedTextList = wordWrappedText.split("\\n");
-  //   if (nextText === "@@" && splittedTextList.length > 1) {
-  //     translatedTextList[i] =
-  //       prefix +
-  //       splittedTextList[0].replace(/[『「]/g, "“").replace(/[」』]/g, "”") +
-  //       '"';
-  //     translatedTextList[i + 1] =
-  //       nextPrefix +
-  //       " " +
-  //       splittedTextList
-  //         .slice(1)
-  //         .join(" ")
-  //         .replace(/[『「]/g, "“")
-  //         .replace(/[」』]/g, "”") +
-  //       '"';
-  //   }
-  //   translatedTextList[i] = translatedTextList[i]
-  //     .replace(/[『「]/g, "“")
-  //     .replace(/[」』]/g, "”");
-  //   i++;
-  // } while (i < translatedTextList.length - 1);
+  let translatedTextList = [...rawTextList];
+  let i = 0;
+  // console.log(translatedTextList)
+  do {
+    const currentText = translatedTextList[i]
+      .replace(/m\[[0-9]+\] = "/g, "")
+      .replace(/"$/g, "");
+    const nextText = translatedTextList[i + 1]
+      .replace(/m\[[0-9]+\] = "/g, "")
+      .replace(/"$/g, "");
+    const prefix = translatedTextList[i].match(/m\[[0-9]+\] = "/g)[0];
+    const nextPrefix = translatedTextList[i + 1].match(/m\[[0-9]+\] = "/g)[0];
+    const wordWrappedText = handleWordWrap(67, currentText, "\\n");
+    const splittedTextList = wordWrappedText.split("\\n");
+    if (nextText === "@@" && splittedTextList.length > 1) {
+      translatedTextList[i] =
+        prefix +
+        splittedTextList[0].replace(/[『「]/g, "“").replace(/[」』]/g, "”") +
+        '"';
+      translatedTextList[i + 1] =
+        nextPrefix +
+        splittedTextList
+          .slice(1)
+          .join(" ")
+          .replace(/[『「]/g, "“")
+          .replace(/[」』]/g, "”") +
+        '"';
+    }
+    translatedTextList[i] = translatedTextList[i]
+      .replace(/[『「]/g, "“")
+      .replace(/[」』]/g, "”");
+    i++;
+  } while (i < translatedTextList.length - 1);
 
   // translatedTextList = handleWordWrapGlue(rawTextList, 10000, "\\r\\n",true)
 
-  translatedTextList = rawTextList.map((text) => {
-    const prefix = text.match(/m\[[0-9]+\] = "/g);
-    const textContent = text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "");
-    if (text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "") === "@@") {
-      return prefix + '"';
-    }
-    return (
-      prefix +
-      handleWordWrap(
-        83,
-        textContent
-          .replace(/m\[[0-9]+\] = "/g, "")
-          .replace(/"$/g, "")
-          .trim(),
-        "\\r\\n"
-      )
-        .replace(/[「『]/g, "“")
-        .replace(/[」』]/g, "”")
-        .replace(/…/g, "...")
-        .replace(/、/g, ", ")
-        .replace(/？/g, "? ")
-        .replace(/。/g, ". ") +
-      '"'
-    );
-  });
+  // translatedTextList = rawTextList.map((text) => {
+  //   const prefix = text.match(/m\[[0-9]+\] = "/g);
+  //   const textContent = text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "");
+  //   if (text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "") === "@@") {
+  //     return prefix + '"';
+  //   }
+  //   return (
+  //     prefix +
+  //     handleWordWrap(
+  //       43,
+  //       textContent
+  //         .replace(/m\[[0-9]+\] = "/g, "")
+  //         .replace(/"$/g, "")
+  //         .trim(),
+  //       "\\n"
+  //     )
+  //       .replace(/[「『]/g, "“")
+  //       .replace(/[」』]/g, "”")
+  //       .replace(/…/g, "...")
+  //       .replace(/、/g, ", ")
+  //       .replace(/？/g, "? ")
+  //       .replace(/。/g, ". ") +
+  //     '"'
+  //   );
+  // });
   // const translatedTextList = rawTextList;
   // console.log(translatedTextList);
   let count = 0;
@@ -333,6 +331,13 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           .replace(/é/g, "e")
           .replace(/ō/g, "o")
           .replace(/[àâ]/g, "a")
+          .replace(/？/g, "? ")
+          .replace(/、/g, ", ")
+          .replace(/’/g, "'")
+          .replace(/…/g, "...")
+          .replace(/。/g, ". ")
+          .replace(/@@/g, "")
+          .replace(/＊/g, "*")
       );
       if (ain.translation.isArtemis) ans.push('					{"rt2"},');
     } else {

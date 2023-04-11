@@ -7,7 +7,7 @@ const {
 } = require("./translateJapanese");
 const { ks } = require("../setting.json");
 const delay = require("./delay");
-// const handleWordWrap = require("./handleWordWrap");
+const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
@@ -34,6 +34,7 @@ const exceptRegExpG2 = new RegExp(
   ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
   "g"
 );
+const iconv = require("iconv-lite");
 
 const containTagNameRegExpI = new RegExp(
   ks.translation.regExpToFilterSentenceContainTagName,
@@ -136,7 +137,8 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //       // `「[m_tips t="35_フィルム速度"]フィルム速度[em_tips]、[m_tips t="36_シャッター角"]シャッター角[em_tips]、絞りはそのままで。……ズームは多少、いじってみてもいいよ」[np]`,
   //       // `　[ruby text="　う ろ ん"]胡乱げな眼差しで、美月はわたしをみつめる。[np]`,
   //       // `　薄く息を吐いて、腹筋を引き締めた。知らぬ間に、背筋が伸びる。[ruby text="ふく"]脹ら[ruby text="はぎ"]脛に力をこめ、大地を踏みしめる。[np]`,
-  //       "私のことを,{ruby, text=・・・},大嫌う,{/ruby},人間を,{ruby, text=・・・・・},大好かせて,{/ruby},こそ、恋愛という土俵 で、私は強敵を倒したことになる"
+  //       // "私のことを,{ruby, text=・・・},大嫌う,{/ruby},人間を,{ruby, text=・・・・・},大好かせて,{/ruby},こそ、恋愛という土俵 で、私は強敵を倒したことになる"
+  //       `いくらなんでも、[ruby text="まさひろ"]昌弘[/ruby]さんを裏切るのは……」`
   //     ],
   //     4,
   //     false,
@@ -169,16 +171,13 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "　ガタガタガタッ、ゴトン……ブロロロロロローーーー。",
-
-  //       "【龍堂寺】「まったく、この路線バスというものは、転寝するのにふさわしくないな……」",
-
-  //       "　どうやら、工事のせいで渋滞に巻き込まれているようだ。仕方なく、その重い瞼を開けてみる……。",
+  //       "あは♡どや、ウチのおっぱいの感触♡",
+  //       "肌のきめ細かさには自信あんねんで♡"
   //     ],
   //     3,
   //     false,
   //     true,
-  //     true,
+  //     false,
   //     "kiri-mink"
   //   )
   // );
@@ -233,7 +232,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   filePath.replace(/csv/g, "txt"),
   //   encoding
   // );
-  let dataList = fileContent.split(/\r\n/g);
+  let dataList = fileContent.split(/\n/g);
   // let rawTranslatedDataList = translatedRawFileContent.split(/\r\n/g);
   // let dumpList = dumpFileContent.split(/\r\n/g);
   // console.log(dataList);
@@ -347,7 +346,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   }
   if (isSelect) {
     const translatedFileContent = (
-      await translateSelectCenterTextList(dataList, 3, false, ks, "srp")
+      await translateSelectCenterTextList(dataList, 3, false, ks, "kiri-mink")
     ).join("\r\n");
     return await writeFile(
       filePath,
@@ -392,7 +391,16 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       return ans;
     }, [])
     .reduce((ans, rawText) => {
-      ans.push(rawText.replace(/\[Cock\]/g, ""));
+      // ans.push(rawText.replace(/\[Cock\]/g, "").trim());
+      // return ans;
+      count3++;
+      temp += rawText.trim() === "---" ? "" : rawText.trim();
+      if (rawText.match(/\[Cock\]/)) {
+        ans.push(temp.replace(/\[Cock\]/g, "").trim());
+        temp = "";
+        listCount.push(count3);
+        count3 = 0;
+      }
       return ans;
     }, []);
 
@@ -432,8 +440,38 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     false,
     true,
     true,
-    "kiri-mink"
+    "kiriruby"
   );
+  // const translatedTextList = await translateSelectCenterTextList(
+  //   rawTextList,
+  //   2,
+  //   false,
+  //   ks,
+  //   "srp",
+  //   false
+  // );
+
+  // const textList = fileContent
+  //   .replace(/(ﾇﾏ)|(ｸ)|(Ｐゴシック)|(ＭＳ)|(ﾈ)|(%)|(ｮ)|(ﾐ)|(ｴ)|(ﾀ)|(ﾝ)/g, "")
+  //   .match(
+  //     /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞（）♀♂♪（）─〇☆―〜゛×・○“”♥　、☆]+/g
+  //   );
+  // const translatedTextList = await translateOfflineSugoiCt2LongList(
+  //   textList,
+  //   2,
+  //   false,
+  //   true,
+  //   false,
+  //   "srp"
+  // );
+  // let ans = fileContent;
+  // textList.forEach((v, index) => {
+  //   if (v.length !== 1) {
+  //     ans = ans.replace(v, translatedTextList[index]);
+  //   }
+  // });
+  // return await writeFile(filePath, ans, encoding);
+
   // const translatedTextList = rawTextList.reduce((ans, curr) => {
   //   if (curr.trim() === "") return ans;
   //   if (!curr.trim().match(/^(<)/g)) {
@@ -670,14 +708,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         ans.push("");
       } else {
         ans.push(
-          // handleWordWrap(
-          //   Math.floor(temp.length / listCount[count]) < 41
-          //     ? Math.floor(temp.length / listCount[count])
-          //     : 46,
-          //   temp,
-          //   "\r\n",
-          //   listCount[count]
-          // )
+          // handleWordWrap(100000, temp, "\r\n", listCount[count])
           // handleWordWrap(57, temp, "\\n")
           // handleWordWrap(56, temp, "\r\n", listCount[count], undefined)
           // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
@@ -703,7 +734,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // .filter((text) => text !== "" && text !== ",")
   translatedFileContent = translatedFileContent
     // .slice(0, translatedFileContent.length - 2)
-    .join("\r\n");
+    .join("\n");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding);
 }
@@ -778,3 +809,23 @@ async function fixTranslatedFileKs(filePathTranslated, filePathRaw, encoding) {
 //   return ans;
 // }, {});
 // ○○○○
+
+function replace(/*Buffer*/ data, /*Buffer*/ pattern, /*Buffer*/ replace) {
+  let position = data.indexOf(pattern);
+
+  while (position !== -1) {
+    data.fill(0, /*from*/ position, /*to*/ position + pattern.length);
+
+    replace.copy(
+      /*to*/ data,
+      /*at*/ position,
+      /*from*/ 0,
+      /*to*/ pattern.length
+    );
+    // continue search:
+    position = data.indexOf(
+      pattern,
+      /*starting at*/ position + pattern.length + 1
+    );
+  }
+}

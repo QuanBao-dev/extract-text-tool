@@ -8,7 +8,7 @@ const containRegExpI = new RegExp(
 
 function handleWordWrapQlie(rawText, start = 0, end) {
   let text = rawText
-    .replace(/,( )?/g, "、")
+    // .replace(/,( )?/g, "、")
     .replace(/^"/g, "「")
     .replace(/"$/g, "」")
     .replace(/,"/g, ",「");

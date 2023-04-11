@@ -165,7 +165,20 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //   await translateSelectCenterTextList(["\\c[lexn]リベレーター"], 1)
   // );
   // await delay(10000000);
-
+  // await translateOfflineSugoiCt2LongList(
+  //   [
+  //     "クリスティア＝クルイバラーディオ",
+  //     "イルミオン",
+  //     "リコ＝ニヴフ",
+  //     "テレーズ＝エル・フレイ",
+  //   ],
+  //   2,
+  //   false,
+  //   false,
+  //   false,
+  //   "srp"
+  // );
+  //   await delay(10000000);
   const listFileName = fs.readdirSync(pinpoint.translation.folderPath);
   let start = 0;
   let numberAsync = pinpoint.translation.numberOfFiles;
@@ -273,7 +286,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     }, [])
     .reduce((ans, rawText) => {
       if (pinpoint.translation.isNoFilter) {
-        ans.push(rawText.replace(/\[Cock\]/g, ""));
+        ans.push(rawText.replace(/\[Cock\]/g, "").replace(/\[r\]/g, ""));
         return ans;
       }
       count3++;
@@ -282,14 +295,19 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // suffixList.push(
         //   temp.match(/(\[[a-zA-Z =\[\]_]+\]+)$/g)[0].replace(/\[Cock\]/g, "")
         // );
-        ans.push(temp.replace(/\[Cock\]/g, "").replace(/／/g,"").trim());
+        ans.push(
+          temp
+            .replace(/\[Cock\]/g, "")
+            .replace(/\[r\]/g, "")
+            .replace(/／/g, "")
+            .trim()
+        );
         temp = "";
         listCount.push(count3);
         count3 = 0;
       }
       return ans;
     }, []);
-
   // let temp2 = "";
   // const translatedTextList = rawTextList.map((text) => {
   //   if (text.match(/^#/g)) {
@@ -320,9 +338,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   }
   //   return splittedTexts.join('"');
   // });
+  // console.log(rawTextList)
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    3,
+    2,
     false,
     true,
     false,
@@ -549,6 +568,9 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // !rawText.match(containRegExpG2)
         // rawText.match(containTagNameRegExpI)
       ) {
+        if (rawText.includes("iscript")) {
+          isScript = true;
+        }
         ans.push(rawText);
         return ans;
       }

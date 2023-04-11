@@ -5,43 +5,43 @@ const {
   translateOfflineSugoiCt2LongList,
   excludeTranslateText,
 } = require("./translateJapanese");
-const { ks } = require("../setting.json");
+const { Eroit } = require("../setting.json");
 const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  Eroit.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "i"
 );
 const containRegExpG = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  Eroit.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "g"
 );
 const containRegExpG2 = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain2,
+  Eroit.translation.regExpToExcludeSentenceNotNeedTranslatedContain2,
   "g"
 );
 const exceptRegExpI = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  Eroit.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
   "i"
 );
 const exceptRegExpG = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  Eroit.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
   "g"
 );
 const exceptRegExpG2 = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
+  Eroit.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
   "g"
 );
 
 const containTagNameRegExpI = new RegExp(
-  ks.translation.regExpToFilterSentenceContainTagName,
+  Eroit.translation.regExpToFilterSentenceContainTagName,
   "i"
 );
-const addedString = ks.translation.addedString;
+const addedString = Eroit.translation.addedString;
 const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
-  ks.translation;
+  Eroit.translation;
 // [一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+
 (async () => {
   // console.log(
@@ -169,9 +169,10 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(await translateOfflineSugoiCt2LongList(
   //   [
   //     "●00003380●「でも、まだすべての脅威が消え去ったわけじゃない。いずれ第二、第三の阿久津が必ず現れるはずよ」",
-  //     "●00000062●「\\{阿久津|あくつ}\\{京真|きょうま}っ、今日こそ貴方との決着をつけさせてもらうわ！」"
+  //     "●00000062●「\\{阿久津|あくつ}\\{京真|きょうま}っ、今日こそ貴方との決着をつけさせてもらうわ！」",
+  //     "●00002484●「先日、\\{ＭＯＰ|地中貫通型爆弾}を投下しようとした米軍の爆撃機を撃墜したのと同じものか」"
   //   ],
-  //   3,
+  //   2,
   //   false,
   //   true,
   //   true,
@@ -179,9 +180,9 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // ))
   // await delay(10000000);
 
-  const listFileName = fs.readdirSync(ks.translation.folderPath);
+  const listFileName = fs.readdirSync(Eroit.translation.folderPath);
   let start = 0;
-  let numberAsync = ks.translation.numberOfFiles;
+  let numberAsync = Eroit.translation.numberOfFiles;
 
   do {
     try {
@@ -198,15 +199,15 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
               //   "shiftjis"
               // );
               await translateFileKs(
-                `${ks.translation.folderPath}/${fileName}`,
-                ks.translation.isSelects,
-                ks.translation.isTagName,
-                ks.encoding
+                `${Eroit.translation.folderPath}/${fileName}`,
+                Eroit.translation.isSelects,
+                Eroit.translation.isTagName,
+                Eroit.encoding
               );
             })
         );
         start += numberAsync;
-        numberAsync = ks.translation.numberOfFiles;
+        numberAsync = Eroit.translation.numberOfFiles;
       } while (start < listFileName.length);
       break;
     } catch (error) {
@@ -342,7 +343,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   }
   if (isSelect) {
     const translatedFileContent = (
-      await translateSelectCenterTextList(dataList, 3, false, ks, "srp")
+      await translateSelectCenterTextList(dataList, 3, false, Eroit, "srp")
     ).join("\r\n");
     return await writeFile(
       filePath,
@@ -361,7 +362,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let isScript = false;
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
-      if (!ks.translation.isNoFilter) {
+      if (!Eroit.translation.isNoFilter) {
         if (
           // (rawText.trim().match(containRegExpI) &&
           //   !rawText.trim().match(exceptRegExpI)) ||
@@ -423,7 +424,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // });
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    3,
+    2,
     false,
     true,
     false,
@@ -622,7 +623,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // return await writeFile(filePath, translatedTextList.join("\n")+"\n", "utf8");
   isScript = false;
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
-    if (!ks.translation.isNoFilter) {
+    if (!Eroit.translation.isNoFilter) {
       if (
         !rawText.match(containRegExpG2)
       ) {
@@ -666,7 +667,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           // .replace(/ō/g, "o")
           // .replace(/[àâ]/g, "a")
         );
-        if (ks.translation.isArtemis) ans.push('					{"rt2"},');
+        if (Eroit.translation.isArtemis) ans.push('					{"rt2"},');
       }
     } else {
       ans.push("");

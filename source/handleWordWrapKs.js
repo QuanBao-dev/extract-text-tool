@@ -171,7 +171,7 @@ function handleWordWrapPoison(fileContent) {
   return ans.join("\r\n[Hitret]\r\n");
 }
 
-function handleWordWrapKs(fileContent) {
+function handleWordWrapLilith(fileContent) {
   // console.log(fileContent.split(/@Hitret id=[0-9]+/));
   // const footerList = fileContent.match(/@Hitret id=[0-9]+/g);
   let blockList = fileContent.split(/\n\*s/g).map((block, index) => {
@@ -228,7 +228,11 @@ function handleWordWrapKs(fileContent) {
           temp.push(
             arrayItem
               .filter((v) => {
-                return !v.match(/\[VO vo=/g);
+                return (
+                  !v.match(/\[VO vo=/g) &&
+                  !v.match(/tf\.lastVoice/g) &&
+                  !v.match(/\*Speak/g)
+                );
               })
               .join("\n")
               .replace("#@$4", content)
@@ -337,4 +341,5 @@ module.exports = {
   handleWordWrapEAGLS,
   handleWordWrapCUBE,
   handleWordWrapPoison,
+  handleWordWrapLilith,
 };
