@@ -993,22 +993,22 @@ async function translateOfflineSugoiCt2(text) {
   // }
   // return text;
   // console.log(text);
-  if (
-    [
-      "ﾇﾏ",
-      "ｸ",
-      "Ｐゴシック",
-      "ＭＳ",
-      "ﾈ",
-      "%",
-      "ｮ",
-      "ﾐ",
-      "ｴ",
-      "ﾀ",
-      "ﾝ",
-    ].includes(text)
-  )
-    return text;
+  // if (
+  //   [
+  //     "ﾇﾏ",
+  //     "ｸ",
+  //     "Ｐゴシック",
+  //     "ＭＳ",
+  //     "ﾈ",
+  //     "%",
+  //     "ｮ",
+  //     "ﾐ",
+  //     "ｴ",
+  //     "ﾀ",
+  //     "ﾝ",
+  //   ].includes(text)
+  // )
+  //   return text;
   if (text === "＝") return text;
   if (text === ">") return text;
   if (text === undefined) return undefined;
@@ -1135,6 +1135,7 @@ async function translateOfflineSugoiCt2(text) {
   if (text === null) return "Null";
   let filterText = text
     // .replace(/[◆✩♥♡●♪]/g, "")
+    .replace(/ゅ/g,"")
     .replace(/\r/g, "")
     .replace(/\n/g, "")
     .replace(/[♀♂]/g, "")
