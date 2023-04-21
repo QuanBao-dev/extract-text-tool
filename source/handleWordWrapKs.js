@@ -1,8 +1,8 @@
-const { ks } = require("../setting.json");
+const { ks, pinpoint } = require("../setting.json");
 const handleWordWrap = require("./handleWordWrap");
 
 const containRegExpI = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "i"
 );
 const containRegExpG = new RegExp(
@@ -14,7 +14,7 @@ const containRegExpG2 = new RegExp(
   "g"
 );
 const exceptRegExpI = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
   "i"
 );
 const exceptRegExpG = new RegExp(

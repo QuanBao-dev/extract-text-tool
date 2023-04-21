@@ -29,8 +29,8 @@ async function wordWrapBsxx(filePath) {
     // text = text.replace(/\\n/g, "").replace(/Kageto/g,"");
     // if (text.match(/^「/g)) text += "」";
     return handleWordWrap(bsxx.wordWrap.maxCharPerLines, text, "\\n", 1000)
-      .replace(/^[「]/g, "「 ")
-      .replace(/^[『]/g, "『 ");
+      .replace(/[「]/g, "「 ")
+      .replace(/[『]/g, "『 ");
 
     return text;
   }); 

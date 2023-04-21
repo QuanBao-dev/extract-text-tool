@@ -13,17 +13,17 @@ const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
 const converter = new AFHConvert();
 
 const textList = [
-  { index: "04", name: "アマミヤ" },
-  { index: "05", name: "シガニー" },
-  { index: "06", name: "リッサ" },
-  { index: "07", name: "マコ" },
-  { index: "08", name: "ミナ" },
-  { index: "09", name: "ジョン" },
-  { index: "10", name: "ラッセル" },
-  { index: "11", name: "ダニエル" },
-  { index: "12", name: "マッド" },
-  { index: "13", name: "タロウ" },
-  { index: "14", name: "アーノルド" },
+  { index: "001", name: "Connie" },
+  { index: "002", name: "Shella" },
+  { index: "003", name: "Maumau" },
+  { index: "004", name: "Levi" },
+  { index: "005", name: "Las Casas" },
+  { index: "006", name: "Carlberti" },
+  { index: "007", name: "Yaro" },
+  { index: "008", name: "Zeezrom" },
+  { index: "009", name: "Neher" },
+  { index: "010", name: "Mathias" },
+  { index: "011", name: "《Queen of Tsujisa Castle》" },
 ];
 (async () => {
   const width = textToImageSetting.width;

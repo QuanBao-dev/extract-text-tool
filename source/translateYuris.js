@@ -63,11 +63,11 @@ async function translateFileYuris(filePath) {
   for (let i = 0; i < Object.keys(data).length; i++) {
     const key = Object.keys(data)[i];
     const rawTextList = data[key].filter((v) => {
-      return (
-        !v.match(/\//g) && !v.match(/_/g && !v.match(/\\/g)) && !v.match(/■/g)
-      );
+      // return (
+      //   !v.match(/\//g) && !v.match(/_/g && !v.match(/\\/g)) && !v.match(/■/g)
+      // );
       // return v.match(/[【『「（]/g) && !v.match(/\//g);
-      // return !v.match(/[a-zA-Z0-9]/g);
+      return !v.match(/[a-zA-Z0-9]/g);
       return v.match(/[【]/g);
     });
     const translatedTextList = await translateOfflineSugoiCt2LongList(
@@ -75,7 +75,7 @@ async function translateFileYuris(filePath) {
       2,
       false,
       true,
-      false,
+      true,
       "yuris2"
     );
     // console.log(rawTextList)
@@ -88,21 +88,21 @@ async function translateFileYuris(filePath) {
     // );
     let count = 0;
     ans[key] = data[key].map((v) => {
-      if (
-        !v.match(/\//g) &&
-        !v.match(/_/g && !v.match(/\\/g)) &&
-        !v.match(/■/g)
-      ) {
-        return translatedTextList[count++];
-      }
+      // if (
+      //   !v.match(/\//g) &&
+      //   !v.match(/_/g && !v.match(/\\/g)) &&
+      //   !v.match(/■/g)
+      // ) {
+      //   return translatedTextList[count++];
+      // }
       // if (v.match(/[【『「（]/g) && !v.match(/\//g)) {
       //   return translatedTextList[count++]
       //     .replace(/\(/g, "（")
       //     .replace(/\)/g, "）");
       // }
-      // if (!v.match(/[a-zA-Z0-9]/g)) {
-      //   return translatedTextList[count++];
-      // }
+      if (!v.match(/[a-zA-Z0-9]/g)) {
+        return translatedTextList[count++];
+      }
       // if (v.match(/[【]/g)) {
       //   return translatedTextList[count++]
       //     .replace(/\(/g, "（")

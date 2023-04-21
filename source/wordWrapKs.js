@@ -1,7 +1,7 @@
 const handleWordWrap = require("./handleWordWrap");
 const fs = require("fs");
 const { readFile, writeFile } = require("./handleFile");
-const { ks } = require("../setting.json");
+const { ks, pinpoint } = require("../setting.json");
 const delay = require("./delay");
 const handleWordWrapArtemis = require("./handleWordWrapArtemis");
 const handleWordWrapQlieVN = require("./handleWordWrapQlie");
@@ -22,10 +22,10 @@ const containRegExpI = new RegExp(
   //   )
   // );
   // await delay(1000000);
-  const listFileName = fs.readdirSync(ks.wordWrap.folderPath);
+  const listFileName = fs.readdirSync(pinpoint.wordWrap.folderPath);
   await Promise.all(
     listFileName.map(async (fileName) => {
-      return await wordWrapKs(`${ks.wordWrap.folderPath}/${fileName}`);
+      return await wordWrapKs(`${pinpoint.wordWrap.folderPath}/${fileName}`);
     })
   );
   console.log("Done");
@@ -50,10 +50,10 @@ async function wordWrapKs(filePath) {
   // );
   // return await writeFile(filePath, fileContent2, "utf8");
   // return await writeFile(filePath, handleWordWrapArtemis(fileContent), "utf8");
-  // return await writeFile(filePath, handleWordWrapLilith(fileContent), "utf8");
+  return await writeFile(filePath, handleWordWrapLilith(fileContent), "shiftjis");
   // return await writeFile(filePath, handleWordWrapArtemis2(fileContent), "utf8");
   // return await writeFile(filePath, handleWordWrapQlieVN(fileContent), "utf16");
-  return await writeFile(filePath, handleWordWrapShina(fileContent), "shiftjis");
+  // return await writeFile(filePath, handleWordWrapShina(fileContent), "shiftjis");
   // return await writeFile(filePath, handleWordWrapKs(fileContent), "shiftjis");
   // return await writeFile(
   //   filePath,

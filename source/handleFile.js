@@ -32,7 +32,8 @@ async function writeFile(filePathInput, text, encoding) {
     }
     // await fs.promises.writeFile(
     //   filePathOutput.join("/"),
-    //   "\ufeff" + Buffer.concat(dataTextList)
+    //   // "\ufeff" + 
+    //   Buffer.concat(dataTextList)
     // );
     await fs.promises.writeFile(
       filePathOutput.join("/"),

@@ -47,7 +47,16 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   const listFileName = fs.readdirSync(qlie.translation.folderPath);
   let start = 0;
   let numberAsync = qlie.translation.numberOfFiles;
-
+  // console.log(
+  //   await translateSelectCenterTextList(
+  //     ["aya_001_eri1001,エリー,「Ehehe、I’ll have to give Haruka some water、too. 」"],
+  //     1,
+  //     false,
+  //     qlie,
+  //     "srp"
+  //   )
+  // );
+  // await delay(1000000)
   do {
     try {
       do {
@@ -197,7 +206,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // handleWordWrap(56, temp, "\r\n", listCount[count], undefined)
         // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
         temp
-        // .replace(/,( )?/g, "、") 
+        // .replace(/,( )?/g, "、")
         // .replace(/、/g, ", ")
         // .replace(/[◆✩♥♡●♪]/g, "")
         // .replace(/❛/g, "’")

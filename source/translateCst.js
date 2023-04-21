@@ -1,21 +1,23 @@
 const { readFile, writeFile } = require("./handleFile");
 const fs = require("fs");
-const { translateOfflineSugoiCt2LongList } = require("./translateJapanese");
+const {
+  translateOfflineSugoiCt2LongList,
+  translateSelectCenterTextList,
+} = require("./translateJapanese");
 const delay = require("./delay");
 (async () => {
   const listFileName = fs.readdirSync("./cst");
   let start = 0;
   let numberAsync = 1;
   // console.log(
-  //   await translateOfflineSugoiCt2LongList(
-  //     [
-  //       "……仕事も終わったことだし、≪役所／ギルド≫に報告に行くブー"
-  //     ],
-  //     4,
-  //     false,
-  //     true,
-  //     false,
-  //     "cst"
+  //   (
+  //     await translateSelectCenterTextList(
+  //       [undefined,undefined,undefined],
+  //       2,
+  //       false,
+  //       undefined,
+  //       "srp"
+  //     )
   //   )
   // );
   // await delay(1000000);
@@ -55,54 +57,81 @@ async function translateFileCst(filePath) {
       .replace(/<r.+>/g, "")
   );
   const nameList = dataList.map(({ name }) => name);
-  const namesList = dataList.map(({ names }) => names);
-  // console.log(nameList)
+  // const namesList = dataList.map(({ names }) => names);
   const translatedNameList = (
-    await translateOfflineSugoiCt2LongList(
-      nameList,
-      2,
-      false,
-      false,
-      false,
-      "cst"
-    )
-  ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
+    await translateSelectCenterTextList(nameList, 2, false, undefined, "srp")
+  ).map((v) => (v ? v.replace(/\./g, "") : v));
   // const translatedNameList = nameList;
-  const translatedNamesList = await translateOfflineSugoiCt2LongList(
-    namesList,
-    2,
-    false,
-    false,
-    false,
-    "cst"
-  );
-
-  const translatedMessageList = await translateOfflineSugoiCt2LongList(
-    messageList.map((message) => {
-      const specialList = message.match(
-        /≪[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+≫/g
-      );
-      if (specialList)
-        for (let i = 0; i < specialList.length; i++) {
-          const special = specialList[i].split("／")[0];
-          message = message.replace(specialList[i], special.replace("≪", ""));
-        }
-      return message;
-    }),
-    2,
-    false,
-    true,
-    false,
-    "cst"
-  );
-  // const translatedMessageList = messageList
-  // const translatedNamesList = namesList;
+  // const translatedNamesList = (
+  //   await translateOfflineSugoiCt2LongList(
+  //     namesList,
+  //     2,
+  //     false,
+  //     false,
+  //     false,
+  //     "cst"
+  //   )
+  // ).map((v) => v.replace(/\./g, ""));
+  let translatedMessageList;
+  try {
+    translatedMessageList = (
+      await translateOfflineSugoiCt2LongList(
+        messageList.map((message) => {
+          if (!message) return message;
+          const specialList = message.match(
+            /≪[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+≫/g
+          );
+          if (specialList)
+            for (let i = 0; i < specialList.length; i++) {
+              const special = specialList[i].split("／")[0];
+              message = message.replace(
+                specialList[i],
+                special.replace("≪", "")
+              );
+            }
+          return message;
+        }),
+        2,
+        false,
+        true,
+        true,
+        "ain"
+      )
+    ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
+    // const translatedMessageList = messageList
+    // const translatedNamesList = namesList;
+  } catch (error) {
+    translatedMessageList = (
+      await translateOfflineSugoiCt2LongList(
+        messageList.map((message) => {
+          if (!message) return message;
+          const specialList = message.match(
+            /≪[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+≫/g
+          );
+          if (specialList)
+            for (let i = 0; i < specialList.length; i++) {
+              const special = specialList[i].split("／")[0];
+              message = message.replace(
+                specialList[i],
+                special.replace("≪", "")
+              );
+            }
+          return message;
+        }),
+        2,
+        false,
+        true,
+        true,
+        "cst"
+      )
+    ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
+  }
   const ans = translatedMessageList.reduce((result, translatedMessage, key) => {
     const name = translatedNameList[key];
-    const names = translatedNamesList[key];
+    // const names = translatedNamesList[key];
     const object = {};
     if (name) object.name = name;
-    if (names) object.names = names;
+    // if (names) object.names = names;
     if (translatedMessage) object.message = translatedMessage;
     result.push(object);
     return result;

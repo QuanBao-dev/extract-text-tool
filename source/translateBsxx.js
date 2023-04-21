@@ -85,7 +85,9 @@ async function translateFileBsxx(filePath) {
   const narrowedContentText = await translateOfflineSugoiCt2LongList(
     contentText.reduce((ans, curr) => {
       if (temp !== curr && curr !== "" && !curr.match(/\/\//g)) {
-        ans.push(curr.replace(/\\n/g, "").replace(//g, "♥"));
+        ans.push(curr.replace(/\\n/g, "")
+        // .replace(//g, "♥")
+        );
       }
       temp = curr;
       return ans;
@@ -93,7 +95,7 @@ async function translateFileBsxx(filePath) {
     bsxx.translation.numberOfSentences,
     false,
     true,
-    false,
+    true,
     "srp"
   );
   const translatedContentText = narrowedContentText.reduce((ans, curr) => {

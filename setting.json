@@ -1,9 +1,8 @@
 {
   "replacedCharsBeforeTranslation": {
-    "綾瀬 涼風": "Ayase Suzuka",
-    "吉川 一翔": "Yoshikawa Kazuto",
-    "興津 凛太郎": "Okitsu Rintarou",
-    "佐倉 乃愛": "Sakura Noa"
+    "@k":"壮真",
+    "赤羽 千晶": "Akabane Chiaki",
+    "高梨 和奏": "Takanashi Wakana"
   },
   "replacedCharsAfterTranslation": {},
   "replacedExactCharsAfterTranslation": {
@@ -13,7 +12,7 @@
 
   "yuris": {
     "translation": {
-      "folderPath": "./yuris_output_output",
+      "folderPath": "./yuris",
       "numberOfSentences": 3
     },
     "wordWrap": {
@@ -24,10 +23,10 @@
   "bsxx": {
     "translation": {
       "folderPath": "./Bsxx",
-      "numberOfSentences": 3
+      "numberOfSentences": 2
     },
     "wordWrap": {
-      "maxCharPerLines": 69,
+      "maxCharPerLines": 71,
       "folderPath": "./Bsxx_output"
     }
   },
@@ -105,10 +104,10 @@
   "qlie": {
     "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./qlie_output_output",
+      "folderPath": "./qlie_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
       "regExpToFilterSentenceContainTagName": "(^\\^select)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^\\^)|(^@)|(^％)|(^(\\\\))|(^#)",
@@ -121,8 +120,8 @@
       "isQlie": true
     },
     "wordWrap": {
-      "maxCharPerLines": 56,
-      "folderPath": "./qlie_output_output_output",
+      "maxCharPerLines": 51,
+      "folderPath": "./qlie_output_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^\\^)|(^@)|(^％)|(^(\\\\))|(■)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
@@ -264,7 +263,7 @@
     }
   },
   "pinpoint": {
-    "encoding": "utf8",
+    "encoding": "shiftjis",
     "translation": {
       "folderPath": "./pinpoint_output_output",
       "numberOfFiles": 1,
@@ -282,39 +281,14 @@
       "isQlie": false
     },
     "wordWrap": {
-      "maxCharPerLines": 54,
+      "maxCharPerLines": 70,
       "folderPath": "./pinpoint_output_output_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "pinpoint": {
-    "encoding": "shiftjis",
-    "translation": {
-      "folderPath": "./ks",
-      "numberOfFiles": 1,
-      "numberOfSentences": 300,
-      "isSelects": false,
-      "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(\\|)|(@labelopt)|(【)|(@Msg)|(@nm t=\")|(@exlink)|(@overlap_ch)|(\\[Talk name)|(\\[macCmd)|(\\[NAME_)|(SELECT_CENTER)|(text=)|(\\[eval exp=)",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(//)",
-      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[r\\]))|(^(\\[haret\\]))|(\\[m_tips)",
-      "regExpToExcludeSentenceNotNeedTranslatedContain2": "",
-      "addedString": "[T_NEXT]\\",
-      "addedStringAfterTranslation": "",
-      "addedPrefixAfterTranslation": "",
-      "isArtemis": false,
-      "isQlie": false
-    },
-    "wordWrap": {
-      "maxCharPerLines": 54,
-      "folderPath": "./pinpoint_output_output_output",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
-      "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
-      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
-    }
-  },
+
   "rpgm": {
     "encoding": "utf8",
     "translation": {
@@ -483,13 +457,13 @@
   "ks": {
     "encoding": "utf8",
     "translation": {
-      "folderPath": "./ks_output",
+      "folderPath": "./liar_output_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
       "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(^#)|(^\\[voconfig)",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(scenario\\[))|(^;)|(^(\\[))|(^(@))|(^(\\*))|(^(\\[r\\]))|(^(/))|(^#)|(\\[dummy\\])|(\\[rt\\])",
+      "regExpToFilterSentenceContainTagName": "^(#「)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^>)|(\\g)|(_)|(^#)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(^(\\[ruby))|(^(\\[咲奈))",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "\\[\"label\"\\] = \\[\\[select",
       "addedString": "",
