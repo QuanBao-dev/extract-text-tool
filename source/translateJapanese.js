@@ -6,6 +6,20 @@ const axios = require("axios");
 const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const converter = new AFHConvert();
+const signedCharacter = [
+  ..."ăâđêôơưàảãạáằẳẵặắầẩẫậấèẻẽẹéềểễệếìỉĩịíòỏõọóồổỗộốờởỡợớùủũụúừửữựứỳỷỹỵýĂÂĐÊÔƠƯÀẢÃẠÁẰẲẴẶẮẦẨẪẬẤÈẺẼẸÉỀỂỄỆẾÌỈĨỊÍÒỎÕỌÓỒỔỖỘỐỜỞỠỢỚÙỦŨỤÚỪỬỮỰỨỲỶỸỴÝ",
+];
+const unsignedCharacter = [
+  ..."aadeoouaaaaaaaaaaaaaaaeeeeeeeeeeiiiiiooooooooooooooouuuuuuuuuuyyyyyAADEOOUAAAAAAAAAAAAAAAEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOUUUUUUUUUUYYYYY",
+];
+
+function replaceSignedCharacter(text) {
+  let temp = text;
+  signedCharacter.forEach((signedChar, index) => {
+    temp = temp.replace(signedChar, unsignedCharacter[index]);
+  });
+  return temp;
+}
 
 const {
   replacedCharsAfterTranslation,
@@ -273,7 +287,7 @@ async function translateOfflineSugoiCt2LongList(
       if (!text) return [text];
       return text.match(/(([\\<>a-zA-Z0-9\[\]|/])+)$/g, "") || [""];
     }
-    return [""];
+    // return [""];
     return ['"'];
   }
   function getRidOfPrefixSuffix(text) {
@@ -1009,6 +1023,8 @@ async function translateOfflineSugoiCt2(text) {
   //   ].includes(text)
   // )
   //   return text;
+  if (text === "声") return "Voice";
+  if (text.length === 1) return text;
   if (text === "＝") return text;
   if (text === ">") return text;
   if (text === undefined) return undefined;
@@ -1135,7 +1151,7 @@ async function translateOfflineSugoiCt2(text) {
   if (text === null) return "Null";
   let filterText = text
     // .replace(/[◆✩♥♡●♪]/g, "")
-    .replace(/ゅ/g,"")
+    .replace(/ゅ/g, "")
     .replace(/\r/g, "")
     .replace(/\n/g, "")
     .replace(/[♀♂]/g, "")
@@ -1240,7 +1256,7 @@ async function translateOfflineSugoiCt2(text) {
         ? text.trim().match(new RegExp(listOfChoice[4], "g"))[0]
         : "");
   }
-  const finalResult =
+  let finalResult =
     prefix +
     temp
       .trim()
@@ -1258,6 +1274,7 @@ async function translateOfflineSugoiCt2(text) {
       .replace(/#/g, "＃");
   // .replace(/, /g, "、");
   // .replace(/\./g, "")
+  finalResult = replaceSignedCharacter(finalResult);
   cacheTranslation[text] = finalResult;
   // .replace(/ /g, converter.toFullWidth(" "))
   // .replace(/&/g, converter.toFullWidth("&"))

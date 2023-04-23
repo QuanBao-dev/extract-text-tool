@@ -2,9 +2,12 @@ const { readFile, writeFile } = require("./handleFile");
 const fs = require("fs");
 const { translateOfflineSugoiCt2LongList } = require("./translateJapanese");
 const delay = require("./delay");
-const { Iconv } = require("iconv");
+const iconv = require("iconv-lite");
+const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
+const converter = new AFHConvert();
+
 (async () => {
-  const listFileName = fs.readdirSync("./Exhibit");
+  const listFileName = fs.readdirSync("./Exhibit_output");
   let start = 0;
   let numberAsync = 1;
   do {
@@ -16,7 +19,7 @@ const { Iconv } = require("iconv");
             .slice(start, start + numberAsync)
             .map(async (fileName) => {
               console.log("Start:", fileName);
-              await translateFileExhibit(`./Exhibit/${fileName}`);
+              await translateFileExhibit(`./Exhibit_output/${fileName}`);
             })
         );
         start += numberAsync;
@@ -32,30 +35,53 @@ const { Iconv } = require("iconv");
   console.log("Done");
   await delay(10000000);
 })();
-const iconv = require("iconv-lite");
 
 async function translateFileExhibit(filePath) {
+  const binaryContent = await readFile(filePath, "ISO8859-1");
+  const binaryBuffer = iconv.encode(binaryContent, "ISO8859-1");
+  let intermediateBinaryBuffer = [...binaryBuffer];
+  intermediateBinaryBuffer = intermediateBinaryBuffer.reduce(
+    (ans, v, index) => {
+      if (
+        (intermediateBinaryBuffer[index] === 240 &&
+          intermediateBinaryBuffer[index + 1] === 74) ||
+        (intermediateBinaryBuffer[index] === 74 &&
+          intermediateBinaryBuffer[index - 1] === 240)
+      ) {
+        return ans;
+      }
+      ans.push(v);
+      return ans;
+    },
+    []
+  );
+  await fs.promises.writeFile(filePath, Buffer.from(intermediateBinaryBuffer));
+
   let fileContent = await readFile(filePath, "shiftjis");
   fileContent = fileContent;
   let backupData = [];
   let sjisBuffer = iconv.encode(fileContent, "shiftjis");
-  let fileContentBinary = await readFile(filePath, "ISO8859-1 ");
+  let fileContentBinary = await readFile(filePath, "ISO8859-1");
   fileContentBinary = fileContentBinary;
   const isoBuffer = iconv.encode(fileContentBinary, "ISO8859-1");
-  const intermediateIsoBuffer = [...isoBuffer];
-  let intermediateSjisBuffer = [...sjisBuffer].reduce((ans, v, index) => {
-    if (
-      (intermediateIsoBuffer[index] === 244 &&
-        intermediateIsoBuffer[index + 1] === 252) ||
-      (intermediateIsoBuffer[index] === 240 &&
-        intermediateIsoBuffer[index + 1] === 74)
-    ) {
-      ans.push(63);
-    }
-    ans.push(v);
-    return ans;
-  }, []);
+  let intermediateIsoBuffer = [...isoBuffer];
+  let intermediateSjisBuffer = [...sjisBuffer];
   // console.log(intermediateSjisBuffer, intermediateIsoBuffer);
+  let i = 0;
+  while (i < intermediateSjisBuffer.length) {
+    if(intermediateSjisBuffer[i] !== 63){
+      i++;
+      continue;
+    }
+    while(intermediateSjisBuffer[i] === 63) {
+      i++;
+    };
+    if(intermediateSjisBuffer[i] !== intermediateIsoBuffer[i]){
+      intermediateSjisBuffer = insertArrayInPos(63,intermediateSjisBuffer,i);
+      i++;
+    }
+  }
+  console.log(intermediateSjisBuffer, intermediateIsoBuffer);
 
   // console.log({fileContent,fileContentBinary})
   intermediateSjisBuffer.forEach((v, index) => {
@@ -65,13 +91,28 @@ async function translateFileExhibit(filePath) {
   });
   let count = 0;
   fileContent = iconv.decode(intermediateSjisBuffer, "shiftjis");
+  const rubyList6 =
+    fileContent.match(
+      /《[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞（）♀♂♪（）─〇☆―〜゛×・○『“”♥　、☆＆？＠ΩA-Za-z0-9]+:[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞（）♀♂♪（）─〇☆―〜゛×・○『“”♥　、☆＆？＠ΩA-Za-z0-9]+》/g
+    ) || [];
+  for (let i = 0; i < rubyList6.length; i++) {
+    if (rubyList6[i].match(/[a-zA-Z0-9]/g)) {
+      rubyList6[i] = "";
+    }
+    fileContent = fileContent.replace(
+      /《[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞（）♀♂♪（）─〇☆―〜゛×・○『“”♥　、☆＆？＠ΩA-Za-z0-9]+:[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞（）♀♂♪（）─〇☆―〜゛×・○『“”♥　、☆＆？＠ΩA-Za-z0-9]+》/i,
+      (rubyList6[i].split(":")[1] || rubyList6[i].split(":")[0])
+        .replace("《", "")
+        .replace("》", "")
+    );
+  }
   const textList = fileContent
     .replace(
-      /(ﾇﾏ)|(ｸ)|(Ｐゴシック)|(ＭＳ)|(ﾈ)|(%)|(ｮ)|(ﾐ)|(ｴ)|(ﾀ)|(ﾝ)|(＝)/g,
+      /(ﾇﾏ)|(ｸ)|(Ｐゴシック)|(ＭＳ)|(ﾈ)|(%)|(ｮ)|(ﾐ)|(ｴ)|(ﾀ)|(ﾝ)|(＝)|(穎)/g,
       ""
     )
     .match(
-      /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶァ-ヶぁ-んァ-ヾ〟！～？＆。●・♡＝…：＄αβ％●＜＞（）♀♂♪（）─〇☆―〜゛×・○『“”♥　、☆＆\n♥]+/g
+      /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶァ-ヶぁ-んァ-ヾ〟！～？＆。●・♡＝…：＄αβ％●＜＞（）♀♂♪（）─〇☆―〜゛×・○『“”♥　、☆＆\n]+/g
     );
   let ans = fileContent;
   if (textList) {
@@ -134,4 +175,8 @@ function replace(/*Buffer*/ data, /*Buffer*/ pattern, /*Buffer*/ replace) {
       /*starting at*/ position + pattern.length + 1
     );
   }
+}
+
+function insertArrayInPos(element, array, position) {
+  return [...array.slice(0, position), element, ...array.slice(position)];
 }
