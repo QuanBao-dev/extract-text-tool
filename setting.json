@@ -1,17 +1,5 @@
 {
   "replacedCharsBeforeTranslation": {
-    "瀬島 晴哉": "Sejima Seiya",
-    "アンナ ハイリッテ": "Anna Hylitte",
-    "アーレンシア ヨナ エルボーグ": "Arencia Jonah Elborg",
-    "エルダ ハイリッテ": "Elda Hylitte",
-    "エーリッテ": "Eritte",
-    "カシマ ヒカリ": "Kashima Hikari",
-    "マドリー パルネポリ": "Madellie Parnepoli",
-    "真木柱 夕奈": "Makibashira Yuuna",
-    "ジョシュア ハイリッテ": "Joshua Hylitte",
-    "ポチゾウ": "Pochizou",
-    "杏奈": "Anna",
-    "エステル": "Ester"
   },
   "replacedCharsAfterTranslation": {},
   "replacedExactCharsAfterTranslation": {
@@ -63,23 +51,24 @@
   "artemisAster": {
     "encoding": "utf8",
     "translation": {
-      "folderPath": "./ks_output_output_output",
+      "folderPath": "./artemisAster_output_output_output_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 20,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "savetitle",
+      "regExpToFilterSentenceContainTagName": "(ch=)",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(astver))|([{}])|(linkback =)|(linknext =)|(line =)|(hide =)|(\\{\"exfont\")",
-      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|({\"rt2\"})|({\"(/)?ruby\"(, text=\"[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆、 　 ♡＝]+\")?})",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|({\"rt2\"})|(\\{\"exfont\")|({\"(/)?ruby\"(, text=\"[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆、 　 ♡＝]+\")?})",
       "addedString": "[T_NEXT]\\",
       "addedStringAfterTranslation": "\",",
       "addedPrefixAfterTranslation": "\t\t\t\t\t\"",
-      "isArtemis": true
+      "isArtemis": true,
+      "isWordWrap": false
     },
     "wordWrap": {
       "maxCharPerLines": 160,
-      "folderPath": "./ks_output_output",
+      "folderPath": "./artemisAster_output_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(astver))|([{}])|(linkback =)|(linknext =)|(line =)|(hide =)|(\\{\"exfont\")",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
@@ -93,7 +82,7 @@
       "numberOfSentences": 20,
       "isSelects": false,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "",
+      "regExpToFilterSentenceContainTagName": "^★",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "^●",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "",
@@ -272,16 +261,16 @@
     }
   },
   "pinpoint": {
-    "encoding": "shiftjis",
+    "encoding": "utf16",
     "translation": {
       "folderPath": "./pinpoint_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": false,
+      "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(\\|)|(@labelopt)|(【)|(@Msg)|(@nm t=\")|(@exlink)|(@overlap_ch)|(\\[Talk name)|(\\[macCmd)|(\\[NAME_)|(SELECT_CENTER)|(text=)|(\\[eval exp=)",
+      "regExpToFilterSentenceContainTagName": "@exlink",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^;)|(^(\\[))|(^(@))|(^(\\*))|(//)",
-      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[r\\]))|(^(\\[haret\\]))|(\\[m_tips)",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[r\\]))|(^(\\[haret\\]))|(\\[m_tips)|(\\[tips )",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "",
       "addedString": "[T_NEXT]\\",
       "addedStringAfterTranslation": "",
@@ -463,13 +452,13 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "ks": {
+  "ybn": {
     "encoding": "utf8",
     "translation": {
-      "folderPath": "./liar_output_output_output",
+      "folderPath": "./ybn",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
       "regExpToFilterSentenceContainTagName": "^(#「)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^>)|(\\g)|(_)|(^#)",
@@ -479,7 +468,8 @@
       "addedStringAfterTranslation": "",
       "addedPrefixAfterTranslation": "",
       "isArtemis": false,
-      "isQlie": false
+      "isQlie": false,
+      "isNoFilter": "true"
     },
     "wordWrap": {
       "maxCharPerLines": 42,
@@ -670,7 +660,7 @@
       "isQlie": false
     },
     "wordWrap": {
-      "maxCharPerLines": 64,
+      "maxCharPerLines": 65,
       "maxLinePerDialog": 2,
       "folderPath": "./srp_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
@@ -681,13 +671,13 @@
   "whale": {
     "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./whale_output",
+      "folderPath": "./whale_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
-      "isSelects": true,
+      "isSelects": false,
       "isTagName": false,
       "regExpToFilterSentenceContainTagName": "^(SELECT)|^(【)|^(CS)|(^(MS.HS))",
-      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^@)|(^(BG))|(^(ST))|(^(CG))|((AS)$)|(^(ST))|(^(MW))|(^(\\*))|(^(CS))|(^(DAY))|(^(WA))|(^(SC))|(^(MS))|(^(SE))|(^(SELECT))|(^(VO))|(^(EV))|(^(goto))|(^(ZM))|(^(ED))|(^(XM))|(^(MV))|(^(string))|(^(if))|(^(cal))|(^(TL))|(^(ER))|(^(systemEffect))|(^(sp))|(^(systemWait))|(^(sp_d))|(^(return))|(^(gosub))|(^(setWindowVisible))",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^@)|(^(BG))|(^(ST))|(^(CG))|((AS)$)|(^(ST))|(^(MW))|(^(\\*))|(^(CS))|(^(DAY))|(^(WA))|(^(SC))|(^(MS))|(^(SE))|(^(SELECT))|(^(VO))|(^(EV))|(^(goto))|(^(ZM))|(^(ED))|(^(XM))|(^(MV))|(^(string))|(^(if))|(^(cal))|(^(TL))|(^(ER))|(^(systemEffect))|(^(sp))|(^(systemWait))|(^(sp_d))|(^(return))|(^(gosub))|(^(setWindowVisible))|(^(else))|(^(RM))|(^(DAY))",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
       "addedString": "[T_NEXT]\\",

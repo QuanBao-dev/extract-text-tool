@@ -341,11 +341,11 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // console.log(rawTextList)
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    2,
+    3,
     false,
     true,
-    false,
-    "kiriruby"
+    true,
+    "kiriruby",
   );
   // const translatedTextList = rawTextList.reduce((ans, curr) => {
   //   if (curr.trim() === "") return ans;

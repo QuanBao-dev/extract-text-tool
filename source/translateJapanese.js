@@ -183,7 +183,8 @@ async function translateOfflineSugoiCt2LongList(
   isSplit = false,
   isConsoleLog = true,
   isGlue,
-  type
+  type,
+  wordWrapMode
 ) {
   let ans = [];
   let i = 0;
@@ -244,7 +245,7 @@ async function translateOfflineSugoiCt2LongList(
       );
     }
     if (["BGI"].includes(type)) {
-      return text.match(/^#/g) || [""];
+      // return text.match(/^#/g) || [""];
       return text.match(/<[0-9,]+>/g) || [""];
     }
     if (["Eroit"].includes(type)) {
@@ -268,12 +269,13 @@ async function translateOfflineSugoiCt2LongList(
       }
       return [text.split(",").slice(0, 2).join(",") + ","];
     }
+    return [""];
     return text.match(/m\[[0-9]+\] = "/g) || [""];
   }
   function findSuffix(text) {
     // return "";
     if (["kiriruby"].includes(type)) {
-      return text.match(/(\[[a-zA-Z =\[\]_]+\]+\\)$/g) || [""];
+      return text.match(/(\[[a-zA-Z =\[\]_]+\]+(\\)?)$/g) || [""];
     }
     if (["EAGLS"].includes(type)) {
       return (
@@ -287,7 +289,7 @@ async function translateOfflineSugoiCt2LongList(
       if (!text) return [text];
       return text.match(/(([\\<>a-zA-Z0-9\[\]|/])+)$/g, "") || [""];
     }
-    // return [""];
+    return [""];
     return ['"'];
   }
   function getRidOfPrefixSuffix(text) {
@@ -301,6 +303,7 @@ async function translateOfflineSugoiCt2LongList(
       return text.replace(/\[n\]/g, "").replace(/【.+】/g, "");
     }
     if (["ain"].includes(type)) {
+      if (text.includes("\\N")) return text + "。";
       return text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "");
     }
     if (["EAGLS"].includes(type)) {
@@ -325,8 +328,11 @@ async function translateOfflineSugoiCt2LongList(
         ""
       );
     }
+    if (["yuris"].includes(type)) {
+      return text.replace(/<.+>/g, "");
+    }
     if (["BGI"].includes(type)) {
-      return text.replace(/#/g, "");
+      // return text.replace(/#/g, "");
       return text.replace(/<[0-9,]+>/g, "");
     }
     if (["Eroit"].includes(type)) {
@@ -355,6 +361,9 @@ async function translateOfflineSugoiCt2LongList(
         return text;
       }
       return text.split(",").slice(2).join(",");
+    }
+    if (["kiriruby"].includes(type)) {
+      return text.replace(/(\[[a-zA-Z =\[\]_]+\]+\\)$/g, "");
     }
     // return text.replace(/<.+>/g, "").replace(/【.+】/g, "");
     return text;
@@ -504,15 +513,25 @@ async function translateOfflineSugoiCt2LongList(
             rubyText.replace(/\[ruby text="/g, "").replace(/"\]/g, "")
           );
         });
-        return temp.replace(
-          /\[[a-zA-Z ="一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟0-9_ ]+\]+\\/g,
+        return temp
+          .replace(
+            /\[tips [a-zA-Z ="一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟0-9_ ]+\]/g,
+            ""
+          )
+          .replace(
+            /\[[a-zA-Z ="一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟0-9_ ]+\]+(\\)?/g,
+            ""
+          );
+      }
+      return v
+        .replace(
+          /\[tips [a-zA-Z ="一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟0-9_ ]+\]/g,
+          ""
+        )
+        .replace(
+          /\[[a-zA-Z ="一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟0-9_ ]+\]+(\\)?/g,
           ""
         );
-      }
-      return v.replace(
-        /\[[a-zA-Z ="一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟0-9_ ]+\]+\\/g,
-        ""
-      );
     });
   }
 
@@ -564,7 +583,8 @@ async function translateOfflineSugoiCt2LongList(
                     }
                     return text;
                   })
-                  .join("＄＠＠")
+                  .join("＄＠＠＠"),
+                wordWrapMode
               )
             )
               .split(/[$@＄＠]+/g)
@@ -596,14 +616,15 @@ async function translateOfflineSugoiCt2LongList(
             translatedTextList = await Promise.all(
               textList.slice(i * limit, (i + 1) * limit).map(async (text) => {
                 if (!isSplit) {
-                  return await translateOfflineSugoiCt2(text);
+                  return await translateOfflineSugoiCt2(text, wordWrapMode);
                 }
                 const splitText = text.split(/[。？！：]/g);
                 const specialCharsList = text.match(/[。？！：]/g);
                 let temp = "";
                 for (let j = 0; j < splitText.length; j++) {
                   const translatedText = await translateOfflineSugoiCt2(
-                    splitText[j]
+                    splitText[j],
+                    wordWrapMode
                   );
                   temp +=
                     translatedText.replace(/[\.\?\!\:。？！：]/i, "") +
@@ -682,6 +703,29 @@ async function translateOfflineSugoiCt2LongList(
     ].includes(type)
   ) {
     switch (type) {
+      case "yuris":
+        finalResult = rawTextList.map((text, index) => {
+          // if (ans[count]) return text;
+          // if (text.match(/[a-z_]/g) || text === "主人公（名）") {
+          //   let temp = temp2 + text;
+          //   return temp;
+          // }
+          let temp3 = prefixList[index];
+          // if (text === "@-@") return "@@";
+          // let temp = ans[count];
+          // let temp = temp2 + ans[count] + temp3;
+          let temp = (temp3 ? temp3 : "") + ans[count];
+          // handleWordWrap(
+          //   46,
+          //   ans[count].replace(/、/g,", "),
+          //   "\\r\\n",
+          //   undefined,
+          //   temp2 ? 45 - (temp2.length) : undefined
+          // );
+          count++;
+          return temp.trim();
+        });
+        break;
       case "kiri":
         finalResult = rawTextList.map((text, index) => {
           // if (ans[count]) return text;
@@ -996,15 +1040,25 @@ async function translateOfflineSugoiCt2LongList(
   return finalResult;
 }
 // let a = []
-async function translateOfflineSugoiCt2(text) {
-  // try {
-  //   // if (handleWordWrap(47, text, "\n").split("\n").length > 3) {
-  //   //   return handleWordWrap(51000, text, "\n");
-  //   // }
-  //   return handleWordWrap(70, text, "[r]");
-  // } catch (error) {
-  //   return text;
-  // }
+async function translateOfflineSugoiCt2(text, wordWrapMode) {
+  // return text.replace(/"/g, '\\"');
+  let wordWrappedText;
+  switch (wordWrapMode) {
+    case "artemisAster":
+      if (text.includes("\\n")) {
+        return text;
+      }
+      wordWrappedText = handleWordWrap(54, text, "\\n");
+      return wordWrappedText;
+    case "Eroit":
+      wordWrappedText = handleWordWrap(1000, text, "\\n");
+      // if (wordWrappedText.split("\\n").length > 3) {
+      //   return text;
+      // }
+      return wordWrappedText;
+    default:
+      break;
+  }
   // return text;
   // console.log(text);
   // if (
@@ -1024,7 +1078,7 @@ async function translateOfflineSugoiCt2(text) {
   // )
   //   return text;
   if (text === "声") return "Voice";
-  if (text.length === 1) return text;
+  // if (text.length === 1) return text;
   if (text === "＝") return text;
   if (text === ">") return text;
   if (text === undefined) return undefined;
@@ -1157,13 +1211,14 @@ async function translateOfflineSugoiCt2(text) {
     .replace(/[♀♂]/g, "")
     .replace(/\[[0-9]+\]/g, "")
     .replace(/☆☆☆/g, "タッヤ")
+    .replace(/,{"rt2"},/g, "")
     // .replace(/＃θ/g, "")
     // .replace(/[　 ]/g, "")
     // .replace(
     //   /_t![0-9,]+[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『！』？＆、。●'“”・♡＝…―]+\//g,
     //   ""
     // )
-    // .replace(/^"/g, "")
+    .replace(/"/g, "")
     // .replace(/"$/g, "")
     // .replace(/。$/g, "")
     .replace(/\\r\\n/g, "")
@@ -1172,7 +1227,7 @@ async function translateOfflineSugoiCt2(text) {
     //   /\[ruby text=[a-zA-Z一-龠ぁ-ゔァ-ヴ　ーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-ん ァ-ヾｦ-ﾟ〟！～『「！」』？＆、。　 '"・♡＝…―,]+\]/g,
     //   ""
     // )
-    .replace(/\[emb exp='f.PlayerGivenName'\]/g, "タッヤ")
+    .replace(/\[emb exp='f\.PlayerGivenName'\]/g, "タッヤ")
     .replace(/\$L/g, "")
     .replace(/\$M/g, "")
     .replace(/\[n\]/g, "")
@@ -1188,6 +1243,7 @@ async function translateOfflineSugoiCt2(text) {
   // .replace(/！/g, "! ")
   // .replace(/、/g, ", ")
   // .replace(/＆/g, "&");
+  console.log(filterText);
   if (filterText === "") {
     return text;
   }
@@ -1516,7 +1572,7 @@ async function translateSelectCenterText(
         )
     )
       return rawText;
-  console.log(rawText);
+  // console.log(rawText);
 
   if (
     type === "kiri-mink" &&
@@ -1711,22 +1767,11 @@ async function translateSelectCenterText(
     //     : converter.toFullWidth(
     //         translatedTextList[i].replace(/, /g, "、").replace(/\./g, "")
     //       ));
-
     finalResult +=
       splittedTextList[i] +
       (i < start || i >= end || textList[i] === "主人公（名）"
         ? textList[i]
         : translatedTextList[i]);
-
-    // !text.includes("＠")
-    // ? converter.toFullWidth(
-    //     translatedTextList[i].replace(/, /g, "、").replace(/\./g, "")
-    //   ) +
-    //   "＠" +
-    //   textList[i]
-    // : translatedTextList[i].replace(/, /g, "、").replace(/\./g, "")) ||
-    // // .replace(/'/g, "’").replace(/"/g, "”")
-    // "");
   }
   // backupText2 = backupText;
   return (
@@ -1778,8 +1823,9 @@ async function translateSelectCenterTextList(
                   text,
                   limit,
                   0,
-                  isQlie ? (text.includes("＠") ? 1 : undefined) : undefined,
-                  // 1,
+                  1,
+                  // isQlie ? (text.includes("＠") ? 1 : undefined) : undefined,
+                  // undefined,
                   isGlue,
                   ks,
                   type

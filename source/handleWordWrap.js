@@ -40,7 +40,8 @@ module.exports = function handleWordWrap(
     // .replace(/\.\.\./g," ...")
     // .replace(/,( )?/g, "、")
     .replace(/&/g, "＆")
-    // .replace(/、/g, ", ")
+    .replace(/、/g, ", ")
+    .replace(/。/g, ". ")
     .replace(/’/g, "'")
     .replace(/”」/g, "」");
   // filteredText = replaceTagName(filteredText, [2], "g");

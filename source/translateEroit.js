@@ -166,18 +166,27 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //   await translateSelectCenterTextList(["\\c[lexn]リベレーター"], 1)
   // );
 
-  // console.log(await translateOfflineSugoiCt2LongList(
-  //   [
-  //     "●00003380●「でも、まだすべての脅威が消え去ったわけじゃない。いずれ第二、第三の阿久津が必ず現れるはずよ」",
-  //     "●00000062●「\\{阿久津|あくつ}\\{京真|きょうま}っ、今日こそ貴方との決着をつけさせてもらうわ！」",
-  //     "●00002484●「先日、\\{ＭＯＰ|地中貫通型爆弾}を投下しようとした米軍の爆撃機を撃墜したのと同じものか」"
-  //   ],
-  //   2,
-  //   false,
-  //   true,
-  //   true,
-  //   "Eroit"
-  // ))
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       "●00003380●「でも、まだすべての脅威が消え去ったわけじゃない。いずれ第二、第三の阿久津が必ず現れるはずよ」",
+  //       "●00000062●「\\{阿久津|あくつ}\\{京真|きょうま}っ、今日こそ貴方との決着をつけさせてもらうわ！」",
+  //       "●00002484●「先日、\\{ＭＯＰ|地中貫通型爆弾}を投下しようとした米軍の爆撃機を撃墜したのと同じものか」",
+
+  //       "松風 翔太",
+  //       "藤波 真理香",
+  //       "松風 玲奈",
+  //       "八重山 瞳",
+  //       "松風 雷太",
+  //       "敷島 奈緒",
+  //     ],
+  //     2,
+  //     false,
+  //     true,
+  //     false,
+  //     "Eroit"
+  //   )
+  // );
   // await delay(10000000);
 
   const listFileName = fs.readdirSync(Eroit.translation.folderPath);
@@ -428,6 +437,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     false,
     true,
     false,
+    "Eroit",
     "Eroit"
   );
   // const translatedTextList = rawTextList.reduce((ans, curr) => {
@@ -624,9 +634,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   isScript = false;
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
     if (!Eroit.translation.isNoFilter) {
-      if (
-        !rawText.match(containRegExpG2)
-      ) {
+      if (!rawText.match(containRegExpG2)) {
         // if (rawText === '\t\t\t\t\t{"exfont"},') {
         //   ans[ans.length - 1] = rawText;
         //   return ans;

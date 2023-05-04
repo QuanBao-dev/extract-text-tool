@@ -22,10 +22,10 @@ const containRegExpI = new RegExp(
   //   )
   // );
   // await delay(1000000);
-  const listFileName = fs.readdirSync(pinpoint.wordWrap.folderPath);
+  const listFileName = fs.readdirSync(ks.wordWrap.folderPath);
   await Promise.all(
     listFileName.map(async (fileName) => {
-      return await wordWrapKs(`${pinpoint.wordWrap.folderPath}/${fileName}`);
+      return await wordWrapKs(`${ks.wordWrap.folderPath}/${fileName}`);
     })
   );
   console.log("Done");
@@ -33,7 +33,7 @@ const containRegExpI = new RegExp(
 })();
 
 async function wordWrapKs(filePath) {
-  const fileContent = await readFile(filePath, "shiftjis");
+  const fileContent = await readFile(filePath, "utf8");
 
   // await writeFile(filePath, fileContent, "shiftjis");
   // const fileContent2 = await readFile(
@@ -49,8 +49,8 @@ async function wordWrapKs(filePath) {
   //   "gbk"
   // );
   // return await writeFile(filePath, fileContent2, "utf8");
-  // return await writeFile(filePath, handleWordWrapArtemis(fileContent), "utf8");
-  return await writeFile(filePath, handleWordWrapLilith(fileContent), "shiftjis");
+  return await writeFile(filePath, handleWordWrapArtemis(fileContent), "utf8");
+  // return await writeFile(filePath, handleWordWrapLilith(fileContent), "shiftjis");
   // return await writeFile(filePath, handleWordWrapArtemis2(fileContent), "utf8");
   // return await writeFile(filePath, handleWordWrapQlieVN(fileContent), "utf16");
   // return await writeFile(filePath, handleWordWrapShina(fileContent), "shiftjis");

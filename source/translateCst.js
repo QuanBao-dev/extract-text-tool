@@ -91,11 +91,11 @@ async function translateFileCst(filePath) {
             }
           return message;
         }),
-        2,
+        3,
         false,
         true,
         true,
-        "ain"
+        "cst"
       )
     ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
     // const translatedMessageList = messageList

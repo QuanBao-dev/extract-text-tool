@@ -5,7 +5,7 @@ const delay = require("./delay");
 const { nanoid } = require("nanoid");
 const handleWordWrap = require("./handleWordWrap");
 (async () => {
-  const listFileName = fs.readdirSync("./cst_output_output");
+  const listFileName = fs.readdirSync("./cst_output");
   let start = 0;
   let numberAsync = 1;
   // console.log(await translateOfflineSugoiCt2LongList([
@@ -24,7 +24,7 @@ const handleWordWrap = require("./handleWordWrap");
             .slice(start, start + numberAsync)
             .map(async (fileName) => {
               console.log("Start:", fileName);
-              await translateFileCst(`./cst_output_output/${fileName}`);
+              await translateFileCst(`./cst_output/${fileName}`);
             })
         );
         start += numberAsync;
@@ -64,57 +64,64 @@ async function translateFileCst(filePath) {
     // }
     if (message !== undefined) {
       const rawMessage = message;
-      // message = handleWordWrap(
-      //   35,
-      //   message,
-      //   // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
-      //   // .replace(/<r/g, "")
-      //   // .replace(/\>/g, "")
-      //   // .replace(/<\/s/g, "")
-      //   // .replace(/❛/g, "'")
-      //   // .replace(/、/g, ", ")
-      //   "\r\n",
-      //   undefined,
-      //   // name ? 56 - name.length - 2 : undefined
-      //   undefined
-      // )
-      //   .replace(/#/g, "＃")
-      //   .replace(/@/g, "＠").replace(/'/g,"’");
-      // .replace(/m/g, "m ")
-      // .replace(/M/g, "M ")
-      // .replace(/G/g, "G ")
-      // .replace(/w/g, "w ")
-      // .replace(/W/g, "W ");
-
-      // if (message.split("\r\n").length > 2) {
-      //   message = rawMessage.replace(/#/g, "＃");
-      // }
+      try {
+        
+        message = handleWordWrap(
+          56,
+          message,
+          // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
+          // .replace(/<r/g, "")
+          // .replace(/\>/g, "")
+          // .replace(/<\/s/g, "")
+          // .replace(/❛/g, "'")
+          // .replace(/、/g, ", ")
+          "\r\n",
+          undefined,
+          // name ? 56 - name.length - 2 : undefined
+          undefined
+        )
+          .replace(/#/g, "＃")
+          .replace(/@/g, "＠");
+        // .replace(/'/g,"’");
+        // .replace(/m/g, "m ")
+        // .replace(/M/g, "M ")
+        // .replace(/G/g, "G ")
+        // .replace(/w/g, "w ")
+        // .replace(/W/g, "W ");
+      } catch (error) {
+        message = rawMessage.replace(/#/g, "＃");
+      }
+      
+      if (message.split("\r\n").length > 3) {
+        message = rawMessage.replace(/#/g, "＃");
+      }
       // message +=
       //   (name ? "」" : "") +
       //   Array.from(Array(300).keys())
       //     .map((v) => "")
       //     .join(" ");
 
-      message = message
-        .trim()
-        .replace(/、/g, ", ")
-        .split(" ")
-        .map((v) => {
-          // if (v === "") return v;
-          if (v.includes("[") || v.includes("]")) {
-            return v
-              .trim()
-              .replace(/fs/g, "")
-              .replace(/\\/g, "")
-              .replace(/\:/g, "")
-              .replace(/[\[\]]/g, "").replace(/\$39;/g,"'");
-          }
-          // return v;
-          if(v === "") return v.replace(/\$39;/g,"'");
-          return `[${v}]`.replace(/\$39;/g,"'");
-        })
-        .filter((v) => v !== "")
-        .join(" ");
+      // message = message
+      //   .trim()
+      //   .replace(/、/g, ", ")
+      //   .split(" ")
+      //   .map((v) => {
+      //     // if (v === "") return v;
+      //     if (v.includes("[") || v.includes("]")) {
+      //       return v
+      //         .trim()
+      //         .replace(/fs/g, "")
+      //         .replace(/\\/g, "")
+      //         .replace(/\:/g, "")
+      //         .replace(/[\[\]]/g, "").replace(/\$39;/g,"'");
+      //     }
+      //     // return v;
+      //     if(v === "") return v.replace(/\$39;/g,"'");
+      //     return `[${v}]`.replace(/\$39;/g,"'");
+      //   })
+      //   .filter((v) => v !== "")
+      //   .join(" ");
+
       // const specialList = message.match(
       //   /\[[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/]+\]/g
       // );

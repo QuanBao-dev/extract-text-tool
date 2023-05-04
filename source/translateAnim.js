@@ -34,29 +34,28 @@ const converter = new AFHConvert();
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "「あの技術を『あの男』以外が手に入れたということは……",
-  //       "　ワシらの企みも失敗したということじゃな……」",
-  //       "レギナピスはまだその事実に気付いてはいなかったが、",
-  //       "やがて下魔達が彼女の体に触れると――――",
-  //       "「い、いやじゃあああああああぁぁぁぁぁーーーーーーーーーー",
-  //       "　ーーーーーーーーーーーーーーーーーーッッ！！！！！」",
-  //       "「魔族」と呼称するようになる。",
-  //       "研究機関は新発見されたエネルギーを",
-  //       "アークと名付ける。",
-  //       "〈アークシオン〉",
-  //       "女性",
-  //       "「あ、もっしー。うん、もう帰るところー。",
-  //       "　今日の合コン、マジなかったわぁ。",
-  //       "　いらねー、おっさんとフリーターとかマジいらねー」",
-  //       "「でも、怖がらせちゃったのは、",
-  //       "　間違いなく私たちだから……本物のヒーローみたいに、",
-  //       "　安心させてあげたかったのに……」",
-
+  //       "エレナ アーヴィング",
+  //       "神代 ひかる",
+  //       "アクサ",
+  //       "イレーネ",
+  //       "神代 蛍",
+  //       "神代 ゆずる",
+  //       "リディア アーヴィング",
+  //       "オルフェナ",
+  //       "ヤエル",
+  //       "デボラ",
+  //       "デクスター",
+  //       "ジャービス",
+  //       "神代 正",
+  //       "九条 旭",
+  //       "大村 大悟",
+  //       "シルシィ",
   //     ],
   //     3,
   //     false,
   //     false,
-  //     true
+  //     false,
+  //     "srp"
   //   )
   // );
   // await delay(1000000);
@@ -83,31 +82,31 @@ const converter = new AFHConvert();
   // } while (i < translatedTextList.length - 1);
   // console.log(rawTextList)
   const translationList = await translateOfflineSugoiCt2LongList(
-    rawTextList.map((text) => text.replace(/◆/g, ""))
+    rawTextList.map((text) => text.replace(/◆/g, "")),
     // .map((v) => json[v])
     // .filter(
     //   (rawText) => !rawText.match(/_/g)
     //   && rawText !== "@@" && rawText !== ""
     //   // (rawText) => json[rawText] !== ""
     // ),
-    .map((rawText) => {
-      let textList = rawText.match(
-        /@\[[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆:]+\]/g
-      );
-      if (!textList) return rawText;
-      for (let i = 0; i < textList.length; i++) {
-        rawText = rawText.replace(
-          textList[i],
-          textList[i].split(":")[1].replace("@[", "").replace("]", "")
-        );
-      }
-      return rawText;
-    }),
+    // .map((rawText) => {
+    //   let textList = rawText.match(
+    //     /@\[[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆:]+\]/g
+    //   );
+    //   if (!textList) return rawText;
+    //   for (let i = 0; i < textList.length; i++) {
+    //     rawText = rawText.replace(
+    //       textList[i],
+    //       textList[i].split(":")[1].replace("@[", "").replace("]", "")
+    //     );
+    //   }
+    //   return rawText;
+    // })
     2,
     false,
     true,
-    true,
-    "anim"
+    false,
+    "ain"
   );
   let ans = {};
   let count = 0;

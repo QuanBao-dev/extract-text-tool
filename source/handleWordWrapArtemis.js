@@ -1,8 +1,6 @@
-const { ks } = require("../setting.json");
-const handleWordWrap = require("./handleWordWrap");
-
+const { artemisAster } = require("../setting.json");
 const containRegExpI = new RegExp(
-  ks.wordWrap.regExpToExcludeSentenceNotNeedTranslatedContain,
+  artemisAster.wordWrap.regExpToExcludeSentenceNotNeedTranslatedContain,
   "g"
 );
 
@@ -12,24 +10,48 @@ module.exports = function handleWordWrapArtemis(fileContent) {
     if (index === 0) return text;
     return `block_${parsingNumber(index - 1)} = {` + text;
   });
+  // console.log(dataList)
   const dataTextList = dataList.reduce((ans, blockString) => {
     let splittedBlock = blockString.split("\r\n");
+    splittedBlock = splittedBlock.reduce((ans, v) => {
+      ans.push(...v.split("\n"));
+      return ans;
+    }, []);
     splittedBlock = splittedBlock.filter((string) => {
       return string.trim().match(containRegExpI) === null;
     });
-    ans.push(
-      handleWordWrap(
-        ks.wordWrap.maxCharPerLines,
-        splittedBlock[0].trim(),
-        '",[r]"'
-      ).split("[r]")
-    );
+    let array = splittedBlock[0].trim().split("\\n");
+    const temp = [];
+    let i = 0;
+    while (i < array.length) {
+      temp.push(
+        ((i > 0 ? '"' : "") + array.slice(i, i + 3).join("\\n") + '",').replace(
+          /\\n",/g,
+          '",\\n'
+        )
+      );
+      i += 3;
+    }
+    ans.push(temp);
+    // ans.push(
+    //   handleWordWrap(
+    //     ks.wordWrap.maxCharPerLines,
+    //     splittedBlock[0].trim(),
+    //     '",[r]"'
+    //   ).split("[r]")
+
+    //   // splittedBlock[0].trim().split("\\n")
+    // );
     return ans;
   }, []);
   let count = 0;
   let isExcepted = false;
   const result = dataTextList.map((listText, index) => {
     let blockSplit = dataList[index].split("\r\n");
+    blockSplit = blockSplit.reduce((ans, v) => {
+      ans.push(...v.split("\n"));
+      return ans;
+    }, []);
     return listText
       .map((translatedDialog, index) => {
         const temp = blockSplit.map((text) => {
@@ -85,7 +107,7 @@ module.exports = function handleWordWrapArtemis(fileContent) {
       })
       .join("\r\n");
   });
-  return result.join("\r\n");
+  return result.join("\r\n").replace(/',",/g, '",').replace(/					",/g, "");
 };
 
 function parsingNumber(num) {

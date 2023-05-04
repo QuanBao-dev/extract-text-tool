@@ -5,7 +5,7 @@ const {
   translateOfflineSugoiCt2LongList,
   excludeTranslateText,
 } = require("./translateJapanese");
-const {  ks } = require("../setting.json");
+const { ks } = require("../setting.json");
 const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
@@ -167,19 +167,29 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // await delay(10000000);
   // await translateOfflineSugoiCt2LongList(
   //   [
-  //     "クリスティア＝クルイバラーディオ",
-  //     "イルミオン",
-  //     "リコ＝ニヴフ",
-  //     "テレーズ＝エル・フレイ",
-  //     " \t\t\t\t【～「矢印」とは～】\t\t\t\t"
+  //     "湊 柊一郎",
+  //     "千咲都",
+  //     "波多江 妙花",
+  //     "紅林 ノア",
+  //     "我妻 樹里亜",
+  //     "花丸 凛",
+  //     "樋口 絵理子",
+  //     "釘谷 譲二",
+  //     "櫛森 日和子",
+  //     "湊 柊菜子",
+  //     "太田部 夏海",
+  //     "小沢 翔也",
+  //     "ソフィーヤ・シコレンコ",
+  //     "山岸 姫瑠",
+  //     "夕顔 葉月",
   //   ],
   //   2,
   //   false,
   //   false,
   //   false,
-  //   "BGI"
+  //   "srp"
   // );
-  //   await delay(10000000);
+  // await delay(10000000);
   const listFileName = fs.readdirSync(ks.translation.folderPath);
   let start = 0;
   let numberAsync = ks.translation.numberOfFiles;
@@ -301,6 +311,16 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
             .replace(/\[Cock\]/g, "")
             .replace(/\[r\]/g, "")
             .replace(/／/g, "")
+            .replace(/,{"rt2"},/g, "")
+            .replace(/"/g, "")
+            // .replace(/,/g, "")
+            // .replace(/{ruby text=/g, "")
+            // .replace(/{\/ruby}/g, "")
+            // .replace(/}/g, "")
+            .replace(/・/g,"")
+            .replace(/{exfont/g,"")
+            // .replace(/[a-zA-Z0-9=]+/g,"")
+            // .replace(/」( +)?「/g,"@@@")
             .trim()
         );
         temp = "";
@@ -339,13 +359,14 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   }
   //   return splittedTexts.join('"');
   // });
+  console.log(rawTextList);
   const translatedTextList = await translateOfflineSugoiCt2LongList(
-    rawTextList.map((v) => v.replace(/\\t/g,"")),
+    rawTextList,
     2,
     false,
     true,
-    true,
-    "BGI"
+    false,
+    "srp"
   );
   // const translatedTextList = rawTextList.reduce((ans, curr) => {
   //   if (curr.trim() === "") return ans;
@@ -577,32 +598,36 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     }
     if (translatedTextList[count] !== undefined) {
       let temp = translatedTextList[count];
+      temp = temp;
       // let prefix = prefixList[count];
       // if (rawText.match(/(^	)/g)) {
       //   temp = rawText.match(/(	)+/g)[0] + temp;
       // }
-      temp = temp;
-      ans.push(
-        // handleWordWrap(
-        //   Math.floor(temp.length / listCount[count]) < 41
-        //     ? Math.floor(temp.length / listCount[count])
-        //     : 46,
-        //   temp,
-        //   "\r\n",
-        //   listCount[count]
-        // )
-        // handleWordWrap(57, temp, "\\n")
-        // handleWordWrap(56, temp, "\r\n", listCount[count], undefined)
-        // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
-        temp
-        // .replace(/,( )?/g, "、")
-        // .replace(/、/g, ", ")
-        // .replace(/[◆✩♥♡●♪]/g, "")
-        // .replace(/❛/g, "’")
-        // .replace(/é/g, "e")
-        // .replace(/ō/g, "o")
-        // .replace(/[àâ]/g, "a")
-      );
+      if (temp === "{Rt2},") {
+        ans.push();
+      } else
+        ans.push(
+          // handleWordWrap(
+          //   Math.floor(temp.length / listCount[count]) < 41
+          //     ? Math.floor(temp.length / listCount[count])
+          //     : 46,
+          //   temp,
+          //   "\r\n",
+          //   listCount[count]
+          // )
+          // handleWordWrap(57, temp, "\\n")
+          // handleWordWrap(56, temp, "\r\n", listCount[count], undefined)
+          // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
+          ("					\"" + temp + "\",")
+          // .replace(/@+/g,"」\\n「")
+          // .replace(/,( )?/g, "、")
+          // .replace(/、/g, ", ")
+          // .replace(/[◆✩♥♡●♪]/g, "")
+          // .replace(/❛/g, "’")
+          // .replace(/é/g, "e")
+          // .replace(/ō/g, "o")
+          // .replace(/[àâ]/g, "a")
+        );
       if (ks.translation.isArtemis) ans.push('					{"rt2"},');
     } else {
       ans.push("");
@@ -614,7 +639,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // .filter((text) => text !== "" && text !== ",")
   translatedFileContent = translatedFileContent
     // .slice(0, translatedFileContent.length - 2)
-    .join("\n");
+    .join("\r\n");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding);
 }

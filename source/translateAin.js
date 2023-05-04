@@ -231,62 +231,68 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   true,
   //   "ain"
   // );
+  let translatedTextList = [...rawTextList].map((v) => {
+    // return handleWordWrap(68, v, "\\r\\n")
+    // .replace(/[「『]/g, "“")
+    // .replace(/[」』]/g, "”")
+    const prefix = v.match(/m\[[0-9]+\] = "/g);
+    const textContent = v.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "");
+    return prefix + handleWordWrap(68, textContent, "\\r\\n")
+      .replace(/[「『]/g, "“")
+      .replace(/[」』]/g, "”") + "\"";
+  });
 
-  // let translatedTextList = [...rawTextList].map((v) => {
-  //   return handleWordWrap(43, v, "\\r\\n");
-  // });
-
-  let translatedTextList = [...rawTextList];
-  let i = 0;
-  // console.log(translatedTextList)
-  do {
-    const currentText = translatedTextList[i]
-      .replace(/m\[[0-9]+\] = "/g, "")
-      .replace(/"$/g, "");
-    const nextText = translatedTextList[i + 1]
-      .replace(/m\[[0-9]+\] = "/g, "")
-      .replace(/"$/g, "");
-    const prefix = translatedTextList[i].match(/m\[[0-9]+\] = "/g)[0];
-    const nextPrefix = translatedTextList[i + 1].match(/m\[[0-9]+\] = "/g)[0];
-    const wordWrappedText = handleWordWrap(67, currentText, "\\n");
-    const splittedTextList = wordWrappedText.split("\\n");
-    if (nextText === "@@" && splittedTextList.length > 1) {
-      translatedTextList[i] =
-        prefix +
-        splittedTextList[0].replace(/[『「]/g, "“").replace(/[」』]/g, "”") +
-        '"';
-      translatedTextList[i + 1] =
-        nextPrefix +
-        splittedTextList
-          .slice(1)
-          .join(" ")
-          .replace(/[『「]/g, "“")
-          .replace(/[」』]/g, "”") +
-        '"';
-    }
-    translatedTextList[i] = translatedTextList[i]
-      .replace(/[『「]/g, "“")
-      .replace(/[」』]/g, "”");
-    i++;
-  } while (i < translatedTextList.length - 1);
+  // let translatedTextList = [...rawTextList];
+  // let i = 0;
+  // // // console.log(translatedTextList)
+  // do {
+  //   const currentText = translatedTextList[i]
+  //     .replace(/m\[[0-9]+\] = "/g, "")
+  //     .replace(/"$/g, "");
+  //   const nextText = translatedTextList[i + 1]
+  //     .replace(/m\[[0-9]+\] = "/g, "")
+  //     .replace(/"$/g, "");
+  //   const prefix = translatedTextList[i].match(/m\[[0-9]+\] = "/g)[0];
+  //   const nextPrefix = translatedTextList[i + 1].match(/m\[[0-9]+\] = "/g)[0];
+  //   const wordWrappedText = handleWordWrap(68, currentText, "\\n");
+  //   const splittedTextList = wordWrappedText.split("\\n");
+  //   if (nextText === "" && splittedTextList.length > 1) {
+  //     translatedTextList[i] =
+  //       prefix +
+  //       splittedTextList[0].replace(/[『「]/g, "“").replace(/[」』]/g, "”") +
+  //       '"';
+  //     translatedTextList[i + 1] =
+  //       nextPrefix +
+  //       splittedTextList
+  //         .slice(1)
+  //         .join(" ")
+  //         .replace(/[『「]/g, "“")
+  //         .replace(/[」』]/g, "”") +
+  //       '"';
+  //   }
+  //   translatedTextList[i] = translatedTextList[i]
+  //     .replace(/[『「]/g, "“")
+  //     .replace(/[」』]/g, "”");
+  //   i++;
+  // } while (i < translatedTextList.length - 1);
 
   // translatedTextList = handleWordWrapGlue(rawTextList, 10000, "\\r\\n",true)
 
   // translatedTextList = rawTextList.map((text) => {
   //   const prefix = text.match(/m\[[0-9]+\] = "/g);
   //   const textContent = text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "");
-  //   if (text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "") === "@@") {
+  //   if (text.replace(/m\[[0-9]+\] = "/g, "").replace(/"$/g, "") === "") {
   //     return prefix + '"';
   //   }
   //   return (
   //     prefix +
   //     handleWordWrap(
-  //       43,
+  //       68,
   //       textContent
   //         .replace(/m\[[0-9]+\] = "/g, "")
   //         .replace(/"$/g, "")
   //         .trim(),
-  //       "\\n"
+  //       "\r\n"
   //     )
   //       .replace(/[「『]/g, "“")
   //       .replace(/[」』]/g, "”")
