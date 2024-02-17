@@ -5,199 +5,49 @@ const {
   translateOfflineSugoiCt2LongList,
   excludeTranslateText,
 } = require("./translateJapanese");
-const { ks } = require("../setting.json");
+const { tanuki } = require("../setting.json");
 const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
 const handleWordWrap = require("./handleWordWrap");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  tanuki.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "i"
 );
 const containRegExpG = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
+  tanuki.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
   "g"
 );
 const containRegExpG2 = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedContain2,
+  tanuki.translation.regExpToExcludeSentenceNotNeedTranslatedContain2,
   "g"
 );
 const exceptRegExpI = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  tanuki.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
   "i"
 );
 const exceptRegExpG = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
+  tanuki.translation.regExpToExcludeSentenceNotNeedTranslatedExcept,
   "g"
 );
 const exceptRegExpG2 = new RegExp(
-  ks.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
+  tanuki.translation.regExpToExcludeSentenceNotNeedTranslatedExcept2,
   "g"
 );
 
 const containTagNameRegExpI = new RegExp(
-  ks.translation.regExpToFilterSentenceContainTagName,
+  tanuki.translation.regExpToFilterSentenceContainTagName,
   "i"
 );
-const addedString = ks.translation.addedString;
+const addedString = tanuki.translation.addedString;
 const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
-  ks.translation;
+  tanuki.translation;
 // [一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+
 (async () => {
-  // console.log(
-  //   await translateOfflineSugoiCt2LongList(
-  //     [
-  //       // "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
-  //       // "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
-  //       // "「かおることか呼ばないで。イラッとくるから」",
-  //       // `少女は愛らしい横顔とは相反する[rb,何処,どこ]か虚ろな表情で、わらべうたを口ずさんでいる。`,
-  //       "<翔太>「……おはようございます。美沙希さん」",
-  //       "<？？？>「もしもし、篠原です。……あら、あなた。おはよう。[ゆうべ/昨夜]はよく眠れた？」",
-  //       "<美沙希>「だといいけど、電車は寒すぎるのよね。あら……急げば一本早い電車に乗れるかもしれないわ」",
-  //       "腕時計を確認すると、足早にヒールを鳴らす。",
-  //       "<翔太>「美沙希さんもお仕事忙しいんですか？」",
-  //       "<美沙希>「うーん、今日は少しややこしい案件が入ってるの」",
-  //       "難しい顔で頷く。",
-  //       "父曰く、美沙希さんはそこそこの業績を出すやり手らしい。顧客からの評判もいいと言っていた。",
-  //       "<美沙希>「あっ、忘れてた！　私も今日は遅くなるの。きっと寛さんも遅いと思うから、夕飯は……」",
-  //     ],
-  //     2,
-  //     false,
-  //     true,
-  //     true
-  //   )
-  // );
-
-  // console.log(
-  //   await translateSelectCenterTextList(
-  //     [
-  //       `&0"「こっち。こっちだよー」"#:NameSuffix`,
-  //       `&1"「むにゃむにゃ……おっぱいだ　待ってよーあははははは」"`,
-  //       `&13"澄野撫子。今日も寝坊しかけた俺と違って、昔からしっかり者の姉ちゃんだ。"&14"同い年でありながら、俺は体の隅々まで悲しいかな、今のような具合にしつけられている。"`,
-  //       `&20"「朝ごはんを:NameSuffixと一緒に食べるのは当然じゃない」"42("DEL","02DrawFc.dat")`,
-  //       `&53"「へ？　う、うん。(e)俺も姉ちゃんがいつも母さん達に内緒にしてくれる事には感謝してるよ！　ありがとな！」"`,
-  //       `&28"「ハハハ…」"&29"俺は思わず引きつった笑みを浮かべる。これは、姉ちゃんが何かを訴える時の合図だ。"_Target=@CharC,`,
-  //       `&46"どこから出したのか、５枚ほどの原稿用紙を差し出す姉ちゃん。それを埋める所要時間は経験から言って２時間～３時間。"#:NameSuffix`,
-  //       `&34"我ながら分かりやすすぎるリアクションだ。"&35"姉ちゃんは箸をおくと、冷たさの漂う目で俺を見つめた。"_Target=@CharC,`,
-  //     ],
-  //     2,
-  //     true
-  //   )
-  // );
-  // await delay(10000000);
-  // console.log(
-  //   await translateOfflineSugoiCt2LongList(
-  //     [
-  //       `m[703] = "「どのぐらい少しかというと、"`,
-  //       `m[704] = "　伊澤先生担当…のはずが、他開発にドナドナになったので、"`,
-  //       `m[705] = "　途中から途中まで…」"`,
-  //       `m[706] = "「中途半端でごめんね、伊澤先生…"`,
-  //       `m[707] = "　えっちもいっこだけ書きました。"`,
-  //       `m[708] = "　先生はいつでも、おっぱい重そうでした。最巨乳！！」"`,
-  //       `m[718] = "「…と一人ひっそりと葛」藤していた"`,
-  //       `m[719] = "　開発に参加してまもなくの頃。"`,
-  //       `m[720] = "　ちょも山さんとお酒を嗜みに行った時に聞いたお話が…"`,
-  //       `m[721] = "：風麟さんとちょも山さんで、お遊びで　　　　　　　　："`,
-  //       `m[722] = "：「各キャラに武器（エモノ）を持たせるなら…」という："`,
-  //       `m[723] = "：お話をしていた時、　　　　　　　　　　　　　　　　："`,
-  //       `m[724] = "：　風麟さんは　　　　　　　　　　　　　　　　　　　："`,
-  //       `m[725] = "：　　　　　圭太の武器はスタンガンです　　　　　　　："`,
-  //       `m[726] = "：　　　　　　　　　　　　　　　　　　とのたまった　："`,
-  //       `m[727] = "「ス　タ　ン　ガ　ン　！」"`,
-  //       `m[7602] = "『コーくん！？"`,
-  //       `m[7603] = "　どうして、最近、来てくれないの？』"`,
-  //     ],
-  //     2,
-  //     false,
-  //     false,
-  //     false
-  //   )
-  // );
-  // console.log(
-  //   await translateOfflineSugoiCt2LongList(
-  //     [
-  //       // "雫のいら立ったタイミングを見計らったように現れたヴ[r]ォイドに、熱い正義の炎を[ruby text=ほとばし]迸らせる。",
-  //       // "【浩輔】（仕事も終わったばっかだってのに、みんな元気だよなあ……）",
-  //       // "「夜舟流着地術・参式――“<Rはごろもひとえ>羽衣一重</R>”」",
-  //       "<1032,610102,121>「──いいか、二つに一つだ。このままデコを吹っ飛ばされるか、それとも<r・・・・>愉快な嘘</r>を白状して許しを請うか。選べ」",
-  //       "<4604,611643,63>彼らの立っていた横の石壁が不自然に<r・・・・・>盛り上がる</r>。",
-  //       "<4244,113309,60>「タウン誌で“凪沙のＢ級グルメ名店10にも選ばれたんだから」",
-  //       "<1786,50700>「そして西暦1870年、<rぼしん>戊辰</r>戦<d0003>争で双方の戦人が激突して<br>　日本は東西に分裂」"
-  //     ],
-  //     2,
-  //     false,
-  //     true,
-  //     true,
-  //     "BGI"
-  //   )
-  // );
-  // await delay(100000)
-  // console.log(
-  //   await translateOfflineSugoiCt2LongList(
-  //     [
-  //       `「[m_tips t="35_フィルム速度"]フィルム速度[em_tips]、[m_tips t="36_シャッター角"]シャッター角[em_tips]、絞りはそのままで。……ズームは多少、いじってみてもいいよ」[np]`,
-  //       `　[ruby text="　う ろ ん"]胡乱げな眼差しで、美月はわたしをみつめる。[np]`,
-  //       `　薄く息を吐いて、腹筋を引き締めた。知らぬ間に、背筋が伸びる。[ruby text="ふく"]脹ら[ruby text="はぎ"]脛に力をこめ、大地を踏みしめる。[np]`
-  //     ],
-  //     4,
-  //     false,
-  //     true,
-  //     true,
-  //     "kiriruby"
-  //   )
-  // );
-  // console.log(
-  //   handleWordWrap(
-  //     20,
-  //     "The quick brown fox jumps over the lazy dog",
-  //     "\n",
-  //     5,
-  //     undefined
-  //   )
-  // );
-  // console.log(
-  //   handleWordWrap(
-  //     53,
-  //     `&300"【車内アナウンス】「Next is... Ichiou Academy、Ichigakuen-mae、and the(e)exit is to the left. This is the Tozai Line of the(e)subway North-South Line.」"`,
-  //     "\n",
-  //     6
-  //   )
-  // );
-  // console.log(
-  //   await handleWordWrap(6,"123","\n",3)
-  // );
-  // await delay(10000000);
-  // await translateOfflineSugoiCt2LongList(
-  //   [
-  //     "湊 柊一郎",
-  //     "千咲都",
-  //     "波多江 妙花",
-  //     "紅林 ノア",
-  //     "我妻 樹里亜",
-  //     "花丸 凛",
-  //     "樋口 絵理子",
-  //     "釘谷 譲二",
-  //     "櫛森 日和子",
-  //     "湊 柊菜子",
-  //     "太田部 夏海",
-  //     "小沢 翔也",
-  //     "ソフィーヤ・シコレンコ",
-  //     "山岸 姫瑠",
-  //     "夕顔 葉月",
-  //   ],
-  //   2,
-  //   false,
-  //   false,
-  //   false,
-  //   "srp"
-  // );
-  // await delay(10000000);
-  // Ⅶ 66 21
-  // ㎝ 9D 33
-  const listFileName = fs.readdirSync(ks.translation.folderPath);
+  const listFileName = fs.readdirSync(tanuki.translation.folderPath);
   let start = 0;
-  let numberAsync = ks.translation.numberOfFiles;
+  let numberAsync = tanuki.translation.numberOfFiles;
 
   do {
     try {
@@ -214,15 +64,15 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
               //   "shiftjis"
               // );
               await translateFileKs(
-                `${ks.translation.folderPath}/${fileName}`,
-                ks.translation.isSelects,
-                ks.translation.isTagName,
-                ks.encoding
+                `${tanuki.translation.folderPath}/${fileName}`,
+                tanuki.translation.isSelects,
+                tanuki.translation.isTagName,
+                tanuki.encoding
               );
             })
         );
         start += numberAsync;
-        numberAsync = ks.translation.numberOfFiles;
+        numberAsync = tanuki.translation.numberOfFiles;
       } while (start < listFileName.length);
       break;
     } catch (error) {
@@ -245,22 +95,21 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   encoding
   // );
   let dataList = fileContent.split(/\r\n/g);
-  // console.log(dataList)
   // let rawTranslatedDataList = translatedRawFileContent.split(/\r\n/g);
   // let dumpList = dumpFileContent.split(/\r\n/g);
   // console.log(dataList);
-  // let temp2 = [];
-  // dataList.forEach((text) => {
-  //   const textList = text.split("\n");
-  //   textList.forEach((text) => temp2.push(text));
-  // });
-  // dataList = [...temp2];
+  let temp2 = [];
+  dataList.forEach((text) => {
+    const textList = text.split("\n");
+    textList.forEach((text) => temp2.push(text));
+  });
+  dataList = [...temp2];
   // console.log(dataList)
   let temp = "";
   console.time(filePath);
   if (isSelect) {
     const translatedFileContent = (
-      await translateSelectCenterTextList(dataList, 3, false, ks, "srp")
+      await translateSelectCenterTextList(dataList, 3, false, tanuki, "srp")
     ).join("\r\n");
     return await writeFile(filePath, translatedFileContent, encoding);
   }
@@ -272,7 +121,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // console.log(dataList)
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
-      if (!ks.translation.isNoFilter) {
+      if (!tanuki.translation.isNoFilter) {
         if (rawText.includes("endscript")) {
           isScript = false;
         }
@@ -304,7 +153,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       return ans;
     }, [])
     .reduce((ans, rawText) => {
-      if (ks.translation.isNoFilter) {
+      if (tanuki.translation.isNoFilter) {
         ans.push(rawText.replace(/\[Cock\]/g, "").replace(/\[r\]/g, ""));
         return ans;
       }
@@ -368,17 +217,23 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   return splittedTexts.join('"');
   // });
   // console.log(rawTextList);
-  const translatedTextList = rawTextList
+  // const translatedTextList = rawTextList
+  // console.log(translatedTextList.map((v) => {
+  //   return v.split(",")[v.split(",").length - 1]
+  // }))
   // console.log(rawTextList.join("\r\n"))
-  // const translatedTextList = await translateOfflineSugoiCt2LongList(
-  //   rawTextList,
-  //   3,
-  //   false,
-  //   true,
-  //   false,
-  //   "srp",
-  //   // "Eroit"
-  // );
+  const translatedTextList = await translateOfflineSugoiCt2LongList(
+    rawTextList,
+    3,
+    false,
+    true,
+    false,
+    "tanuki",
+    false,
+    false,
+    false,
+    1
+  );
   // const translatedTextList = rawTextList.reduce((ans, curr) => {
   //   if (curr.trim() === "") return ans;
   //   if (!curr.trim().match(/^(<)/g)) {
@@ -572,7 +427,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // return await writeFile(filePath, translatedTextList.join("\n")+"\n", "utf8");
   isScript = false;
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
-    if (!ks.translation.isNoFilter) {
+    if (!tanuki.translation.isNoFilter) {
       if (rawText.includes("endscript")) {
         isScript = false;
       }
@@ -626,10 +481,9 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           //   "\r\n",
           //   listCount[count]
           // )
-          handleWordWrap(63, temp, "\\n").replace(/(\\n)$/g,"")
-          // temp
-          // temp
-          // handleWordWrap(63, temp, "\r\n", listCount[count], undefined)
+          // handleWordWrap(67, temp, "\\n").replace(/(\\n)$/g,"")
+          temp
+          // handleWordWrap(67, temp, "\r\n", listCount[count], undefined)
           // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
           // ("					\"" + temp + "\",")
           // temp
@@ -642,7 +496,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           // .replace(/ō/g, "o")
           // .replace(/[àâ]/g, "a")
         );
-      if (ks.translation.isArtemis) ans.push('					{"rt2"},');
+      if (tanuki.translation.isArtemis) ans.push('					{"rt2"},');
     } else {
       ans.push("");
     }

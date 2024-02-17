@@ -48,15 +48,22 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   let start = 0;
   let numberAsync = qlie.translation.numberOfFiles;
   // console.log(
-  //   await translateSelectCenterTextList(
-  //     ["aya_001_eri1001,エリー,「Ehehe、I’ll have to give Haruka some water、too. 」"],
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       "何百人も門下生がいて、家元であるお[rb,祖父,じい]さまも、師範のお[rb,祖母,ばあ]さまも両親も、よくあちこちへ出かけていく。",
+  //       "「[rb,綾河,あやかわ]さん…………[rb,綾河,あやかわ][rb,春生,はるき]さん。…………おや」",
+  //       "「苅田くん…………[rb,季元,きのもと]くん。[n]季元ハジメくん」",
+  //       "HAR_0021,春生,「そして、一冊徹夜で読み通した私が作り上げたのが、[n]この物質透過装置！　スイッチオン！」",
+  //       "none,先生,「苅田くん…………[rb,季元,きのもと]くん。[n]季元ハジメくん」",
+  //     ],
   //     1,
   //     false,
-  //     qlie,
-  //     "srp"
+  //     true,
+  //     false,
+  //     "qlie"
   //   )
   // );
-  // await delay(1000000)
+  // await delay(1000000);
   do {
     try {
       do {
@@ -100,6 +107,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let dataList = fileContent.split(/\r\n/g);
   let temp = "";
   console.time(filePath);
+  // console.log(dataList.join("\r\n"))
   if (isSelect) {
     const translatedFileContent = (
       await translateSelectCenterTextList(dataList, 3, false, qlie, "srp", true)
@@ -142,20 +150,29 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     }, []);
   // const translatedTextList = await translateOfflineSugoiCt2LongList(
   //   rawTextList,
-  //   2,
+  //   3,
   //   false,
   //   true,
-  //   true,
-  //   "qlie"
+  //   false,
+  //   "qlie",
+  //   ""
   // );
-  const translatedTextList = await translateSelectCenterTextList(
-    rawTextList,
-    2,
-    false,
-    qlie,
-    "qlie",
-    true
-  );
+  // const translatedTextList = await translateOfflineSugoiCt2LongList(
+  //   rawTextList,
+  //   3,
+  //   false,
+  //   true,
+  //   false,
+  //   "srp"
+  // );
+  // const translatedTextList = await translateSelectCenterTextList(
+  //   rawTextList,
+  //   2,
+  //   false,
+  //   qlie,
+  //   "qlie",
+  //   false
+  // );
   let count = 0;
   let isDisable = false;
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {

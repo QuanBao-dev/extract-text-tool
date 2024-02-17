@@ -265,9 +265,9 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       return ans;
     }, [])
     .reduce((ans, rawText) => {
+      ans.push(rawText.replace(/\[Cock\]/g, ""));
+      return ans;
       if (whale.translation.isNoFilter) {
-        ans.push(rawText.replace(/\[Cock\]/g, ""));
-        return ans;
       }
       count3++;
       temp += " " + (rawText.trim() === "---" ? "" : rawText.trim());
@@ -330,14 +330,19 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   }
   //   return splittedTexts.join('"');
   // });
-  const translatedTextList = await translateOfflineSugoiCt2LongList(
-    rawTextList,
-    3,
-    false,
-    true,
-    false,
-    "whale"
+  // const translatedTextList = await translateOfflineSugoiCt2LongList(
+  //   rawTextList,
+  //   3,
+  //   false,
+  //   true,
+  //   false,
+  //   "whale",
+  //   "Eroit"
+  // );
+  const translatedTextList = rawTextList.map((text) =>
+    text.replace(/\(/g, "（").replace(/\)/g, "）")
   );
+
   // const translatedTextList = rawTextList.map((v) => {
   //   if (v === ".") {
   //     return "";

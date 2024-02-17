@@ -116,7 +116,7 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       // "雫のいら立ったタイミングを見計らったように現れたヴ[r]ォイドに、熱い正義の炎を[ruby text=ほとばし]迸らせる。",
+  //       // "雫のいら立ったタイミングを見計らったように現れたヴ[r]ォイドに、熱い正義の炎を[txruby text=ほとばし]迸らせる。",
   //       // "【浩輔】（仕事も終わったばっかだってのに、みんな元気だよなあ……）",
   //       // "「夜舟流着地術・参式――“<Rはごろもひとえ>羽衣一重</R>”」",
   //       "<1032,610102,121>「──いいか、二つに一つだ。このままデコを吹っ飛ばされるか、それとも<r・・・・>愉快な嘘</r>を白状して許しを請うか。選べ」",
@@ -134,14 +134,14 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //   await translateOfflineSugoiCt2LongList(
   //     [
   //       `「[m_tips t="35_フィルム速度"]フィルム速度[em_tips]、[m_tips t="36_シャッター角"]シャッター角[em_tips]、絞りはそのままで。……ズームは多少、いじってみてもいいよ」[np]`,
-  //       `　[ruby text="　う ろ ん"]胡乱げな眼差しで、美月はわたしをみつめる。[np]`,
-  //       `　薄く息を吐いて、腹筋を引き締めた。知らぬ間に、背筋が伸びる。[ruby text="ふく"]脹ら[ruby text="はぎ"]脛に力をこめ、大地を踏みしめる。[np]`
+  //       `　[txruby text="　う ろ ん"]胡乱げな眼差しで、美月はわたしをみつめる。[np]`,
+  //       `　薄く息を吐いて、腹筋を引き締めた。知らぬ間に、背筋が伸びる。[txruby text="ふく"]脹ら[txruby text="はぎ"]脛に力をこめ、大地を踏みしめる。[np]`
   //     ],
   //     4,
   //     false,
   //     true,
   //     true,
-  //     "kiriruby"
+  //     "kiritxruby"
   //   )
   // );
   // console.log(
@@ -239,7 +239,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   filePath.replace(/csv/g, "txt"),
   //   encoding
   // );
-  let dataList = fileContent.split(/\r\n/g);
+  let dataList = fileContent.split(/\n/g);
   // let rawTranslatedDataList = translatedRawFileContent.split(/\r\n/g);
   // let dumpList = dumpFileContent.split(/\r\n/g);
   // console.log(dataList);
@@ -250,6 +250,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // });
   // dataList = [...temp2];
   let temp = "";
+  let isSelectAster = false;
   console.time(filePath);
   if (isSelect) {
     const translatedFileContent = (
@@ -260,7 +261,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         artemisAster,
         "srp"
       )
-    ).join("\r\n");
+    ).join("\n");
     return await writeFile(filePath, translatedFileContent, encoding);
   }
   let isNewDialog = true;
@@ -270,16 +271,23 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
       if (!artemisAster.translation.isNoFilter) {
+        if (rawText === "		},") {
+          isSelectAster = false;
+        }
         if (
           (rawText.trim().match(containRegExpI) &&
             !rawText.trim().match(exceptRegExpI)) ||
-          rawText === ""
+          rawText === "" ||
+          isSelectAster
           // index === 0
           // !rawText.match(containRegExpG2)
           // rawText.match(containTagNameRegExpI)
           // !rawText.match(containTagNameRegExpI)
           // false
         ) {
+          if (rawText.includes('"select"')) {
+            // isSelectAster = true;
+          }
           isNewDialog = true;
           return ans;
         }
@@ -312,8 +320,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
               .replace(/／/g, "")
               .replace(/,{"rt2"},/g, "")
               .replace(/{"exfont[a-zA-Z0-9 ,"=}]+/g, "")
-              .replace(/{"ruby", text=/g, "")
-              .replace(/{"\/ruby"}/g, "")
+              .replace(/{"txruby", text=/g, "")
+              .replace(/{"txruby"}/g, "")
+              .replace(/}/g, "")
+              .replace(/,/g, "")
               // .replace(/,/g, "")
               // .replace(/"/g, "")
               .replace(/^"/g, "")
@@ -340,37 +350,48 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     }, []);
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    2,
+    3,
     false,
     true,
     false,
     "srp",
-    "artemisAster"
+    ""
   );
   let count = 0;
   let isDisable = false;
   // return await writeFile(filePath, translatedTextList.join("\n")+"\n", "utf8");
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
     if (!artemisAster.translation.isNoFilter) {
+      if (rawText === "		},") {
+        isSelectAster = false;
+      }
       if (
         (rawText.trim().match(containRegExpI) &&
           !rawText.trim().match(exceptRegExpI)) ||
-        rawText === ""
+        rawText === "" ||
+        isSelectAster
         // !rawText.match(containRegExpG2)
         // rawText.match(containTagNameRegExpI)
       ) {
+        if (rawText.includes('"select"')) {
+          // isSelectAster = true;
+        }
         isDisable = false;
       }
       if (isDisable) return ans;
       if (
         (rawText.trim().match(containRegExpI) &&
           !rawText.trim().match(exceptRegExpI)) ||
-        rawText === ""
+        rawText === "" ||
+        isSelectAster
         // !rawText.match(containTagNameRegExpI)
         // index === 0
         // !rawText.match(containRegExpG2)
         // rawText.match(containTagNameRegExpI)
       ) {
+        if (rawText.includes('"select"')) {
+          // isSelectAster = true;
+        }
         ans.push(rawText);
         return ans;
       }
@@ -397,9 +418,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           // handleWordWrap(57, temp, "\\n")
           // handleWordWrap(56, temp, "\r\n", listCount[count], undefined)
           // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
-          !artemisAster.translation.isWordWrap
-            ? ('					"' + temp + '",').replace(/@+/g, "」\\n「")
-            : "					" + temp + ","
+          // !artemisAster.translation.isWordWrap
+          //   ? ('					"' + temp + '",').replace(/@+/g, "」\\n「")
+          //   : "					" + temp + ","
+          `				{"exfont", size="f2"},\n				"${temp}",\n				{"exfont"},`
           // .replace(/,( )?/g, "、")
           // .replace(/、/g, ", ")
           // .replace(/[◆✩♥♡●♪]/g, "")
@@ -419,7 +441,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // .filter((text) => text !== "" && text !== ",")
   translatedFileContent = translatedFileContent
     // .slice(0, translatedFileContent.length - 2)
-    .join("\r\n");
+    .join("\n");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding);
 }

@@ -5,9 +5,10 @@ const delay = require("./delay");
 const iconv = require("iconv-lite");
 const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
 const converter = new AFHConvert();
+const { weirdToNormalChars } = require('weird-to-normal-chars');
 
 (async () => {
-  const listFileName = fs.readdirSync("./Exhibit_output");
+  const listFileName = fs.readdirSync("./Exhibit");
   let start = 0;
   let numberAsync = 1;
   do {
@@ -19,7 +20,7 @@ const converter = new AFHConvert();
             .slice(start, start + numberAsync)
             .map(async (fileName) => {
               console.log("Start:", fileName);
-              await translateFileExhibit(`./Exhibit_output/${fileName}`);
+              await translateFileExhibit(`./Exhibit/${fileName}`);
             })
         );
         start += numberAsync;
@@ -40,13 +41,22 @@ async function translateFileExhibit(filePath) {
   const binaryContent = await readFile(filePath, "ISO8859-1");
   const binaryBuffer = iconv.encode(binaryContent, "ISO8859-1");
   let intermediateBinaryBuffer = [...binaryBuffer];
+  console.log(intermediateBinaryBuffer);
   intermediateBinaryBuffer = intermediateBinaryBuffer.reduce(
     (ans, v, index) => {
       if (
         (intermediateBinaryBuffer[index] === 240 &&
-          intermediateBinaryBuffer[index + 1] === 74) ||
+          intermediateBinaryBuffer[index + 1] === 74 &&
+          intermediateBinaryBuffer[index + 2] === 129) ||
         (intermediateBinaryBuffer[index] === 74 &&
-          intermediateBinaryBuffer[index - 1] === 240)
+          intermediateBinaryBuffer[index - 1] === 240 &&
+          intermediateBinaryBuffer[index + 1] === 129) ||
+        (intermediateBinaryBuffer[index] === 129 &&
+          intermediateBinaryBuffer[index - 2] === 240 &&
+          intermediateBinaryBuffer[index - 1] === 74) ||
+        (intermediateBinaryBuffer[index] === 64 &&
+          intermediateBinaryBuffer[index - 1] === 129 &&
+          intermediateBinaryBuffer[index - 2] === 74)
       ) {
         return ans;
       }
@@ -55,6 +65,7 @@ async function translateFileExhibit(filePath) {
     },
     []
   );
+  // console.log(intermediateBinaryBuffer);
   await fs.promises.writeFile(filePath, Buffer.from(intermediateBinaryBuffer));
 
   let fileContent = await readFile(filePath, "shiftjis");
@@ -67,21 +78,27 @@ async function translateFileExhibit(filePath) {
   let intermediateIsoBuffer = [...isoBuffer];
   let intermediateSjisBuffer = [...sjisBuffer];
   // console.log(intermediateSjisBuffer, intermediateIsoBuffer);
+  intermediateSjisBuffer = intermediateSjisBuffer.map((v, index) => {
+    // if([250,233].includes(v)) return 63
+    if (v === 250 && [...sjisBuffer][index + 1] === 223) return 63;
+    if (v === 223 && [...sjisBuffer][index - 1] === 250) return 63;
+    return v;
+  });
   let i = 0;
   while (i < intermediateSjisBuffer.length) {
-    if(intermediateSjisBuffer[i] !== 63){
+    if (intermediateSjisBuffer[i] !== 63) {
       i++;
       continue;
     }
-    while(intermediateSjisBuffer[i] === 63) {
+    while (intermediateSjisBuffer[i] === 63) {
       i++;
-    };
-    if(intermediateSjisBuffer[i] !== intermediateIsoBuffer[i]){
-      intermediateSjisBuffer = insertArrayInPos(63,intermediateSjisBuffer,i);
+    }
+    if (intermediateSjisBuffer[i] !== intermediateIsoBuffer[i]) {
+      intermediateSjisBuffer = insertArrayInPos(63, intermediateSjisBuffer, i);
       i++;
     }
   }
-  console.log(intermediateSjisBuffer, intermediateIsoBuffer);
+  // console.log(intermediateSjisBuffer, intermediateIsoBuffer);
 
   // console.log({fileContent,fileContentBinary})
   intermediateSjisBuffer.forEach((v, index) => {
@@ -107,29 +124,39 @@ async function translateFileExhibit(filePath) {
     );
   }
   const textList = fileContent
-    .replace(
-      /(ﾇﾏ)|(ｸ)|(Ｐゴシック)|(ＭＳ)|(ﾈ)|(%)|(ｮ)|(ﾐ)|(ｴ)|(ﾀ)|(ﾝ)|(＝)|(穎)/g,
-      ""
-    )
+    .replace(/(Ｐゴシック)|(ＭＳ)|(ﾇﾏ)|(名無し)/gi, "")
     .match(
-      /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶァ-ヶぁ-んァ-ヾ〟！～？＆。●・♡＝…：＄αβ％●＜＞（）♀♂♪（）─〇☆―〜゛×・○『“”♥　、☆＆\n]+/g
+      /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶァ-ヶぁ-んァ-ヾ〟！～？＆。●♡＝…：＄αβ％●＜＞（）♀♂♪（）─〇☆―〜゛×○『“”♥　、☆＆【『「（《》】』」）・]+/g
     );
+  // console.log(fileContent);
+  // console.log(textList.join("\n"));
   let ans = fileContent;
   if (textList) {
-    const translatedTextList = await translateOfflineSugoiCt2LongList(
+    let translatedTextList = await translateOfflineSugoiCt2LongList(
       textList,
       2,
       false,
       true,
       false,
-      "srp"
+      "srp",
+      undefined,
+      true
     );
+    translatedTextList = [textList[0],...translatedTextList.slice(1)]
     textList.forEach((v, index) => {
+      // console.log(
+      //   translatedTextList[index]
+      //     .replace(/[–―」]/gi, "")
+      //     .replace(/\?( )?/gi, "？")
+      //     .slice(14, 15)
+      // );
       ans = ans.replace(
-        v,
-        translatedTextList[index]
-          .replace(/\?( )?/g, "？")
-          .replace(/!( )?/g, "！")
+        new RegExp(v, "i"),
+        weirdToNormalChars(translatedTextList[index]
+          .replace(/[–―]/gi, "-")
+          .replace(/ç/gi, "c")
+          .replace(/\?( )?/gi, "？"))
+          // .slice(14, 15)
       );
     });
   }

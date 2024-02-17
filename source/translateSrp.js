@@ -4,6 +4,7 @@ const {
   translateOfflineSugoiLongList,
   translateOfflineSugoiCt2LongList,
   excludeTranslateText,
+  translateJapaneseToEng
 } = require("./translateJapanese");
 const { srp } = require("../setting.json");
 const delay = require("./delay");
@@ -116,11 +117,13 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "雫のいら立ったタイミングを見計らったように現れたヴ[r]ォイドに、熱い正義の炎を[ruby text=ほとばし]迸らせる。",
-  //       "【浩輔】（仕事も終わったばっかだってのに、みんな元気だよなあ……）"
+  //       "俺──邑野<4/むらの>たすきはギャルが好きだ。"
   //     ],
   //     2,
-  //     true
+  //     false,
+  //     true,
+  //     false,
+  //     "srp"
   //   )
   // );
   // console.log(
@@ -223,7 +226,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     3,
     false,
     true,
-    true,
+    false,
     "srp"
   );
   let count = 0;

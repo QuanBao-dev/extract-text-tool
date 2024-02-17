@@ -17,7 +17,7 @@ const converter = new AFHConvert();
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "「Kaoruとか呼ばないで。イラッとくるから」",
+  //       "「なぜ化け物に襲われるようになると知ってて、魔法使いになったの? まさか、ただの 興味本位?」",
   //     ],
   //     2,
   //     false,
@@ -97,10 +97,10 @@ async function translateScn(filePathInput) {
     //   return rawText.includes("城にぃ");
     // });
     let contentList = texts.map((text, index) => {
-      return typeof text[7] === "string" ? text[7] : text[2];
+      // return typeof text[7] === "string" ? text[7] : text[2];
       // return typeof text[8] === "string" ? text[8] : text[2];
-      // return typeof text[1][0][4] === "string" ? text[1][0][4] : text[1][0][1];
-      // return text[1][0][1];
+      return typeof text[1][0][4] === "string" ? text[1][0][4] : text[1][0][1];
+      return text[1][0][1];
     });
     // const contentList = texts.map((text) => {
     //   return text[1][0][1];
@@ -116,8 +116,8 @@ async function translateScn(filePathInput) {
     //   return text[1][0][0] || text[0];
     // });
     const tagNameList = texts.map((text) => {
-      return text[1] || text[0];
-      // return text[1][0][0] || text[0];
+      // return text[1] || text[0];
+      return text[1][0][0] || text[0];
     });
     // let translatedContentList = handleWordWrapGlue(contentList, 58, "\\n");
     // let [translatedContentList, translatedTagNameList] = await Promise.all([
@@ -128,7 +128,6 @@ async function translateScn(filePathInput) {
     //   translateOfflineSugoiCt2LongList(contentList, 2, false, false, true),
     //   Promise.resolve(tagNameList),
     // ]);
-    // let translatedContentList = contentList.map((v) => v);
     // let translatedTagNameList = tagNameList.map((v) => {
     //   if (!v) return v;
     //   return v;
@@ -137,10 +136,10 @@ async function translateScn(filePathInput) {
     let [translatedContentList, translatedTagNameList] = await Promise.all([
       translateOfflineSugoiCt2LongList(
         contentList.map((v) => v.replace(/\\n/g, "")),
-        2,
+        3,
         false,
         true,
-        true,
+        false,
         "scn"
       ),
       translateOfflineSugoiCt2LongList(
@@ -169,7 +168,7 @@ async function translateScn(filePathInput) {
       const text = texts[j];
       // const rawText =
       //   typeof rawTexts[j][7] === "string" ? rawTexts[j][7] : rawTexts[j][2];
-      text[1] =
+      text[1][0][0] =
         typeof translatedTagNameList[j] === "string"
           ? translatedTagNameList[j]
               .replace(/&/g, "＆")
@@ -177,20 +176,31 @@ async function translateScn(filePathInput) {
               .replace(/;/g, "；")
               .replace(/\./g, "")
           : translatedTagNameList[j];
-      text[2] = await translatedContentList[count]
+      text[1][0][1] = await translatedContentList[count]
         .replace(/[\{\}\[\]]/g, '"')
         .replace(/\\n/g, " ")
         .replace(/&/g, "＆");
-      // console.log({
-      //   rawText:  contentList[count]
-      //   .replace(/[\{\}\[\]]/g, '"')
-      //   .replace(/\\n/g, " ")
-      //   .replace(/&/g, "＆"),
-      //   translatedText: text[1][0][1],
-      // });
-      // ans.push(contentList[count]);
       count++;
 
+      ///////////////////////spanish
+      // console.log(text[1][0][1]);
+      // const rawText = text[1][0][1];
+      // text[1][0][1] = await translateJapaneseToEng(
+      //   translatedContentList[count]
+      //     .replace(/\\n/g, " ")
+      //     .replace(/「/g, "")
+      //     .replace(/」/g, ""),
+      //   false,
+      //   3,
+      //   10
+      // );
+      // if (rawText.match(/「/g) && rawText.match(/」/g)) {
+      //   text[1][0][1] = "「" + text[1][0][1] + "」";
+      // }
+      // console.log(text[1][0][1]);
+      // console.log("-----------");
+      // count++;
+      ////////////////////////
       // if (rawText.includes("城にぃ")) {
       //   text[2] = translatedContentList[count]
       //     .replace(/[\{\}\[\]]/g, '"')

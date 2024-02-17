@@ -20,6 +20,7 @@
     "openai": "^3.2.1",
     "text-from-image": "^1.1.1",
     "text-to-image": "^5.2.0",
-    "translatte": "^3.0.1"
+    "translatte": "^3.0.1",
+    "weird-to-normal-chars": "^1.8.3"
   }
 }

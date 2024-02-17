@@ -71,16 +71,13 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       `&16267"「ふっ、完璧だな……」"#:NameSuffix`,
-  //       `&16268"焼き鮭にキャベツの千切り、ほうれん草のお浸し、そして白米に味噌汁。"`,
-  //       `&16269"和風の朝ごはん。"_BGMMode=3`,
-  //       `&1076"俺達姉弟が過去に囚われているんだと。"}1;122,2(_Choices2,1,=,){`,
-  //       `&28320"「義理の妹ってだけですごいのに、それがよりにもよって、クラス人気ナンバー１のみこ嬢とは！　やりおるな、天坂:NameSuffix氏！！」"`
+  //       `&6739"お互いの汗や飛び散った色んな汁で濡れたハルカは、くたっとしたまま俺を見続ける。"&6740"股間では以前つながり続ける２人の結合部から、白濁としたヌメりとその中に混じって少量の赤がトロトロと溢れてくる。"120,1(:OptionNum5,0,=,){`,
+  //       `&15568"............"`
   //     ],
   //     3,
   //     false,
   //     true,
-  //     true,
+  //     false,
   //     "EAGLS"
   //   )
   // );
@@ -235,11 +232,12 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     }, []);
   let translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    2,
+    3,
     false,
     true,
-    true,
-    "EAGLS"
+    false,
+    "EAGLS",
+    ""
   );
 
   let count = 0;

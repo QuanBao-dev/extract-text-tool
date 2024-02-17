@@ -49,38 +49,63 @@ async function translateFileCst(filePath) {
   for (let i = 0; i < dataList.length; i++) {
     let { message, name, names } = dataList[i];
     let object = {};
-    // if (name !== undefined) {
-    //   // name = name.replace(/“/g, "【").replace(/”/g, "】");
-    //   name = name
-    //     .split("/")[0]
-    //     .replace(/\./g, "")
-    //     .replace(/“/g, "")
-    //     .replace(/”/g, "")
-    //     .replace(/m/g, "m ")
-    //     .replace(/M/g, "M ")
-    //     .replace(/G/g, "G ")
-    //     .replace(/w/g, "w ")
-    //     .replace(/W/g, "W ");
-    // }
+    if (name !== undefined) {
+      // name = name.replace(/“/g, "【").replace(/”/g, "】");
+      // name = "        " + name.replace(/"/g, "");
+      name = name.replace(/"/g, "");
+      // .split("/")[0]
+      // .replace(/\./g, "")
+      // // .replace(/“/g, "")
+      // // .replace(/”/g, "")
+      // // .replace(/m/g, "m ")
+      // .replace(/M/g, "m")
+      // .replace(/F/g, "f")
+      // // .replace(/G/g, "G ")
+      // // .replace(/w/g, "w ")
+      // .replace(/W/g, "w")
+      // .replace(/O/g, "o");
+    }
     if (message !== undefined) {
       const rawMessage = message;
       try {
-        
+        // message = "  "+message
+        // message = handleWordWrap(50, message,"\r\n")
+        // message = message
+        //   .split("")
+        //   .map((v) => {
+        //     if (["m", "M","w","W"].includes(v)) return v + "  ";
+        //     if (["’"].includes(v)) return "'";
+        //     if (["、", "（","’","i","t"," ","l","f","j","\r","\n"].includes(v)) return v;
+        //     return v + " ";
+        //   })
+        //   .join("");
         message = handleWordWrap(
-          56,
+          10000,
           message,
+          // .replace(/[『「]/g,"\"").replace(/[』」]/g,"\""),
+          // .replace(/m/g, "m ")
+          // .replace(/M/g, "M ")
+          // .replace(/G/g, "G ")
+          // .replace(/w/g, "w ")
+          // .replace(/W/g, "W ")
+          // .replace(/M/g, "m")
+          // .replace(/F/g, "f")
+          // .replace(/W/g, "w")
+          // .replace(/O/g, "o"),
           // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
           // .replace(/<r/g, "")
           // .replace(/\>/g, "")
           // .replace(/<\/s/g, "")
           // .replace(/❛/g, "'")
           // .replace(/、/g, ", ")
-          "\r\n",
-          undefined,
-          // name ? 56 - name.length - 2 : undefined
-          undefined
+          "\r\n"
+          // 3
+          // name ? 72 - name.length - 2 : undefined
+          // undefined
         )
           .replace(/#/g, "＃")
+          .replace(/（/g, "(")
+          .replace(/）/g, ")")
           .replace(/@/g, "＠");
         // .replace(/'/g,"’");
         // .replace(/m/g, "m ")
@@ -91,10 +116,11 @@ async function translateFileCst(filePath) {
       } catch (error) {
         message = rawMessage.replace(/#/g, "＃");
       }
-      
-      if (message.split("\r\n").length > 3) {
-        message = rawMessage.replace(/#/g, "＃");
-      }
+
+      // if (message.split("\r\n").length > 4) {
+      //   // message = rawMessage.replace(/#/g, "＃");
+      //   message = message.split("\r\n").slice(0,4).join("\r\n");
+      // }
       // message +=
       //   (name ? "」" : "") +
       //   Array.from(Array(300).keys())
@@ -102,26 +128,51 @@ async function translateFileCst(filePath) {
       //     .join(" ");
 
       // message = message
-      //   .trim()
-      //   .replace(/、/g, ", ")
-      //   .split(" ")
-      //   .map((v) => {
-      //     // if (v === "") return v;
-      //     if (v.includes("[") || v.includes("]")) {
-      //       return v
-      //         .trim()
-      //         .replace(/fs/g, "")
-      //         .replace(/\\/g, "")
-      //         .replace(/\:/g, "")
-      //         .replace(/[\[\]]/g, "").replace(/\$39;/g,"'");
-      //     }
-      //     // return v;
-      //     if(v === "") return v.replace(/\$39;/g,"'");
-      //     return `[${v}]`.replace(/\$39;/g,"'");
-      //   })
-      //   .filter((v) => v !== "")
-      //   .join(" ");
+      //   .replace(/fs/g, "")
+      //   .replace(/\\/g, "")
+      //   .replace(/\:/g, "")
+      //   .replace(/[\[\]]/g, "")
+      //   .replace(/\$39;/g, "'")
+      //   .replace(/'/g, "’");
+      // if(!message.includes("pc")){
 
+      // if (message.length > 30 || message.includes("[")) {
+      //   message = "\\fs"+message
+      //     .trim()
+      //     .replace(/　/g, " ")
+      //     .replace(/、/g, ", ")
+      //     .split(" ")
+      //     .map((v) => {
+      //       // if (v === "") return v;
+      //       if (v.includes("[") || v.includes("]")) {
+      //         return v
+      //           .trim()
+      //           .replace(/fs/g, "")
+      //           .replace(/\\/g, "")
+      //           .replace(/\:/g, "")
+      //           .replace(/[\[\]]/g, "")
+      //           .replace(/\$39;/g, "'");
+      //       }
+      //       // return v;
+      //       if (v === "") return v.replace(/\$39;/g, "'");
+      //       // return `[${v}]`.replace(/\$39;/g, "'");
+      //       return `${v}`.replace(/\$39;/g, "'");
+      //     })
+      //     .filter((v) => v !== "")
+      //     .join(" ");
+      // }
+
+      // if (name === undefined) {
+      //   message = message
+      //     .replace(/fs/g, "")
+      //     .replace(/\\/g, "")
+      //     .replace(/\:/g, "")
+      //     .replace(/[\[\]]/g, "")
+      //     .replace(/\$39;/g, "'");
+      // }
+      // }
+
+      // message = message.replace(/'/g,"’")
       // const specialList = message.match(
       //   /\[[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/]+\]/g
       // );

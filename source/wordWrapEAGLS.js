@@ -194,7 +194,7 @@ async function translateFileKs(filePath, encoding) {
     handleWordWrapEAGLS(fileContent),
     "shiftjis"
   );
-  console.time(filePath);
+  console.time  (filePath);
   // const dumpFileContent = await readFile(
   //   filePath.replace(/csv/g, "txt"),
   //   encoding
@@ -271,13 +271,13 @@ async function translateFileKs(filePath, encoding) {
     // if (splittedTexts[1].match(/】（/g)) {
     //   splittedTexts[1] += "）";
     // }
-    return splittedTexts.join('"');
-    return (
-      splittedTexts.slice(0, 2).join('"') +
-      '"' +
-      "\r\n" +
-      splittedTexts.slice(2).join('"')
-    );
+    return splittedTexts.join('"').replace(/"[\.\?!」』]"/g,"\"").replace(/""$/g,"\"");
+    // return (
+    //   splittedTexts.slice(0, 2).join('"') +
+    //   '"' +
+    //   "\r\n" +
+    //   splittedTexts.slice(2).join('"')
+    // );
   });
   // const translatedTextList = await translateOfflineSugoiCt2LongList(
   //   rawTextList,
@@ -292,24 +292,26 @@ async function translateFileKs(filePath, encoding) {
   //   }
   //   return v;
   // });
-  //// Word wrap cutting dialogue
+  //// cutting dialogue
+  // console.log(rawTextList)
   // const translatedTextList = rawTextList
   // .map((text)=> text.replace(/, /g,"、"))
-  // .map((text) => {
-  //   const splittedTexts = text.split('"');
-  //   if (splittedTexts[2] === "") {
-  //     return splittedTexts.slice(0, 2).join('"') + '"';
-  //   }
-  //   return (
-  //     splittedTexts.slice(0, 2).join('"') +
-  //     '"' +
-  //     "\r\n" +
-  //     splittedTexts.slice(2).join('"')
-  //   );
-  // });
+  // // .map((text) => {
+  // //   const splittedTexts = text.split('"');
+  // //   if (splittedTexts[2] === "") {
+  // //     return splittedTexts.slice(0, 2).join('"') + '"';
+  // //   }
+  // //   return (
+  // //     splittedTexts.slice(0, 2).join('"') +
+  // //     '"' +
+  // //     "\r\n" +
+  // //     splittedTexts.slice(2).join('"')
+  // //   );
+  // // });
   // .map(
   //   (text) =>
-  //   // text.replace(/&/g, "\r\n&")
+  //   // text.replace(/"52\(/g,"\"\r\n52(")
+  //   // text.replace(/\)#/g,")\r\n#").replace(/\)&/g, ")\r\n&") //(Please Fixed rawText)
   //   "&" + text.split("&").slice(1).join("\r\n&").split("#").join("\r\n#")
   // );
   // console.log(rawTextList)

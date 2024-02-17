@@ -36,6 +36,9 @@ module.exports = function handleWordWrapSrp(fileContent) {
     if (data.length === 4 || data[0] === "00003000" || data[0] === "00001000") {
       const temp = [];
       const blockText = blockTextList[index];
+      if(data.length < 4){
+        data.push("")
+      }
       for (let j = 0; j < blockText.length; j++) {
         if (j === 0) {
           temp.push(
@@ -81,7 +84,7 @@ module.exports = function handleWordWrapSrp(fileContent) {
     } else result.push(data);
     return result;
   }, []);
-  ans = ans.slice(0, ans.length).join("\n\n");
+  ans = ans.slice(0, ans.length).join("\n\n").replace(/\n\n\n\n/g,"\n");
   return ans;
 };
 // 64

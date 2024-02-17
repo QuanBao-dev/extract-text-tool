@@ -15,48 +15,49 @@ const delay = require("./delay");
   // console.log(await translateJapaneseWithOpenai())
 
   // console.log(
-  //   await translateSelectCenterTextList(
+  //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "うなさか　MP \\V[15]/\\V[16]",
-  //       "薬草を使って、HPを５回復した！",
-  //       "\\P[1]のHPが 5 回復した！",
+  //       "\\nr<Saori>「Let’s see... Well, something like that.」",
+  //       undefined,
+  //       "\\nr<\\n[1]>\\F[\\V[13]]「It feels like there’s a rich person living here」",
+  //       "Saori"
   //     ],
   //     2,
   //     false,
-  //     rpgmmv,
-  //     "srp"
+  //     false,
+  //     false,
+  //     "rpgmmv",
+  //     "rpgmmv"
   //   )
   // );
   // await delay(10000000);
   do {
-    try {
-      do {
-        // await translateScn(`./scn/${listFileName[start]}`);
-        await Promise.all(
-          listFileName
-            .slice(start, start + numberAsync)
-            .map(async (fileName) => {
-              console.log("Start:", fileName);
-              // await fixTranslatedFileKs(
-              //   `./ks/${fileName}`,
-              //   `${ks.translation.folderPath}/${fileName}`,
-              //   "shiftjis"
-              // );
-              await translateFileRPGMMV(
-                `${rpgmmv.translation.folderPath}/${fileName}`,
-                rpgmmv.encoding
-              );
-            })
-        );
-        start += numberAsync;
-        numberAsync = rpgmmv.translation.numberOfFiles;
-      } while (start < listFileName.length);
-      break;
-    } catch (error) {
-      console.log("Error:", error.message);
-      await delay(10000);
-      numberAsync--;
-    }
+    // try {
+    do {
+      // await translateScn(`./scn/${listFileName[start]}`);
+      await Promise.all(
+        listFileName.slice(start, start + numberAsync).map(async (fileName) => {
+          console.log("Start:", fileName);
+          // await fixTranslatedFileKs(
+          //   `./ks/${fileName}`,
+          //   `${ks.translation.folderPath}/${fileName}`,
+          //   "shiftjis"
+          // );
+          await translateFileRPGMMV(
+            `${rpgmmv.translation.folderPath}/${fileName}`,
+            rpgmmv.encoding
+          );
+        })
+      );
+      start += numberAsync;
+      numberAsync = rpgmmv.translation.numberOfFiles;
+    } while (start < listFileName.length);
+    break;
+    // } catch (error) {
+    //   console.log("Error:", error.message);
+    //   await delay(10000);
+    //   numberAsync--;
+    // }
   } while (numberAsync > 0);
   console.log("Done");
   await delay(10000000);
@@ -74,7 +75,20 @@ async function translateFileRPGMMV(filePath, encoding) {
   objectCount = {};
   console.time(filePath);
   const dataJson = JSON.parse(fileContent);
-  if (rpgmmv.translation.isMenu) {
+  if (filePath.match(/(Animations)|(ContainerProperties)|(MapInfos)/g)) {
+    return await writeFile(filePath, JSON.stringify(dataJson, null, 2), "utf8");
+  }
+  if (
+    filePath.match(
+      /(Actors)|(Armors)|(Classes)|(Enemies)|(Items)|(Skills)|(States)|(System)|(Tilesets)|(Troops)|(Weapons)/g
+    )
+  ) {
+    if (rpgmmv.translation.isSelect)
+      return await writeFile(
+        filePath,
+        JSON.stringify(dataJson, null, 2),
+        "utf8"
+      );
     if (!dataJson.length) {
       const switches = await translateOfflineSugoiCt2LongList(
         dataJson.switches,
@@ -82,7 +96,8 @@ async function translateFileRPGMMV(filePath, encoding) {
         false,
         true,
         false,
-        "rpgmmv"
+        rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
+        rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
       );
       const variables = await translateOfflineSugoiCt2LongList(
         dataJson.variables,
@@ -90,7 +105,8 @@ async function translateFileRPGMMV(filePath, encoding) {
         false,
         true,
         false,
-        "rpgmmv"
+        rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
+        rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
       );
       dataJson.switches = switches;
       dataJson.variables = variables;
@@ -110,7 +126,8 @@ async function translateFileRPGMMV(filePath, encoding) {
       false,
       true,
       false,
-      "rpgmmv"
+      rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
+      rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
     );
     const dataProfileList = await translateOfflineSugoiCt2LongList(
       dataJson.reduce((acc, v) => {
@@ -122,7 +139,8 @@ async function translateFileRPGMMV(filePath, encoding) {
       false,
       true,
       false,
-      "rpgmmv"
+      rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
+      rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
     );
     const dataDescriptionList = await translateOfflineSugoiCt2LongList(
       dataJson.reduce((acc, v) => {
@@ -134,7 +152,9 @@ async function translateFileRPGMMV(filePath, encoding) {
       false,
       true,
       false,
-      "rpgmmv"
+      rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
+
+      rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
     );
     const dataMessage1List = await translateOfflineSugoiCt2LongList(
       dataJson.reduce((acc, v) => {
@@ -146,7 +166,9 @@ async function translateFileRPGMMV(filePath, encoding) {
       false,
       true,
       false,
-      "rpgmmv"
+      rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
+
+      rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
     );
     const dataMessage2List = await translateOfflineSugoiCt2LongList(
       dataJson.reduce((acc, v) => {
@@ -158,9 +180,10 @@ async function translateFileRPGMMV(filePath, encoding) {
       false,
       true,
       false,
-      "rpgmmv"
-    );
+      rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
 
+      rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
+    );
     const ans = dataJson.map((v, index) => {
       if (!v) return null;
       return {
@@ -174,7 +197,7 @@ async function translateFileRPGMMV(filePath, encoding) {
     });
     return await writeFile(filePath, JSON.stringify(ans, null, 2), "utf8");
   }
-  if (rpgmmv.translation.isMenu2) {
+  if (filePath.match(/(CommonEvents)/g)) {
     let ans = [];
     const regExp = new RegExp(
       "(var )|(Utils\\.isNwjs)|(switch \\()|(exec\\()|(default:)|('win32')|(break;)|(} else {)|(    })|(_)|(□)",
@@ -269,7 +292,9 @@ async function translateFileRPGMMV(filePath, encoding) {
         false,
         true,
         false,
-        "rpgmmv"
+        rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
+
+        rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
       );
       // const translatedTextList = await translateSelectCenterTextList(
       //   rawTextsList,
@@ -379,7 +404,9 @@ async function translateFileRPGMMV(filePath, encoding) {
           false,
           true,
           false,
-          "rpgmmv"
+          rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
+
+          rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
         );
         ans3.push(translatedTextsList);
       }
@@ -433,8 +460,9 @@ async function translateFileRPGMMV(filePath, encoding) {
         2,
         false,
         true,
-        true,
-        "rpgmmv"
+        rpgmmv.translation.isWordWrap ? false : true,
+        rpgmmv.translation.isTLTagName ? "rpgmmv-name" : "rpgmmv",
+        rpgmmv.translation.isWordWrap ? "rpgmmv" : undefined
       );
       // const translatedTextList = await translateSelectCenterTextList(
       //   rawTextsList,

@@ -3,7 +3,7 @@ const {
   translateOfflineSugoiCt2LongList,
   translateSelectCenterTextList,
 } = require("./translateJapanese");
-const { bsxx } = require("../setting.json");
+const { willadv } = require("../setting.json");
 const fs = require("fs");
 const delay = require("./delay");
 
@@ -39,10 +39,10 @@ const delay = require("./delay");
   // await delay(10000000);
 
   try {
-    const listFileName = fs.readdirSync(bsxx.translation.folderPath);
+    const listFileName = fs.readdirSync(willadv.wordWrap.folderPath);
     for (let i = 0; i < listFileName.length; i++) {
       await translateFileBsxx(
-        bsxx.translation.folderPath + "/" + listFileName[i]
+        willadv.wordWrap.folderPath + "/" + listFileName[i]
       );
     }
   } catch (error) {
@@ -72,56 +72,52 @@ async function translateFileBsxx(filePath) {
   //     temp = curr;
   //     return ans;
   //   }, []),
-  //   bsxx.translation.numberOfSentences,
+  //   bsxx.wordWrap.numberOfSentences,
   //   undefined,
   //   true,
   //   true
   // );
   // " ": "見神 航平",
   const narrowedContentText = await translateOfflineSugoiCt2LongList(
-    contentText.reduce((ans, curr) => {
-      if (temp !== curr && curr !== "" && !curr.match(/\/\//g)) {
-        ans.push(curr.replace(/\\n/g, "")
-        // .replace(//g, "♥")
-        );
-      }
-      temp = curr;
-      return ans;
-    }, []),
-    bsxx.translation.numberOfSentences,
+    contentText.map((v) => v.split("／")[0]),
+    willadv.wordWrap.numberOfSentences,
     false,
     true,
     false,
-    "srp"
+    "willadv",
+    "Eroit"
   );
-  const translatedContentText = narrowedContentText.reduce((ans, curr) => {
-    ans.push(
-      curr
-        .replace(/『“/g, "『")
-        .replace(/”』/g, "』")
-        .replace(/『+/g, "『")
-        .replace(/』+/g, "』")
-        .replace(/\u275b/g, "")
-        .replace(/\xe9/g, "e")
-        .replace(/\u2013/g, "-")
-        .replace(/\xef/g, "i")
-        .replace(/\xe0/g, "a")
-    );
-    ans.push(
-      curr
-        .replace(/『“/g, "『")
-        .replace(/”』/g, "』")
-        .replace(/『+/g, "『")
-        .replace(/』+/g, "』")
-        .replace(/\u275b/g, "")
-        .replace(/\xe9/g, "e")
-        .replace(/\u2013/g, "-")
-        .replace(/\xef/g, "i")
-        .replace(/\xe0/g, "a")
-    );
-    ans.push("");
-    return ans;
-  }, []);
+  const translatedContentText = narrowedContentText.reduce(
+    (ans, curr, index) => {
+      ans.push(
+        curr
+          .replace(/『“/g, "『")
+          .replace(/”』/g, "』")
+          .replace(/『+/g, "『")
+          .replace(/』+/g, "』")
+          .replace(/\u275b/g, "")
+          .replace(/\xe9/g, "e")
+          .replace(/\u2013/g, "-")
+          .replace(/\xef/g, "i")
+          .replace(/\xe0/g, "a")
+      );
+      // ans.push(
+      //   curr
+      //     .replace(/『“/g, "『")
+      //     .replace(/”』/g, "』")
+      //     .replace(/『+/g, "『")
+      //     .replace(/』+/g, "』")
+      //     .replace(/\u275b/g, "")
+      //     .replace(/\xe9/g, "e")
+      //     .replace(/\u2013/g, "-")
+      //     .replace(/\xef/g, "i")
+      //     .replace(/\xe0/g, "a")
+      // );
+      // if (index % 2 === 0) ans.push("");
+      return ans;
+    },
+    []
+  );
   const ans = prefixList
     .map(
       (prefixText, index) =>
@@ -136,67 +132,14 @@ async function translateFileBsxx(filePath) {
   await writeFile(filePath, ans, "utf8");
 }
 
-async function retranslatedSpecificLines() {
-  const [rawText, text] = await Promise.all([
-    readFile("./Bsxx/bsxx.dat.txt"),
-    readFile("./Bsxx_output/bsxx.dat.txt"),
-  ]);
-  const dataList = text.split("\r\n");
-  const rawDataList = rawText.split("\r\n");
-  let contentRawText = rawDataList.map((text) => {
-    return removeThePrefix(text);
-  });
-
-  const prefixList = rawDataList.map((text) => {
-    return extractThePrefix(text);
-  });
-  const matchedTextList = await translateOfflineSugoiCt2LongList(
-    contentRawText.reduce((ans, curr) => {
-      const matchedText = curr.match(//g);
-      if (matchedText && curr !== matchedText[0]) {
-        ans.push(curr.replace(//g, ""));
-      }
-      return ans;
-    }, []),
-    1,
-    false,
-    true,
-    true
-  );
-  let count = 0;
-  const translatedContentText = contentRawText.reduce((ans, curr, index) => {
-    const matchedText = curr.match(//g);
-    if (matchedText && curr !== matchedText[0]) {
-      ans.push(prefixList[index] + matchedTextList[count]);
-      count++;
-    } else {
-      ans.push(dataList[index]);
-    }
-    return ans;
-  }, []);
-  // B0005261
-  // console.log(
-  //   contentRawText.reduce((ans, curr) => {
-  //     const matchedText = curr.match(//g);
-  //     if (matchedText && curr !== matchedText[0]) {
-  //       ans.push(curr);
-  //     }
-  //     return ans;
-  //   }, []),
-  //   matchedTextList
-  // );
-  const ans = translatedContentText.join("\r\n");
-  await writeFile("./Bsxx_output/bsxx.dat.txt", ans, "utf8");
-}
-
 function extractThePrefix(text) {
   // const matchedText = text.match(/[●○].+[○●]/g);
-  const matchedText = text.match(/[<◆◇].+[◆◇>](\\b)?/g);
+  const matchedText = text.match(/[○●◆◇].+[○●◆◇](\\b)?/g);
   if (!matchedText) return "";
   return matchedText[0];
 }
 
 function removeThePrefix(text) {
-  return text.replace(/[<◆◇].+[◆◇>](\\b)?/g, "");
+  return text.replace(/[◆◇○●].+[○●◆◇](\\b)?/g, "");
 }
 // ○○○○

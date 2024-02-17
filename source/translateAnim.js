@@ -11,7 +11,7 @@ const converter = new AFHConvert();
 (async () => {
   // console.log(
   //   await translateOfflineSugoiCt2LongList([
-  //     "「この辺りだったら、@[夕鶴亭:ゆうかくてい]のお風呂が一番かしら？」",
+  //     "『下着を履かせたまま』,txPS0202_02",
   //     "「はじめまして、お母さんの友達の風岡@kです、よろしくね」",
   //     "「これも何かの縁ということで……改めまして、@[若月:わかつき]　@[莉緒:りお]です」",
   //     "しかし、旅先で相手を@[誑:たぶら]かすようなタイプにも見えないし、こういうやりとりを楽しむ人なんだろう。",
@@ -28,34 +28,19 @@ const converter = new AFHConvert();
   //       );
   //     }
   //     return rawText;
-  //   }))
+  //   }),3,false,false,false,"BGI")
   // );
   // await delay(1000000);
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "エレナ アーヴィング",
-  //       "神代 ひかる",
-  //       "アクサ",
-  //       "イレーネ",
-  //       "神代 蛍",
-  //       "神代 ゆずる",
-  //       "リディア アーヴィング",
-  //       "オルフェナ",
-  //       "ヤエル",
-  //       "デボラ",
-  //       "デクスター",
-  //       "ジャービス",
-  //       "神代 正",
-  //       "九条 旭",
-  //       "大村 大悟",
-  //       "シルシィ",
+  //       "[昴]（しかし、流石に人手が足りないなー……）\\f",
   //     ],
   //     3,
   //     false,
   //     false,
   //     false,
-  //     "srp"
+  //     "aos"
   //   )
   // );
   // await delay(1000000);
@@ -80,33 +65,36 @@ const converter = new AFHConvert();
   //   }
   //   i++;
   // } while (i < translatedTextList.length - 1);
-  // console.log(rawTextList)
+  // const translationList = rawTextList
   const translationList = await translateOfflineSugoiCt2LongList(
-    rawTextList.map((text) => text.replace(/◆/g, "")),
-    // .map((v) => json[v])
-    // .filter(
-    //   (rawText) => !rawText.match(/_/g)
-    //   && rawText !== "@@" && rawText !== ""
-    //   // (rawText) => json[rawText] !== ""
-    // ),
-    // .map((rawText) => {
-    //   let textList = rawText.match(
-    //     /@\[[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆:]+\]/g
-    //   );
-    //   if (!textList) return rawText;
-    //   for (let i = 0; i < textList.length; i++) {
-    //     rawText = rawText.replace(
-    //       textList[i],
-    //       textList[i].split(":")[1].replace("@[", "").replace("]", "")
-    //     );
-    //   }
-    //   return rawText;
-    // })
-    2,
+    rawTextList
+      .map((text) => text.replace(/◆/g, "").replace(/@[nb]/g,"").replace(/@[a-zA-Z0-9]+/g,""))
+      // .filter((v) => json[v] === "")
+      // .map((v) => json[v])
+      // .filter(
+      //   (rawText) => !rawText.match(/_/g)
+      //   && rawText !== "@@" && rawText !== ""
+      //   // (rawText) => json[rawText] !== ""
+      // ),
+      .map((rawText) => {
+        let textList = rawText.match(
+          /@\[[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～『「」』？＆:]+\]/g
+        );
+        if (!textList) return rawText;
+        for (let i = 0; i < textList.length; i++) {
+          rawText = rawText.replace(
+            textList[i],
+            textList[i].split(":")[1].replace("@[", "").replace("]", "")
+          );
+        }
+        return rawText;
+      })
+      ,
+    3,
     false,
     true,
     false,
-    "ain"
+    "srp"
   );
   let ans = {};
   let count = 0;
@@ -115,7 +103,9 @@ const converter = new AFHConvert();
   //   return translatedText;
   // });
   rawTextList.forEach((rawText, index) => {
-    // ans[rawText] = translatedTextList[index];
+    // json[rawText] = converter.toFullWidth(translationList[count]);
+    json[rawText] = translationList[count];
+    count++;
     // if (rawText.match(/_/g)) {
     //   ans[rawText] = "";
     // } else
@@ -126,8 +116,11 @@ const converter = new AFHConvert();
     // if (json[rawText] === "@@") {
     //   ans[rawText] = "@@";
     // } else {
-    ans[rawText] = translationList[count];
-    count++;
+    // if (json[rawText] === "") {
+    //   json[rawText] = translationList[count];
+    //   count++;
+    // }
+    // ans[rawText] = json[rawText]
     // }
   });
   // ans = rawTextList.reduce((ans, key) => {
@@ -138,7 +131,7 @@ const converter = new AFHConvert();
   //   ans[key] = converter.toHalfWidth(json[key]);
   //   return ans;
   // }, {});
-  await writeFile(filePathInput, JSON.stringify(ans, null, 2), "utf8");
+  await writeFile(filePathInput, JSON.stringify(json, null, 2), "utf8");
   console.log("Done");
   await delay(1000000);
 })();

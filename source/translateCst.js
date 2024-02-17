@@ -3,21 +3,30 @@ const fs = require("fs");
 const {
   translateOfflineSugoiCt2LongList,
   translateSelectCenterTextList,
+  translateJapaneseToEng,
 } = require("./translateJapanese");
 const delay = require("./delay");
+const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
+// const handleWordWrapGlue = require("./handleWordWrapGlue");
+const converter = new AFHConvert();
+
 (async () => {
   const listFileName = fs.readdirSync("./cst");
   let start = 0;
   let numberAsync = 1;
   // console.log(
-  //   (
-  //     await translateSelectCenterTextList(
-  //       [undefined,undefined,undefined],
-  //       2,
-  //       false,
-  //       undefined,
-  //       "srp"
-  //     )
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       // "雫のいら立ったタイミングを見計らったように現れたヴ[r]ォイドに、熱い正義の炎を[ruby text=ほとばし]迸らせる。",
+  //       // "【浩輔】（仕事も終わったばっかだってのに、みんな元気だよなあ……）",
+  //       // "「夜舟流着地術・参式――“<Rはごろもひとえ>羽衣一重</R>”」",
+  //       "%C77FF「『おはようございます、兄さん。\r\n　　なんでもＣＦＣの会合があるとか。おめでとうございます』」\r\n"
+  //     ],
+  //     2,
+  //     false,
+  //     true,
+  //     true,
+  //     "cst"
   //   )
   // );
   // await delay(1000000);
@@ -49,75 +58,74 @@ const delay = require("./delay");
 
 async function translateFileCst(filePath) {
   const fileContent = await readFile(filePath, "utf8");
+  // const fileContentRaw = await readFile(filePath.replace(/cst_3/g,"cst_2"), "utf8");
   const dataList = JSON.parse(fileContent);
+  // const dataListRaw = JSON.parse(fileContentRaw);
   const messageList = dataList.map(({ message }) =>
     message
-      .replace(/( )?<[a-z A-Z0-9]+>( )?/g, "")
+      // .replace(/( )?<[a-z A-Z0-9]+>( )?/g, "")
       .replace(/<\/r>/g, "")
       .replace(/<r.+>/g, "")
   );
   const nameList = dataList.map(({ name }) => name);
-  // const namesList = dataList.map(({ names }) => names);
+  const namesList = dataList.map(({ names }) => names);
   const translatedNameList = (
     await translateSelectCenterTextList(nameList, 2, false, undefined, "srp")
   ).map((v) => (v ? v.replace(/\./g, "") : v));
   // const translatedNameList = nameList;
-  // const translatedNamesList = (
-  //   await translateOfflineSugoiCt2LongList(
-  //     namesList,
-  //     2,
-  //     false,
-  //     false,
-  //     false,
-  //     "cst"
-  //   )
-  // ).map((v) => v.replace(/\./g, ""));
+  const translatedNamesList = namesList;
   let translatedMessageList;
+  // translatedMessageList = (
+  //   await translateSelectCenterTextList(messageList, 2, false, undefined, "srp")
+  // ).map((v) => (v ? v : v));
+  // translatedMessageList = messageList;
   try {
     translatedMessageList = (
       await translateOfflineSugoiCt2LongList(
-        messageList.map((message) => {
-          if (!message) return message;
-          const specialList = message.match(
-            /≪[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+≫/g
-          );
-          if (specialList)
-            for (let i = 0; i < specialList.length; i++) {
-              const special = specialList[i].split("／")[0];
-              message = message.replace(
-                specialList[i],
-                special.replace("≪", "")
-              );
-            }
-          return message;
-        }),
+        messageList,
+        // .map((message) => {
+        //   if (!message) return message;
+        //   const specialList = message.match(
+        //     /[≪\[]][0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+[≫\]]/g
+        //   );
+        //   if (specialList)
+        //     for (let i = 0; i < specialList.length; i++) {
+        //       const special = specialList[i].split(/[／/]/)[0];
+        //       message = message.replace(
+        //         specialList[i],
+        //         special.replace(/[≪\[]/, "")
+        //       );
+        //     }
+        //   return message;
+        // })
         3,
         false,
         true,
-        true,
-        "cst"
+        false,
+        "cst-special"
       )
     ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
-    // const translatedMessageList = messageList
+    // translatedMessageList = messageList
     // const translatedNamesList = namesList;
   } catch (error) {
     translatedMessageList = (
       await translateOfflineSugoiCt2LongList(
-        messageList.map((message) => {
-          if (!message) return message;
-          const specialList = message.match(
-            /≪[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+≫/g
-          );
-          if (specialList)
-            for (let i = 0; i < specialList.length; i++) {
-              const special = specialList[i].split("／")[0];
-              message = message.replace(
-                specialList[i],
-                special.replace("≪", "")
-              );
-            }
-          return message;
-        }),
+        messageList,
+        // .map((message) => {
+        //   if (!message) return message;
+        //   const specialList = message.match(
+        //     /≪[0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+≫/g
+        //   );
+        //   if (specialList)
+        //     for (let i = 0; i < specialList.length; i++) {
+        //       const special = specialList[i].split("／")[0];
+        //       message = message.replace(
+        //         specialList[i],
+        //         special.replace("≪", "")
+        //       );
+        //     }
+        //   return message;
+        // })
         2,
         false,
         true,
@@ -126,13 +134,24 @@ async function translateFileCst(filePath) {
       )
     ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
   }
+  // for(let i = 0; i < translatedMessageList.length;i++){
+  //   console.log(translatedMessageList[i])
+  //   translatedMessageList[i] = await translateJapaneseToEng(
+  //     translatedMessageList[i].replace(/、/g,", ").replace(/’/g,"'"),
+  //     false,
+  //     3,
+  //     10
+  //   )
+  //   console.log(translatedMessageList[i])
+  //   console.log("-----------------")
+  // }
   const ans = translatedMessageList.reduce((result, translatedMessage, key) => {
     const name = translatedNameList[key];
-    // const names = translatedNamesList[key];
+    const names = translatedNamesList[key];
     const object = {};
     if (name) object.name = name;
-    // if (names) object.names = names;
-    if (translatedMessage) object.message = translatedMessage;
+    if (names) object.names = names;
+    if (translatedMessage !== undefined) object.message = translatedMessage;
     result.push(object);
     return result;
   }, []);

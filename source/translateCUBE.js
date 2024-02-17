@@ -227,6 +227,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // dataList = [...temp2];
   let temp = "";
   console.time(filePath);
+  //(@Talk name) 
+  // (@AddSelect)|(@chapter)|(@scene text)
   if (isTagName) {
     const { rawTextList, alternativeTextList } = dataList.reduce(
       (ans, rawText) => {
@@ -429,13 +431,14 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   }
   //   return splittedTexts.join('"');
   // });
+  // console.log(rawTextList)
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    10,
+    3,
     false,
     true,
-    true,
-    "kiriruby"
+    false,
+    "srp"
   );
   // const translatedTextList = rawTextList.reduce((ans, curr) => {
   //   if (curr.trim() === "") return ans;

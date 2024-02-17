@@ -42,10 +42,10 @@ async function wordWrapScn(filePath) {
     for (let j = 0; j < texts.length; j++) {
       const text = texts[j];
 
-      if (typeof text[2] === "string") {
+      if (typeof text[1][0][1] === "string") {
         const tempText = handleWordWrap(
           scn.wordWrap.maxCharPerLines,
-          text[2].replace(/\% /g, "％ ").replace(/\n/g, " "),
+          text[1][0][1].replace(/\% /g, "％ ").replace(/\n/g, " "),
           "\n"
         )
           .replace(/、/g, ", ")
@@ -55,16 +55,27 @@ async function wordWrapScn(filePath) {
           "%(n)?[0-9]+([;. ,])?( )+",
           "g"
         );
-        text[2] = textList.join("\n");
+        text[1][0][1] = textList.join("\n");
+        // text[2] = textList.join("\n");
         // if (text[1][0][1].replace(/\\n/g, " ").length > 172) {
         //   text[1][0][1] =
-        //     "%55; " +
+        //     "%80; " +
         //     handleWordWrap(
-        //       90,
+        //       10000,
         //       text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
         //       "\\n"
         //     );
-        // } else 
+        // } 
+        if (text[4] && text[4].meswintype === "comic") {
+          text[1][0][1] =
+            "%70; " +
+            handleWordWrap(
+              77,
+              text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
+              "\\n"
+            );
+        } 
+        // else 
         // if (text[1][0][1].replace(/\\n/g, " ").length > 162) {
         //   text[1][0][1] =
         //     "%60; " +

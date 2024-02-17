@@ -22,6 +22,7 @@ async function wordWrapBsxx(filePath) {
   console.time(filePath);
   const prefixList = dataList.map((text) => {
     return extractThePrefix(text);
+    x;
   });
 
   // contentTextList = handleWordWrapGlue(
@@ -31,9 +32,7 @@ async function wordWrapBsxx(filePath) {
     return handleWordWrap(bsxx.wordWrap.maxCharPerLines, text, "\\n", 1000)
       .replace(/[「]/g, "「 ")
       .replace(/[『]/g, "『 ");
-
-    return text;
-  }); 
+  });
   //   65,
   //   "\\n"
   // );
@@ -49,11 +48,11 @@ async function wordWrapBsxx(filePath) {
 }
 
 function extractThePrefix(text) {
-  const matchedText = text.match(/[◇◆].+[◇◆]/g);
+  const matchedText = text.match(/[◇○●◆].+[◇○●◆]/g);
   if (!matchedText) return "";
   return matchedText[0];
 }
 
 function removeThePrefix(text) {
-  return text.replace(/[◇◆].+[◇◆]/g, "");
+  return text.replace(/[◇○●◆].+[◇○●◆]/g, "");
 }

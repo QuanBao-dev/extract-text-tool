@@ -1,4 +1,7 @@
 // const { replaceTagName } = require("./translateJapanese");
+const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
+const converter = new AFHConvert();
+
 module.exports = function handleWordWrap(
   maxNumberOfChar,
   text,
@@ -6,8 +9,10 @@ module.exports = function handleWordWrap(
   limitBreak = 1000,
   priorityWordWrap
 ) {
+  if (!text) return text;
   let count = 0;
   const rawMaxNumberOfChar = maxNumberOfChar;
+  // console.log(text)
   const rawLineBreakString = lineBreakString;
   // const tagName = text.match(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g)
   //   ? text.match(/^((<)?【[a-zA-Z0-9\?\.!@#%\^&\*]+】(>)?)/g)[0]
@@ -20,30 +25,37 @@ module.exports = function handleWordWrap(
     ? text.match(/^(	+)/g)[0]
     : "";
   let filteredText = text
-    .replace(
-      new RegExp(
-        lineBreakString
-          .replace("(", "\\(")
-          .replace(")", "\\\\)")
-          .replace("\\", "\\\\")
-          .replace("[", "\\[")
-          .replace("]", "\\]"),
-        "g"
-      ),
-      " "
-    )
-    .replace(/é/g, "e")
-    .replace(/ó/g, "o")
-    .replace(/ +/g, " ")
-    .replace(/\["text"\] = \{\[\[/g, "")
-    .replace(/\]\]\},/g, "")
+    .trim()
+    // .replace(
+    //   new RegExp(
+    //     lineBreakString
+    //       .replace("(", "\\(")
+    //       .replace(")", "\\\\)")
+    //       // .replace("\\", "\\\\")
+    //       .replace("[", "\\[")
+    //       .replace("]", "\\]"),
+    //     "g"
+    //   ),
+    //   " "
+    // )
+    // .replace(/é/g, "e")
+    // .replace(/ó/g, "o")
+    // .replace(/ +/g, " ")
+    // .replace(/\["text"\] = \{\[\[/g, "")
+    // .replace(/\]\]\},/g, "")
     // .replace(/\.\.\./g," ...")
+    // .replace(/…/g, "... ")
+    // .replace(/？/g, "? ")
     // .replace(/,( )?/g, "、")
-    .replace(/&/g, "＆")
     .replace(/、/g, ", ")
-    .replace(/。/g, ". ")
-    .replace(/’/g, "'")
-    .replace(/”」/g, "」");
+    .replace(/\.\.\.( )?/g, "... ")
+    .replace(/\\n/g, " ")
+    // .replace(/&/g, "＆")
+    // .replace(/"/, "")
+    // .replace(/。/g, ". ")
+    .replace(/’/g, "'");
+  // .replace(/”」/g, "」")
+  // .replace(/\(h\)/g, "");
   // filteredText = replaceTagName(filteredText, [2], "g");
   // filteredText = replaceTagName(filteredText, [3], "gi");
   const words = filteredText.split(" ");
@@ -80,30 +92,34 @@ module.exports = function handleWordWrap(
       count++;
     }
   }
-  let finalResult =
-    // tagName +
-    prefix + ans.slice(0, ans.length - 1);
+  let finalResult = ans;
+  // tagName +
+  // prefix + ans.slice(0, ans.length - 1)
   // .replace(/[“”]/g, '"')
   // .replace(/"/g, "”")
   // .replace(/^”/g, '"')
   // .replace(/”,$/g, '",');
   // .replace(/,( )?/g, "、")
   // .replace(/、/g, ", ");
-
-  // if (
-  //   finalResult.split(lineBreakString).length < limitBreak &&
-  //   limitBreak !== 1000
-  // ) {
-  //   finalResult += Array.from(
-  //     Array(limitBreak - finalResult.split(lineBreakString).length).keys()
-  //   )
-  //     .map(() => lineBreakString)
-  //     .join("MTLTOOL");
+  // if(!finalResult.match(/^[【『「（《》】』」）]/g)){
+  //   finalResult = "　"+finalResult+"　"
   // }
+  if (
+    finalResult.split(lineBreakString).length < limitBreak &&
+    limitBreak !== 1000
+  ) {
+    finalResult += Array.from(
+      Array(limitBreak - finalResult.split(lineBreakString).length).keys()
+    )
+      .map(() => lineBreakString)
+      .join("");
+  }
 
   // return `\t\t["text"] = {[[` + finalResult + `]]},`;
-  return finalResult.replace(/\\k/g, "\\k\n");
-  // .replace(/,( )?/g, "、");
+  return finalResult;
+  // .replace(/\\k/g, "\\k\n");
+  // .replace(/,( )?/g, "、")
+  // .replace(/"、/g, "\",");
 };
 
 function handleBracket(text) {
@@ -133,5 +149,5 @@ function handleBracket(text) {
   //   if (text.trim().match(new RegExp(listOfChoice[4], "g"))[0] === "』")
   //     temp = "『" + temp;
   // }
-  return temp
+  return temp;
 }

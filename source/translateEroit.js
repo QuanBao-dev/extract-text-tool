@@ -433,7 +433,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // });
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
-    2,
+    3,
     false,
     true,
     false,

@@ -20,7 +20,7 @@ function handleWordWrapQlie(rawText, start = 0, end) {
   });
   if (!end) end = translatedTextList.length;
   for (let i = start; i < end; i++) {
-    text = text.replace(textList[i], translatedTextList[i].replace(/,/g, "、"));
+    text = text.replace(textList[i], translatedTextList[i].replace(/, /g, "、"));
   }
   return text;
 }
@@ -28,6 +28,7 @@ function handleWordWrapQlie(rawText, start = 0, end) {
 function handleWordWrapQlieVN(fileContent) {
   let dataList = fileContent.split(/\r\n/g);
   let count = 0;
+  const maxLines = qlie.wordWrap.maxLines
   let isCounter = false;
   dataList = dataList.reduce((ans, text) => {
     if (text.trim() === "" && isCounter === true) {
@@ -48,7 +49,7 @@ function handleWordWrapQlieVN(fileContent) {
           .reduce((ans, text) => {
             // if (!text.includes("log:continue")) ans.push(text);
             // return ans;
-
+            // console.log(text);
             const wordWrappedText = handleWordWrapQlie(
               text,
               text.includes("＠") ? 1 : 0
@@ -56,15 +57,15 @@ function handleWordWrapQlieVN(fileContent) {
             const texts = wordWrappedText.split("[r]");
             let j = 0;
             do {
-              ans.push(...texts.slice(j, j + 3));
-              if (ans.slice(0, 3).length % 3 === 0) {
-                if (texts.length > 3) {
+              ans.push(...texts.slice(j, j + maxLines));
+              if (ans.slice(0, maxLines).length % maxLines === 0) {
+                if (texts.length > maxLines) {
                   ans.push(
                     "\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n"
                   );
                 }
               }
-              j += 3;
+              j += maxLines;
             } while (j < texts.length);
             return ans;
           }, [])
@@ -78,4 +79,4 @@ function handleWordWrapQlieVN(fileContent) {
 
 function handleWordWrapQlieVN1() {}
 
-module.exports = { handleWordWrapQlieVN, handleWordWrapQlieVN1 };
+module.exports = { handleWordWrapQlieVN, handleWordWrapQlieVN1};
