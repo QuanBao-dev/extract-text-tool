@@ -116,7 +116,7 @@ module.exports = function handleWordWrap(
   }
 
   // return `\t\t["text"] = {[[` + finalResult + `]]},`;
-  return finalResult;
+  return finalResult.trim();
   // .replace(/\\k/g, "\\k\n");
   // .replace(/,( )?/g, "、")
   // .replace(/"、/g, "\",");

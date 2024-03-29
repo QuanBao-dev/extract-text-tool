@@ -32,7 +32,7 @@ const exceptRegExpI = new RegExp(
 // );
 
 function handleWordWrapKs(fileContent) {
-  let blockList = fileContent.split("\n@Msgend\r\n").map((block) => {
+  let blockList = fileContent.split("\r\n@Msgend\r\n").map((block) => {
     const stringList = block.split("\r\n");
     return stringList;
   });
@@ -208,8 +208,8 @@ function handleWordWrapHibikiWork(fileContent) {
             prefix +
             wordWrappedTextSplit.slice(i, i + 3).join("[r]") +
             (isNpAdded ? "[np]" : "");
-          if(i > 0){
-            text = text.replace(/s=[0-9a-zA-Z]+/g,"")
+          if (i > 0) {
+            text = text.replace(/s=[0-9a-zA-Z]+/g, "");
           }
           temp.push(text);
           i += 3;
@@ -262,9 +262,9 @@ function handleWordWrapHibikiWork(fileContent) {
 function handleWordWrapLilith(fileContent) {
   // console.log(fileContent.split(/@Hitret id=[0-9]+/));
   // const footerList = fileContent.match(/@Hitret id=[0-9]+/g);
-  let blockList = fileContent.split(/\n\*s/g).map((block, index) => {
-    const stringList = block.split("\n");
-    stringList[0] = "*s" + stringList[0];
+  let blockList = fileContent.split(/f\.speaker/g).map((block, index) => {
+    const stringList = block.split("\r\n");
+    stringList[0] = "*" + stringList[0];
     return stringList.map((v) => v.trim());
   });
   let contentList = blockList.map((stringList) => {
@@ -285,13 +285,16 @@ function handleWordWrapLilith(fileContent) {
       if (text.match(/\[T_NEXT(.+)?\](\\)?/g)) {
         ans.push(text);
       } else {
-        ans.push(text + suffix);
+        ans.push(
+          text
+          // + suffix
+        );
       }
       index += 3;
     } while (index < temp.length);
     return ans;
   });
-  console.log(contentList);
+  // console.log(contentList);
   let frameList = blockList.map((stringList) => {
     return stringList.map((rawText) => {
       if (
@@ -311,7 +314,7 @@ function handleWordWrapLilith(fileContent) {
       let temp = [];
       contentList[index].forEach((content, index) => {
         if (index === 0) {
-          temp.push(arrayItem.join("\n").replace("#@$4", content));
+          temp.push(arrayItem.join("\r\n").replace("#@$4", content));
         } else {
           temp.push(
             arrayItem
@@ -322,14 +325,14 @@ function handleWordWrapLilith(fileContent) {
                   !v.match(/\*Speak/g)
                 );
               })
-              .join("\n")
+              .join("\r\n")
               .replace("#@$4", content)
           );
         }
       });
-      return temp.join("\n");
+      return temp.join("\r\n");
     })
-    .join("\n");
+    .join("f.speaker");
   // let contentsList = blockList.map((block) => {
   //   if (block.length===1) return [""];
   //   // if(!blockList[block.length - 2) return "";
