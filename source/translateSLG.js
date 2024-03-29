@@ -56,6 +56,12 @@ async function translateFileSLG2(filePath, isSelect, isTagName, encoding) {
     .map((texts, i) =>
       texts
         .filter((v) => {
+          if (
+            !dataList[i][0].includes("MESSAGE") &&
+            !dataList[i][0].includes("CHOICE")
+          ) {
+            return false;
+          }
           if (v.match(/"\\n/g)) return true;
           return v.length > 0 && !v.match(/[a-zA-Z0-9\[\]\*]/g);
         })
@@ -92,7 +98,6 @@ async function translateFileSLG2(filePath, isSelect, isTagName, encoding) {
       return [...ans, ...v];
     }, []);
   let count = 0;
-
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
     3,
@@ -104,6 +109,12 @@ async function translateFileSLG2(filePath, isSelect, isTagName, encoding) {
   const editedDataList = dataList.map((texts, i) => {
     return texts
       .map((text) => {
+        if (
+          !dataList[i][0].includes("MESSAGE") &&
+          !dataList[i][0].includes("CHOICE")
+        ) {
+          return text;
+        }
         if (text.match(/"\\n/g)) return "@#@";
         if (text.length > 0 && !text.match(/[a-zA-Z0-9\[\]\*]/g)) {
           return "#$%";

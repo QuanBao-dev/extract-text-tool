@@ -21,7 +21,7 @@ const converter = new AFHConvert();
     // return handleWordWrap(55, json[rawText].replace(/(<unk>(")?)/g, " "), "\r\n");
     // console.log(rawText)
     return handleWordWrap(
-      60,
+      88,
       // converter.toFullWidth(
       json[rawText],
       // )
@@ -30,8 +30,9 @@ const converter = new AFHConvert();
       // .replace(/@k/g, "Tomoya")
       // .replace(/@Gn01/gi, "Kasahara")
       // .replace(/(<unk>(")?)/g, " ").replace(/　/g," "),
-      "\\N"
-    ).replace(/ /g, "\t");
+      "@b"
+    );
+    // .replace(/ /g, "\t");
 
     // if(json[rawText] === "@@") return " "
     // return handleWordWrap(

@@ -94,23 +94,23 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //   )
   // );
   // await delay(10000000);
-  console.log(
-    await translateOfflineSugoiCt2LongList(
-      [
-        `「う、んっ……いっ……てぇ……！　あたしの[咲良・女性器]の下で、ビュッてしてぇ……！」`,
-        "「[苗字]　[名前]です！　よろしくお願いします！」",
-        "でも、言葉が通じないからこそ、あの子はきっと、[hint_text_start]これをなくすと大変[hint_text_end]なことになるだろう。",
-      ],
-      2,
-      false,
-      false,
-      false,
-      "kiriruby",
-      "",
-      false,
-      true
-    )
-  );
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       `「う、んっ……いっ……てぇ……！　あたしの[咲良・女性器]の下で、ビュッてしてぇ……！」`,
+  //       "「[苗字]　[名前]です！　よろしくお願いします！」",
+  //       "でも、言葉が通じないからこそ、あの子はきっと、[hint_text_start]これをなくすと大変[hint_text_end]なことになるだろう。",
+  //     ],
+  //     2,
+  //     false,
+  //     false,
+  //     false,
+  //     "kiriruby",
+  //     "",
+  //     false,
+  //     true
+  //   )
+  // );
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
@@ -163,17 +163,21 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //   await translateSelectCenterTextList(["\\c[lexn]リベレーター"], 1)
   // );
   // await delay(10000000);
-  // console.log(await translateOfflineSugoiCt2LongList(
-  //   [
-  //     `ここは私立[ルビ base="雄渾館" ruby="ゆうこんかん"]学院[ルビ base="慶友寮" ruby="けいゆうりょう"]。わたしは贅沢にも一人部屋のベッドに寝そべり、ビデオ通話で恭介お兄ちゃんと話をしている。`,
-  //   ],
-  //   3,
-  //   false,
-  //   false,
-  //   true,
-  //   "kiriruby"
-  // ));
-  await delay(10000000);
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       `視界は[ルビ rb = "霞/かす"]み、このまま倒れ込んでしまいたいという考えが脳内を支配した。`,
+  //       `名刺に書かれた名前は野生[ルビ rb = "熊雄/くまお"]。`,
+  //       `「[ルビ rb = "野生/のせ"]先生よ」`,
+  //     ],
+  //     3,
+  //     false,
+  //     false,
+  //     false,
+  //     "kiriruby"
+  //   )
+  // );
+  // await delay(10000000);
   const listFileName = fs.readdirSync(pinpoint.translation.folderPath);
   let start = 0;
   let numberAsync = pinpoint.translation.numberOfFiles;
@@ -411,8 +415,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     false,
     true,
     false,
-    "srp",
-    "",
+    "kiriruby",
+    "Eroit",
     false,
     false
   );
@@ -594,8 +598,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
 
         temp
 
-        // handleWordWrap(73, temp, "\\n").trim().replace(/(\\n)$/g,"")
-        // handleWordWrap(73, temp, "\r\n", listCount[count], undefined)
+        // handleWordWrap(68, temp, "\\n")
+        //   .trim()
+        //   .replace(/(\\n)$/g, "")
+        // handleWordWrap(68, temp, "\r\n", listCount[count], undefined)
         // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
         // ("　"+temp).replace(/　「/g,"「")
         // rawText.replace(/@nm t="[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞♀♂♪─〇☆―〜゛×・○♥　、☆＆『』‥ⅠⅡⅢⅣⅤ『』《》￥ｎ]+"/g,`@nm t="${temp}"${!isRtContained ? ` rt="${rawNameTag}"`:""}`)

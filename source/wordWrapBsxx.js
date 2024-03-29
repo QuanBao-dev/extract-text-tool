@@ -22,7 +22,6 @@ async function wordWrapBsxx(filePath) {
   console.time(filePath);
   const prefixList = dataList.map((text) => {
     return extractThePrefix(text);
-    x;
   });
 
   // contentTextList = handleWordWrapGlue(

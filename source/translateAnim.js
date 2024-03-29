@@ -68,7 +68,12 @@ const converter = new AFHConvert();
   // const translationList = rawTextList
   const translationList = await translateOfflineSugoiCt2LongList(
     rawTextList
-      .map((text) => text.replace(/◆/g, "").replace(/@[nb]/g,"").replace(/@[a-zA-Z0-9]+/g,""))
+      .map((text) =>
+        text
+          .replace(/◆/g, "")
+          .replace(/@[nb]/g, "")
+          .replace(/@[a-zA-Z0-9]+/g, "")
+      )
       // .filter((v) => json[v] === "")
       // .map((v) => json[v])
       // .filter(
@@ -88,8 +93,7 @@ const converter = new AFHConvert();
           );
         }
         return rawText;
-      })
-      ,
+      }),
     3,
     false,
     true,

@@ -102,6 +102,7 @@ async function translateScn(filePathInput) {
       return typeof text[1][0][4] === "string" ? text[1][0][4] : text[1][0][1];
       return text[1][0][1];
     });
+    console.log(contentList);
     // const contentList = texts.map((text) => {
     //   return text[1][0][1];
     // });

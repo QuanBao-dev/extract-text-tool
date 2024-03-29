@@ -15,6 +15,6 @@ const { handleWordWrapQlieVN } = require("./handleWordWrapQlie");
 })();
 
 async function wordWrapKs(filePath) {
-  const fileContent = await readFile(filePath, "shiftjis");
-  return await writeFile(filePath, handleWordWrapQlieVN(fileContent), "shiftjis");
+  const fileContent = await readFile(filePath, "utf16");
+  return await writeFile(filePath, handleWordWrapQlieVN(fileContent), "utf16");
 }

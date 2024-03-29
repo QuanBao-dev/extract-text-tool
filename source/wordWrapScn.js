@@ -57,55 +57,58 @@ async function wordWrapScn(filePath) {
         );
         text[1][0][1] = textList.join("\n");
         // text[2] = textList.join("\n");
-        // if (text[1][0][1].replace(/\\n/g, " ").length > 172) {
-        //   text[1][0][1] =
-        //     "%80; " +
+        // if (text[2].replace(/\\n/g, " ").length > 172) {
+        text[1][0][1] =
+          "%75; " +
+          handleWordWrap(
+            64,
+            text[1][0][1]
+              .trim()
+              .replace(filterSpecialPrefixRegExp, "")
+              .replace(/\n/g, " "),
+            "\n"
+          );
+        // }
+        // if (text[4] && text[4].meswintype === "comic") {
+        //   text[2] =
+        //     "%70; " +
         //     handleWordWrap(
-        //       10000,
-        //       text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       77,
+        //       text[2].trim().replace(filterSpecialPrefixRegExp, ""),
         //       "\\n"
         //     );
-        // } 
-        if (text[4] && text[4].meswintype === "comic") {
-          text[1][0][1] =
-            "%70; " +
-            handleWordWrap(
-              77,
-              text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
-              "\\n"
-            );
-        } 
-        // else 
-        // if (text[1][0][1].replace(/\\n/g, " ").length > 162) {
-        //   text[1][0][1] =
+        // }
+        // else
+        // if (text[2].replace(/\\n/g, " ").length > 162) {
+        //   text[2] =
         //     "%60; " +
         //     handleWordWrap(
         //       85,
-        //       text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       text[2].trim().replace(filterSpecialPrefixRegExp, ""),
         //       "\\n"
         //     );
-        // } else 
-        // if (text[1][0][1].replace(/\\n/g, " ").length > 135) {
-        //   text[1][0][1] =
+        // } else
+        // if (text[2].replace(/\\n/g, " ").length > 135) {
+        //   text[2] =
         //     "%65; " +
         //     handleWordWrap(
         //       81,
-        //       text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       text[2].trim().replace(filterSpecialPrefixRegExp, ""),
         //       "\\n"
         //     );
         // } else if (textList.length > 2) {
-        //   text[1][0][1] =
+        //   text[2] =
         //     "%70; " +
         //     handleWordWrap(
         //       70,
-        //       text[1][0][1].trim().replace(filterSpecialPrefixRegExp, ""),
+        //       text[2].trim().replace(filterSpecialPrefixRegExp, ""),
         //       "\\n"
         //     );
         // }
         ans.push(text);
         // if (textList.length > 3) {
         //   const temp = Object.values(deepCloning(text));
-        //   temp[1][0][1] = textList.slice(3).join("\\\n");
+        //   temp[2] = textList.slice(3).join("\\\n");
         //   temp[2] = null;
         //   // console.log(ans[ans.length - 1])
         //   ans.push(temp);

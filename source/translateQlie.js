@@ -148,15 +148,15 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       }
       return ans;
     }, []);
-  // const translatedTextList = await translateOfflineSugoiCt2LongList(
-  //   rawTextList,
-  //   3,
-  //   false,
-  //   true,
-  //   false,
-  //   "qlie",
-  //   ""
-  // );
+  const translatedTextList = await translateOfflineSugoiCt2LongList(
+    rawTextList,
+    3,
+    false,
+    true,
+    false,
+    "qlie",
+    ""
+  );
   // const translatedTextList = await translateOfflineSugoiCt2LongList(
   //   rawTextList,
   //   3,
@@ -169,7 +169,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   rawTextList,
   //   2,
   //   false,
-  //   qlie,
+  //   undefined,
   //   "qlie",
   //   false
   // );

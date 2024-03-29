@@ -1,98 +1,10 @@
 {
-  "replacedCharsBeforeTranslation": {
-    "天城 颯馬": "Amagi Souma",
-    "明智 光秀": "Akechi Mitsuhide",
-    "安東 愛季": "Andou Chikasue",
-    "有馬 晴信": "Arima Harunobu",
-    "朝倉 義景": "Asakura Yoshikage",
-    "足利 義昭": "Ashikaga Yoshiaki",
-    "足利 義輝": "Ashikaga Yoshiteru",
-    "蘆名 盛隆": "Ashina Moritaka",
-    "馬場 信春": "Baba Nobuharu",
-    "長宗我部 元親": "Chousokabe Motochika",
-    "伊達 政宗": "Date Masamune",
-    "伊達 成実": "Date Narumi",
-    "羽柴 秀吉": "Hashiba Hideyoshi",
-    "久武 親直": "Hisatake Chikanao",
-    "久武 親信": "Hisatake Chikanobu",
-    "本多 忠勝": "Honda Tadakatsu",
-    "本願寺 顕如": "Honganji Kennyo",
-    "細川 忠興": "Hosokawa Tadaoki",
-    "北条 早雲": "Houjou Souun",
-    "北条 氏康": "Houjou Ujiyasu",
-    "井伊 直政": "Ii Naomasa",
-    "今川 氏真": "Imagawa Ujizane",
-    "今川 義元": "Imagawa Yoshimoto",
-    "稲葉 一鉄": "Inaba Ittetsu",
-    "稲富 祐直": "Inadome Sukenao",
-    "石田 三成": "Ishida Mitsunari",
-    "出雲 阿国": "Izumo no Okuni",
-    "甲斐 宗運": "Kai Souun",
-    "上泉 信綱": "Kamiizumi Nobutsuna",
-    "葛西 晴信": "Kasai Harunobu",
-    "片倉 景綱": "Katakura Kagetsuna",
-    "加藤 清正": "Katou Kiyomasa",
-    "吉川 元春": "Kikkawa Motoharu",
-    "吉良 親実": "Kira Chikazane",
-    "小早川 隆景": "Kobayakawa Takakage",
-    "河野 通直": "Kouno Michinao",
-    "黒田 官兵衛": "Kuroda Kanbee",
-    "前田 慶次": "Maeda Keiji",
-    "真壁 氏幹": "Makabe Ujimoto",
-    "松永 久秀": "Matsunaga Hisahide",
-    "最上 義光": "Mogami Yoshiaki",
-    "百地 三太夫": "Momochi Sandayuu",
-    "毛利 元就": "Mouri Motonari",
-    "毛利 輝元": "Mouri Terumoto",
-    "村上 武吉": "Murakami Takeyoshi",
-    "村上 義清": "Murakami Yoshikiyo",
-    "鍋島 直茂": "Nabeshima Naoshige",
-    "中島 可之助": "Nakajima Bekunosuke",
-    "直江 兼続": "Naoe Kanetsugu",
-    "延沢 満延": "Nobesawa Mitsunobu",
-    "織田 信長": "Oda Nobunaga",
-    "織田 信行": "Oda Nobuyuki",
-    "小田 氏治": "Oda Ujiharu",
-    "鬼庭 綱元": "Oniwa Tsunamoto",
-    "大崎 義隆": "Oosaki Yoshitaka",
-    "大谷 吉継": "Ootani Yoshitsugu",
-    "太田 資正": "Oota Sukemasa",
-    "大友 宗麟": "Ootomo Sourin",
-    "大内 義隆": "Oouchi Yoshitaka",
-    "冷泉 隆豊": "Reizei Takatoyo",
-    "六角 義賢": "Rokkaku Yoshikata",
-    "相良 義陽": "Sagara Yoshihi",
-    "斎藤 義龍": "Saitou Yoshitatsu",
-    "酒井 忠次": "Sakai Tadatsugu",
-    "榊原 康政": "Sakakibara Yasumasa",
-    "真田 昌幸": "Sanada Masayuki",
-    "真田 信之": "Sanada Nobuyuki",
-    "真田 幸村": "Sanada Yukimura",
-    "佐竹 義重": "Satake Yoshishige",
-    "里見 義堯": "Satomi Yoshitaka",
-    "柴田 勝家": "Shibata Katsuie",
-    "島津 歳久": "Shimazu Toshihisa",
-    "島津 豊久": "Shimazu Toyohisa",
-    "島津 義弘": "Shimazu Yoshihiro",
-    "島津 義久": "Shimazu Yoshihisa",
-    "立花 道雪": "Tachibana Dousetsu",
-    "太原 雪斎": "Taigen Setsusai",
-    "高橋 紹運": "Takahashi Shouun",
-    "武田 信廉": "Takeda Nobukado",
-    "武田 信玄": "Takeda Shingen",
-    "竹中 半兵衛": "Takenaka Hanbee",
-    "徳川 家康": "Tokugawa Ieyasu",
-    "虎綱 春日": "Toratsuna Haruhi",
-    "藤堂 高虎": "Toudou Takatora",
-    "筒井 順慶": "Tsutsui Junkei",
-    "上杉 景勝": "Uesugi Kagekatsu",
-    "宇喜多 秀家": "Ukita Hideie",
-    "山中 鹿介": "Yamanaka Shikasuke",
-    "結城 秀康": "Yuuki Hideyasu"
-  },
+  "replacedCharsBeforeTranslation": {},
   "replacedCharsAfterTranslation": {},
   "replacedExactCharsAfterTranslation": {
     "No, no, no.": "No",
+    "Sharl": "Charl",
+    "Chal": "Charl",
     "Nagusa": "Nagisa",
     "Yes, sir.": "Yes",
     "The crown of my head is open!": "Brain head Airu",
@@ -119,7 +31,7 @@
       "numberOfSentences": 3
     },
     "wordWrap": {
-      "maxCharPerLines": 65,
+      "maxCharPerLines": 60,
       "folderPath": "./Bsxx_output"
     }
   },
@@ -156,13 +68,13 @@
   },
   "scn": {
     "translation": {
-      "folderPath": "./scn_output_output_output",
+      "folderPath": "./scn_output_output",
       "numberOfSentences": 150,
-      "isSelects": false
+      "isSelects": true
     },
     "wordWrap": {
       "maxCharPerLines": 77,
-      "folderPath": "./scn_output_output_output"
+      "folderPath": "./scn_output"
     }
   },
   "artemisAster": {
@@ -194,10 +106,10 @@
   "Eroit": {
     "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./Eroit_output_output_output",
+      "folderPath": "./Eroit_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 20,
-      "isSelects": false,
+      "isSelects": true,
       "isTagName": false,
       "regExpToFilterSentenceContainTagName": "^★",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "^●",
@@ -219,12 +131,12 @@
   "qlie": {
     "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./qlie_output_output_output",
+      "folderPath": "./qlie_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
       "isSelects": true,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(^\\^select,)",
+      "regExpToFilterSentenceContainTagName": "(【)|(^\\^select,)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^【)|(^//)|(^\\^)|(^@)|(^％)|(^(\\\\))|(^#)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "#@#@$@$",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "$#$T$",
@@ -235,8 +147,8 @@
       "isQlie": true
     },
     "wordWrap": {
-      "maxLines": 2,
-      "maxCharPerLines": 60,
+      "maxLines": 3,
+      "maxCharPerLines": 51,
       "folderPath": "./qlie_output_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^\\^)|(^@)|(^％)|(^(\\\\))|(■)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
@@ -244,9 +156,9 @@
     }
   },
   "systemC": {
-    "encoding": "utf8",
+    "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./pinpoint_1_dump",
+      "folderPath": "./pinpoint_4",
       "numberOfFiles": 1,
       "numberOfSentences": 150,
       "isSelects": false,
@@ -260,7 +172,7 @@
       "addedPrefixAfterTranslation": "",
       "isArtemis": false,
       "isQlie": false,
-      "isNoFilter": true
+      "isNoFilter": false
     },
     "wordWrap": {
       "maxCharPerLines": 218,
@@ -432,15 +344,15 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "kiririr": {
-    "encoding": "utf8",
+  "gxp": {
+    "encoding": "utf16",
     "translation": {
-      "folderPath": "./pinpoint",
+      "folderPath": "./pinpoint_5",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
       "isSelects": false,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "(^\\\\text)|(\\\\setgamedatatitle\\()|(\\\\sel\\()|(@seladd text=)|(\\|)",
+      "regExpToFilterSentenceContainTagName": "(^\\\\text)|(\\\\sel\\()|(@seladd text=)|(^\\\\setgamedatatitle)",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^\\$)|(\\[jump)|(^:)|(#)|(^(@))|(^(\\*))|(//)|(^(\\\\))|(;)|(^<)|({)|(})|(^(ｔａ))|(^(ｔｂ))|(/)|(^【)|(\\\\)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[r\\]))|(^(\\[haret\\]))|(\\[m_tips)|(\\[tips )|(^(\\[font))|(^(\\[adjastfontsize))|(^(\\[[【『「（]\\]))|(\\[【)|(\\[mruby)",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "(^　)|(@nm t=)",
@@ -486,15 +398,42 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "pinpoint5": {
+  "pinpoint": {
     "encoding": "shiftjis",
     "translation": {
-      "folderPath": "./pinpoint_5_output",
+      "folderPath": "./pinpoint_4_output_output",
       "numberOfFiles": 1,
       "numberOfSentences": 300,
       "isSelects": false,
       "isTagName": false,
-      "regExpToFilterSentenceContainTagName": "@exlink txt=",
+      "regExpToFilterSentenceContainTagName": "(@nm t=)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^\\$)|(\\[jump)|(^:)|(#)|(^(@))|(^(\\*))|(//)|(^(\\\\))|(;)|(^<)|(^(ｔａ))|(^(ｔｂ))|(^■)|(^\\[[a-zA-Z0-9\\\\])|(^\\[)",
+      "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[一人称))|(^(\\[咲良))|(^(\\[希美))|(^(\\[レーチェ))|(^(\\[呼び名))|(^(\\[主人公・男性器))|(^(\\[小町))|(^(\\[レーチェ))|(^(\\[r\\]))|(^(\\[haret\\]))|(^(\\[五十鈴'いすず))|(^(\\[伊吹'いぶき))|(^(\\[主人公・女性器))|(\\[m_tips)|(\\[tips )|(^(\\[adjastfontsize))|(^(\\[[【『「（]\\]))|(\\[【)|(\\[mruby)|(\\[hint_)|(\\[ruby text=)|(^\\[ft|(^\\[font size=))|(\\[ルビ)",
+      "regExpToExcludeSentenceNotNeedTranslatedContain2": "(^　)|(@nm t=)",
+      "addedString": "[T_NEXT]\\",
+      "addedStringAfterTranslation": "",
+      "addedPrefixAfterTranslation": "",
+      "isArtemis": false,
+      "isQlie": false,
+      "isNoFilter": false
+    },
+    "wordWrap": {
+      "maxCharPerLines": 52,
+      "folderPath": "./pinpoint_2_output_output_output",
+      "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
+      "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
+      "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
+    }
+  },
+  "ks": {
+    "encoding": "shiftjis",
+    "translation": {
+      "folderPath": "./pinpoint_3_output",
+      "numberOfFiles": 1,
+      "numberOfSentences": 300,
+      "isSelects": true,
+      "isTagName": false,
+      "regExpToFilterSentenceContainTagName": "name=",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^\\$)|(\\[jump)|(^:)|(#)|(^(@))|(^(\\*))|(//)|(^(\\\\))|(;)|(^<)|({)|(})|(^(ｔａ))|(^(ｔｂ))|(^■)|(^\\[[a-zA-Z0-9\\\\])|(^\\[)",
       "regExpToExcludeSentenceNotNeedTranslatedExcept": "(\\[T_NEXT\\]\\\\)|(^(\\[ruby))|(^(\\[咲奈))|(^(\\[一人称))|(^(\\[咲良))|(^(\\[希美))|(^(\\[レーチェ))|(^(\\[呼び名))|(^(\\[主人公・男性器))|(^(\\[小町))|(^(\\[レーチェ))|(^(\\[r\\]))|(^(\\[haret\\]))|(^(\\[五十鈴'いすず))|(^(\\[伊吹'いぶき))|(^(\\[主人公・女性器))|(\\[m_tips)|(\\[tips )|(^(\\[adjastfontsize))|(^(\\[[【『「（]\\]))|(\\[【)|(\\[mruby)|(\\[hint_)|(\\[ruby text=)|(^\\[ft|(^\\[font size=))",
       "regExpToExcludeSentenceNotNeedTranslatedContain2": "(^　)|(@nm t=)",
@@ -503,11 +442,11 @@
       "addedPrefixAfterTranslation": "",
       "isArtemis": false,
       "isQlie": false,
-      "isNoFilter": true
+      "isNoFilter": false
     },
     "wordWrap": {
-      "maxCharPerLines": 50,
-      "folderPath": "./pinpoint_1_output_output",
+      "maxCharPerLines": 54,
+      "folderPath": "./pinpoint_3_output_output",
       "regExpToExcludeSentenceNotNeedTranslatedContain": "(^(\\$))|(^;)|(^【)",
       "regExpToFilterSentenceNeededHighlightStart": "@font face=39",
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
@@ -709,7 +648,7 @@
       "regExpToFilterSentenceNeededHighlightStop": "@Hitret"
     }
   },
-  "pinpoint": {
+  "liar": {
     "encoding": "utf8",
     "translation": {
       "folderPath": "./liar",

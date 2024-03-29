@@ -130,7 +130,7 @@ async function translateFileCst(filePath) {
         false,
         true,
         true,
-        "cst"
+        "cst-special"
       )
     ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
   }

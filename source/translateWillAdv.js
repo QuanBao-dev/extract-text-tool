@@ -6,6 +6,7 @@ const {
 const { willadv } = require("../setting.json");
 const fs = require("fs");
 const delay = require("./delay");
+const handleWordWrap = require("./handleWordWrap");
 
 (async () => {
   // console.log(
@@ -55,7 +56,7 @@ async function translateFileBsxx(filePath) {
   const text = await readFile(filePath, "utf8");
   // return await writeFile(filePath, text, "utf8");
   console.log(filePath);
-  const dataList = text.split("\n");
+  const dataList = text.split("\r\n");
   let contentText = dataList.map((text) => {
     return removeThePrefix(text);
   });
@@ -79,17 +80,31 @@ async function translateFileBsxx(filePath) {
   //   true
   // );
   // " ": "見神 航平",
-  const narrowedContentText = await translateOfflineSugoiCt2LongList(
-    contentText.reduce((ans, curr) => {
+  const rawTextList = contentText
+    .reduce((ans, curr) => {
       if (temp !== curr && curr !== "" && !curr.match(/\/\//g)) {
         ans.push(
-          curr.replace(/\\n/g, "")
+          curr
           // .replace(//g, "♥")
         );
       }
       temp = curr;
       return ans;
-    }, []).map((v) => v.split("／")[0]),
+    }, [])
+    .map((v) => v.split("／")[0]);
+  const narrowedContentText = await translateOfflineSugoiCt2LongList(
+    contentText
+      .reduce((ans, curr) => {
+        if (temp !== curr && curr !== "" && !curr.match(/\/\//g)) {
+          ans.push(
+            curr.replace(/\\n/g, "")
+            // .replace(//g, "♥")
+          );
+        }
+        temp = curr;
+        return ans;
+      }, [])
+      .map((v) => v.split("／")[0]),
     willadv.translation.numberOfSentences,
     false,
     true,
@@ -109,16 +124,20 @@ async function translateFileBsxx(filePath) {
         }, [])[index]
       );
       ans.push(
-        curr
-          .replace(/『“/g, "『")
-          .replace(/”』/g, "』")
-          .replace(/『+/g, "『")
-          .replace(/』+/g, "』")
-          .replace(/\u275b/g, "")
-          .replace(/\xe9/g, "e")
-          .replace(/\u2013/g, "-")
-          .replace(/\xef/g, "i")
-          .replace(/\xe0/g, "a")
+        handleWordWrap(
+          53,
+          curr
+            .replace(/『“/g, "『")
+            .replace(/”』/g, "』")
+            .replace(/『+/g, "『")
+            .replace(/』+/g, "』")
+            .replace(/\u275b/g, "")
+            .replace(/\xe9/g, "e")
+            .replace(/\u2013/g, "-")
+            .replace(/\xef/g, "i")
+            .replace(/\xe0/g, "a"),
+          "\\n"
+        ) + ((rawTextList[index] || "").match(/(\\n)$/g) ? "\\n" : "")
       );
       ans.push("");
       return ans;
@@ -134,7 +153,7 @@ async function translateFileBsxx(filePath) {
           : ""
         ).replace(/XXX/g, "")
     )
-    .join("\n");
+    .join("\r\n");
   console.timeEnd(filePath);
   await writeFile(filePath, ans, "utf8");
 }

@@ -9,6 +9,7 @@ const { Eroit } = require("../setting.json");
 const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
+const handleWordWrap = require("./handleWordWrap");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
   Eroit.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
