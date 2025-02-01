@@ -1,5 +1,12 @@
 const fs = require("fs");
-const { readFile, writeFile } = require("./handleFile");
+const {
+  readFile,
+  writeFile,
+  convertCSVToJson,
+  convertJsonToCSV,
+  simpleWriteFile,
+  saveBackup,
+} = require("./handleFile");
 const {
   translateOfflineSugoiLongList,
   translateOfflineSugoiCt2LongList,
@@ -49,6 +56,29 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
 // [一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+
 (async () => {
   // console.log(
+  //   handleWordWrap(
+  //     65,
+  //     "It was about two kilometers from east to west, about five hundred meters from north to south, and it was long and thinly shaped, so you could walk around it once in an hour, but it was pretty wide inside.",
+  //     "\r\n",
+  //     10
+  //   )
+  // );
+  // await delay(100000);
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     ["陰核こそは、女を愛撫する際の[ruby text=かなめ]要となるポイント――"],
+  //     3,
+  //     false,
+  //     true,
+  //     false,
+  //     "kiriruby",
+  //     "",
+  //     false,
+  //     false
+  //   )
+  // );
+  // await delay(100000);
+  // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
   //       // "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
@@ -93,24 +123,22 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //     true
   //   )
   // );
-  // await delay(10000000);
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       `「う、んっ……いっ……てぇ……！　あたしの[咲良・女性器]の下で、ビュッてしてぇ……！」`,
-  //       "「[苗字]　[名前]です！　よろしくお願いします！」",
-  //       "でも、言葉が通じないからこそ、あの子はきっと、[hint_text_start]これをなくすと大変[hint_text_end]なことになるだろう。",
+  //       `#何やら楽しげに、鼻歌でも奏でそうな様子で、|春日[かすが]|日向[ひなた]が花壇に水を撒いていた。`,
   //     ],
   //     2,
   //     false,
   //     false,
   //     false,
-  //     "kiriruby",
+  //     "liar",
   //     "",
   //     false,
-  //     true
+  //     false
   //   )
   // );
+  // await delay(10000000);
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
@@ -121,7 +149,8 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //       // "<4604,611643,63>彼らの立っていた横の石壁が不自然に<r・・・・・>盛り上がる</r>。",
   //       // "<4244,113309,60>「タウン誌で“凪沙のＢ級グルメ名店10”にも選ばれたんだから」",
   //       "「はっ、女王陛下の<ruby text='みこころ'>御心</ruby>のままに」",
-  //       "「にゃはー<font color='0xf37eb8' edge='0x000000'><img src='font\\mark\\cat'></font>」"
+  //       "「にゃはー<font color='0xf37eb8' edge='0x000000'><img src='font\\mark\\cat'></font>」",
+  //       `「八[ruby text="ほ　づ　み"]月朔日さんですよねー。八月朔日茉莉さん。さっきアキくんがお腹痛いーっていなかった間に、自己紹介あったんですよー」`,
   //     ],
   //     2,
   //     false,
@@ -133,13 +162,27 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       `男よりも[rb t="遙|はる"]かに大きなその怪物は、あっという間に追いついた[rb t="獲物|エモノ"]をずたずたに引き裂き、引き千切り、そしてそのまま乱暴に喰い漁った。`
+  //       "叶太",
+  //       "こころ",
+  //       "千依",
+  //       "めぐり",
+  //       "常夜",
+  //       "楓美",
+  //       "いのり",
+  //       "未愛",
+  //       "小雀",
+  //       "叶梨",
+  //       "未来",
+  //       "大河",
+  //       "光生",
+  //       "怜",
+  //       "夜行",
   //     ],
   //     4,
   //     false,
   //     true,
   //     false,
-  //     "kiriruby"
+  //     "srp"
   //   )
   // );
   // console.log(
@@ -220,16 +263,31 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
 let objectCount = {};
 
 async function translateFileKs(filePath, isSelect, isTagName, encoding) {
-  const fileContent = await readFile(filePath, encoding);
-  // const translatedRawFileContent = await readFile(filePath.replace("BGI","BGI_output"),encoding)
-  objectCount = {};
   let count2 = 0;
-  // const dumpFileContent = await readFile(
-  //   filePath.replace(/csv/g, "txt"),
-  //   encoding
-  // );
-  let dataList = fileContent.split(/\r\n/g);
-  // console.log(dataList)
+  let dataList = [];
+  const fileContent = await readFile(filePath, encoding);
+  // return await writeFile(filePath, convertCSVToJson(fileContent), "utf8");
+  // return await writeFile(filePath, convertJsonToCSV(fileContent), "utf8");
+
+  dataList = fileContent.split(/\r\n/g);
+  if (fileContent.includes("# error")) return;
+  // do {
+  //   const fileContent = await readFile(filePath, encoding);
+  //   // const translatedRawFileContent = await readFile(filePath.replace("BGI","BGI_output"),encoding)
+  //   objectCount = {};
+  //   // const dumpFileContent = await readFile(
+  //   //   filePath.replace(/csv/g, "txt"),
+  //   //   encoding
+  //   // );
+  //   dataList = fileContent.split(/\r\n/g);
+  //   if (dataList.length === 1) {
+  //     encoding = "shiftjis";
+  //     continue;
+  //   }
+  //   break;
+  // } while (true);
+
+  // console.log(dataList);
   // .map((v) => v.replace(/\[ruby:/g, "").replace(/\[\/ruby\]/g, "").replace(/\]/g,""));
   // let rawTranslatedDataList = translatedRawFileContent.split(/\r\n/g);
   // let dumpList = dumpFileContent.split(/\r\n/g);
@@ -257,7 +315,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       translatedFileContent,
       encoding,
       false,
-      false
+      true
     );
   }
   let isNewDialog = true;
@@ -269,15 +327,17 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
       if (!pinpoint.translation.isNoFilter) {
-        // console.log(rawText)
-        if (rawText.includes("endscript")) {
+        if (rawText.match(/(endscript)|(\.case 1)|(},)/g)) {
           isScript = false;
         }
         if (
           // !rawText.match(/\[en\]/g)
+          // !rawText.match(/\[[>>地]+\]/g)
           // !rawText.match(/^(\[ruby )/g)
           // !rawText.match(/\[p\]\[p\]/g)
-          // !rawText.match(/^『[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟～＆。●・♡＝…：、―]/g)
+          // !rawText.match(regExp)
+          // !rawText.match(/^"/g)
+          // ||
           (rawText.trim().match(containRegExpI) &&
             !rawText.trim().match(exceptRegExpI)) ||
           rawText.trim() === "" ||
@@ -289,9 +349,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           // !rawText.match(containTagNameRegExpI)
           // false
         ) {
-          if (rawText.includes("iscript")) {
+          if (rawText.match(/(iscript)|(^\.select)|(select={)/g)) {
             isScript = true;
           }
+          // console.log(rawText);
           isNewDialog = true;
           return ans;
         }
@@ -309,11 +370,17 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       // if (rawText.match(/^(\[ruby text=")/g))
       //   rawText = rawText.replace("[ruby text=", "").replace('"]', "");
       if (pinpoint.translation.isNoFilter) {
-        ans.push(rawText.replace(/［Ｔｅｍｐ］/g, ""));
+        ans.push(
+          rawText
+            .replace(/［Ｔｅｍｐ］/g, "")
+            .replace(/\[SF\]/g, "ユウト")
+            .replace(/\[SL\]/g, "シグルス")
+            .replace(/\[HF\]/g, "ユウト")
+        );
         return ans;
       }
       count3++;
-      temp += (rawText.trim() === "---" ? "" : rawText.trim()) + " ";
+      temp += (rawText.trim() === "---" ? "" : rawText) + " ";
       if (rawText.match(/［Ｔｅｍｐ］/)) {
         // suffixList.push(
         //   temp.match(/(\[[a-zA-Z =\[\]_]+\]+)$/g)[0].replace(/\[Ｔｅｍｐ\]/g, "")
@@ -325,7 +392,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
             .replace(/\[r\](\\)?/g, "")
             .replace(/／/g, "")
             .replace(/\[r\]/g, "")
-            .trim()
+          // .trim()
         );
         temp = "";
         listCount.push(count3);
@@ -380,6 +447,9 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   }
   //   return v.replace(/^\(/g,"（");
   // })
+  // const translatedTextList = [...rawTextList].map((v) =>
+  //   converter.toFullWidth(v)
+  // );
   // const translatedTextList = [...rawTextList];
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
@@ -416,7 +486,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     true,
     false,
     "kiriruby",
-    "Eroit",
+    "",
     false,
     false
   );
@@ -524,7 +594,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   isScript = false;
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
     if (!pinpoint.translation.isNoFilter) {
-      if (rawText.includes("endscript")) {
+      if (rawText.match(/(endscript)|(\.case 1)|(},)/g)) {
         isScript = false;
       }
       if (
@@ -532,7 +602,9 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // rawText.match(/^(\[ruby )/g)
         // !rawText.match(/^(\[p\]\[p\])/g)
         // !rawText.match(/mruby/g)
-
+        // !rawText.match(/\[[>>地]+\]/g)
+        // !rawText.match(regExp)
+        // !rawText.match(/^"/g) ||
         (rawText.trim().match(containRegExpI) &&
           !rawText.trim().match(exceptRegExpI)) ||
         rawText.trim() === "" ||
@@ -540,7 +612,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // !rawText.match(containRegExpG2) || rawText.match(/^;/g)
         // rawText.match(containTagNameRegExpI)
       ) {
-        if (rawText.includes("iscript")) {
+        if (rawText.match(/(iscript)|(^\.select)|(select=)/g)) {
           isScript = true;
         }
         isDisable = false;
@@ -554,6 +626,10 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // !rawText.match(/\[p\]\[p\]/g)
         // !rawText.match(/mruby/g)
         // !rawText.match(/^『[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟～＆。●・♡＝…：、―]/g)
+        // !rawText.match(/\[[>>地]+\]/g)
+        // !rawText.match(regExp)
+        // !rawText.match(/^"/g)
+        // ||
         (rawText.trim().match(containRegExpI) &&
           !rawText.trim().match(exceptRegExpI)) ||
         rawText.trim() === "" ||
@@ -564,7 +640,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // !rawText.match(containRegExpG2)|| rawText.match(/^;/g)
         // rawText.match(containTagNameRegExpI)
       ) {
-        if (rawText.includes("iscript")) {
+        if (rawText.match(/(iscript)|(^\.select)|(select=)/g)) {
           isScript = true;
         }
         ans.push(rawText);
@@ -577,31 +653,48 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       // if (rawText.match(/(^	)/g)) {
       //   temp = rawText.match(/(	)+/g)[0] + temp;
       // }
-      // temp = temp.replace(/!/g,"！");
+      temp = temp.replace(/!/g, "！");
       // const rawNameTag = rawText.match(/@nm t="([一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞♀♂♪─〇☆―〜゛×・○♥　、☆＆『』‥ⅠⅡⅢⅣⅤ『』《》￥ｎ【『「（《》】』」）]+)?"/g)[0].replace(/@nm t="/g,"").replace(/"/g,"");
       // let isRtContained = rawText.includes("rt");
-      // const prefix = (temp.match(/[0-9]+ (【.+】)?/g) || [""])[0];
+      // const textTemp = (temp.match(/[0-9]+ (【.+】)?/g) || [""])[0];
+      // const prefixNumber = textTemp.split(" ")[0];
+      // const prefixName = textTemp.split(" ").slice(1).join(" ");
+      // if (!temp.match(/[【『「（《》】』」）]/g)) temp = "　" + temp;
       ans.push(
         // handleWordWrap(
         //   Math.floor(temp.length / listCount[count]) < 41
         //     ? Math.floor(temp.length / listCount[count])
-        //     : 46,
-        //   temp,
+        //     : 45,
+          temp
         //   "\r\n",
         //   listCount[count]
         // )
+        // handleWordWrap(71, temp.replace(/’/g,"'"), "\r\n", listCount[count])
+        // "[font size=20]\r\n"+temp
+        // `{"exfont", size="f2"},\r\n${temp}\r\n{"exfont"},`
 
+        // .replace(/ /g, "　")
+        // .replace(/time/g, "tｉme")
+        // .replace(/Time/g, "Tｉme")
+        // .replace(/Jump/g, "Jｕmp")
+        // .replace(/jump/g, "jｕmp")
+        // .replace(/run/g, "rｕn")
+        // .replace(/end/g, "ｅnd")
+        // .replace(/♥/g, "{image=gui/heart.png}{alt}heart{/alt}")
         // count2 === 0 && temp.includes("【")
-        //   ? prefix +
-        //       converter.toFullWidth(temp.replace(/[0-9]+ (【.+】)?/g, ""))
+        //   ? prefixNumber +
+        //       " " +
+        //       converter.toFullWidth(
+        //         prefixName + temp.replace(/[0-9]+ (【.+】)?/g, "")
+        //       )
         //   : temp
 
-        temp
-
-        // handleWordWrap(68, temp, "\\n")
-        //   .trim()
-        //   .replace(/(\\n)$/g, "")
-        // handleWordWrap(68, temp, "\r\n", listCount[count], undefined)
+        // "@font size=22\n" + temp
+        // temp.replace(/if/g, "ｉf").replace(/time/g, "tｉme").replace(/else/g, "ｅlse").replace(/:/g, "：")
+        // .replace(/@/g, "＠")
+        // (!temp.includes("[") ? "　" : "") + temp
+        // handleWordWrap(71, temp, "\\n").replace(/(\\n)$/g, "")
+        // handleWordWrap(50, temp, "\r\n", listCount[count])
         // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
         // ("　"+temp).replace(/　「/g,"「")
         // rawText.replace(/@nm t="[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞♀♂♪─〇☆―〜゛×・○♥　、☆＆『』‥ⅠⅡⅢⅣⅤ『』《》￥ｎ]+"/g,`@nm t="${temp}"${!isRtContained ? ` rt="${rawNameTag}"`:""}`)
@@ -614,7 +707,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // .replace(/ō/g, "o")
         // .replace(/[àâ]/g, "a")
       );
-      // if (prefix.includes("【")) count2++;
+      // if (prefixName) count2++;
       if (pinpoint.translation.isArtemis) ans.push('					{"rt2"},');
     } else {
       ans.push("");
@@ -628,7 +721,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     // .slice(0, translatedFileContent.length - 2)
     .join("\r\n");
   console.timeEnd(filePath);
-  await writeFile(filePath, translatedFileContent, encoding, false, false);
+  await writeFile(filePath, translatedFileContent, encoding, false, true);
+  // await saveBackup();
 }
 function checkIsContinue(dumpList, previousText) {
   let isContinue = false;

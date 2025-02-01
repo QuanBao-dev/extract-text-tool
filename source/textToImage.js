@@ -68,7 +68,8 @@ const textList = [
     1,
     false,
     true,
-    false
+    false,
+    "srp"
   );
   // const translatedTexts =
   //   translatedTexts.map(
@@ -81,7 +82,7 @@ const textList = [
   console.log(listFileName, translatedTexts);
   await Promise.all(
     translatedTexts.map(async (translatedText, index) => {
-      let fontSize = 25;
+      let fontSize = 35;
       // if(listExtractedFileName[index] === "眉毛にピアスの男") fontSize = 20
       // if(translatedText.length )
       return await textToImage.generate(translatedText.replace(/\./g, ""), {
@@ -95,8 +96,8 @@ const textList = [
         // margin,
         verticalAlign: "center",
         bgColor: "transparent",
-        textColor: "white",
-        textAlign: "start",
+        textColor: "black",
+        textAlign: "center",
         debugFilename: `./raw_images_output/name_${
           translatedText
             .replace(/\./g, "")

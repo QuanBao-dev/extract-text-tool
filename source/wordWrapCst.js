@@ -4,8 +4,11 @@ const { translateOfflineSugoiCt2LongList } = require("./translateJapanese");
 const delay = require("./delay");
 const { nanoid } = require("nanoid");
 const handleWordWrap = require("./handleWordWrap");
+const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
+const converter = new AFHConvert();
+
 (async () => {
-  const listFileName = fs.readdirSync("./cst_2_output");
+  const listFileName = fs.readdirSync("./cst_output");
   let start = 0;
   let numberAsync = 1;
   // console.log(await translateOfflineSugoiCt2LongList([
@@ -24,7 +27,7 @@ const handleWordWrap = require("./handleWordWrap");
             .slice(start, start + numberAsync)
             .map(async (fileName) => {
               console.log("Start:", fileName);
-              await translateFileCst(`./cst_2_output/${fileName}`);
+              await translateFileCst(`./cst_output/${fileName}`);
             })
         );
         start += numberAsync;
@@ -67,55 +70,54 @@ async function translateFileCst(filePath) {
     }
     if (message !== undefined) {
       const rawMessage = message;
-      try {
-        // message = "  "+message
-        // message = handleWordWrap(50, message,"\r\n")
-        // message = message
-        //   .split("")
-        //   .map((v) => {
-        //     if (["m", "M","w","W"].includes(v)) return v + "  ";
-        //     if (["’"].includes(v)) return "'";
-        //     if (["、", "（","’","i","t"," ","l","f","j","\r","\n"].includes(v)) return v;
-        //     return v + " ";
-        //   })
-        //   .join("");
-        message = handleWordWrap(
-          56,
-          message,
-          // .replace(/[『「]/g,"\"").replace(/[』」]/g,"\""),
-          // .replace(/m/g, "m ")
-          // .replace(/M/g, "M ")
-          // .replace(/G/g, "G ")
-          // .replace(/w/g, "w ")
-          // .replace(/W/g, "W ")
-          // .replace(/M/g, "m")
-          // .replace(/F/g, "f")
-          // .replace(/W/g, "w")
-          // .replace(/O/g, "o"),
-          // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
-          // .replace(/<r/g, "")
-          // .replace(/\>/g, "")
-          // .replace(/<\/s/g, "")
-          // .replace(/❛/g, "'")
-          // .replace(/、/g, ", ")
-          "\r\n",
-          3
-          // name ? 72 - name.length - 2 : undefined
-          // undefined
-        )
-          .replace(/#/g, "＃")
-          .replace(/（/g, "(")
-          .replace(/）/g, ")")
-          .replace(/@/g, "＠");
-        // .replace(/'/g,"’");
-        // .replace(/m/g, "m ")
-        // .replace(/M/g, "M ")
-        // .replace(/G/g, "G ")
-        // .replace(/w/g, "w ")
-        // .replace(/W/g, "W ");
-      } catch (error) {
-        message = rawMessage.replace(/#/g, "＃");
-      }
+      // try {
+      //   // message = "  "+message
+      //   // message = handleWordWrap(50, message,"\r\n")
+      //   // message = message
+      //   //   .split("")
+      //   //   .map((v) => {
+      //   //     if (["m", "M","w","W"].includes(v)) return v + "  ";
+      //   //     if (["’"].includes(v)) return "'";
+      //   //     if (["、", "（","’","i","t"," ","l","f","j","\r","\n"].includes(v)) return v;
+      //   //     return v + " ";
+      //   //   })
+      //   //   .join("");
+      // message = handleWordWrap(
+      //   25,
+      //   message,
+      //   // .replace(/[『「]/g,"\"").replace(/[』」]/g,"\""),
+      //   // .replace(/m/g, "m ")
+      //   // .replace(/M/g, "M ")
+      //   // .replace(/G/g, "G ")
+      //   // .replace(/w/g, "w ")
+      //   // .replace(/W/g, "W ")
+      //   // .replace(/M/g, "m")
+      //   // .replace(/F/g, "f")
+      //   // .replace(/W/g, "w")
+      //   // .replace(/O/g, "o"),
+      //   // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
+      //   // .replace(/<r/g, "")
+      //   // .replace(/\>/g, "")
+      //   // .replace(/<\/s/g, "")
+      //   // .replace(/❛/g, "'")
+      //   // .replace(/、/g, ", ")
+      //   "\r\n"
+      //   // name ? 72 - name.length - 2 : undefined
+      //   // undefined
+      // ).replace(/＠/g, "＠　");
+      //     .replace(/#/g, "＃")
+      //     .replace(/（/g, "(")
+      //     .replace(/）/g, ")")
+      //     .replace(/@/g, "＠");
+      //   // .replace(/'/g,"’");
+      //   // .replace(/m/g, "m ")
+      //   // .replace(/M/g, "M ")
+      //   // .replace(/G/g, "G ")
+      //   // .replace(/w/g, "w ")
+      //   // .replace(/W/g, "W ");
+      // } catch (error) {
+      //   message = rawMessage.replace(/#/g, "＃");
+      // }
 
       // if (message.split("\r\n").length > 4) {
       //   // message = rawMessage.replace(/#/g, "＃");
@@ -127,50 +129,61 @@ async function translateFileCst(filePath) {
       //     .map((v) => "")
       //     .join(" ");
 
-      // message = message
-      //   .replace(/fs/g, "")
-      //   .replace(/\\/g, "")
-      //   .replace(/\:/g, "")
-      //   .replace(/[\[\]]/g, "")
-      //   .replace(/\$39;/g, "'")
-      //   .replace(/'/g, "’");
-      // if(!message.includes("pc")){
+      message = message
+        .replace(/fs/g, "")
+        .replace(/\\/g, "")
+        .replace(/\:/g, "")
+        .replace(/[\[\]]/g, "")
+        .replace(/\$39;/g, "'")
+        .replace(/'/g, "’");
+      if (!message.includes("pc")) {
+        if (message.length > 30 || message.includes("[")) {
+          const length = message
+            .trim()
+            .replace(/　/g, " ")
+            .replace(/、/g, ", ")
+            .split(" ").length;
+          message =
+            // "\\fs" +
+            message
+              .trim()
+              .replace(/　/g, " ")
+              .replace(/、/g, ", ")
+              .split(" ")
+              .map((v, index) => {
+                // if (v === "") return v;
+                if (v.includes("[") || v.includes("]")) {
+                  return v
+                    .trim()
+                    .replace(/fs/g, "")
+                    .replace(/\\/g, "")
+                    .replace(/\:/g, "")
+                    .replace(/[\[\]]/g, "")
+                    .replace(/\$39;/g, "'");
+                }
+                // return v;
+                if (v === "") return v.replace(/\$39;/g, "'");
+                if(length <= 17) return `\\fs[${v}]`.replace(/\$39;/g, "'");
+                if(length >= 20) return `${v}`.replace(/\$39;/g, "'");
+                return `\\fs[${v}]`.replace(/\$39;/g, "'");
+                // if (index > 7 && index < length - 4) {
+                // } else {
+                //   return `${v}`.replace(/\$39;/g, "'");
+                // }
+              })
+              .filter((v) => v !== "")
+              .join(" ");
+        }
 
-      // if (message.length > 30 || message.includes("[")) {
-      //   message = "\\fs"+message
-      //     .trim()
-      //     .replace(/　/g, " ")
-      //     .replace(/、/g, ", ")
-      //     .split(" ")
-      //     .map((v) => {
-      //       // if (v === "") return v;
-      //       if (v.includes("[") || v.includes("]")) {
-      //         return v
-      //           .trim()
-      //           .replace(/fs/g, "")
-      //           .replace(/\\/g, "")
-      //           .replace(/\:/g, "")
-      //           .replace(/[\[\]]/g, "")
-      //           .replace(/\$39;/g, "'");
-      //       }
-      //       // return v;
-      //       if (v === "") return v.replace(/\$39;/g, "'");
-      //       // return `[${v}]`.replace(/\$39;/g, "'");
-      //       return `${v}`.replace(/\$39;/g, "'");
-      //     })
-      //     .filter((v) => v !== "")
-      //     .join(" ");
-      // }
-
-      // if (name === undefined) {
-      //   message = message
-      //     .replace(/fs/g, "")
-      //     .replace(/\\/g, "")
-      //     .replace(/\:/g, "")
-      //     .replace(/[\[\]]/g, "")
-      //     .replace(/\$39;/g, "'");
-      // }
-      // }
+        // if (name === undefined) {
+        //   message = message
+        //     .replace(/fs/g, "")
+        //     .replace(/\\/g, "")
+        //     .replace(/\:/g, "")
+        //     .replace(/[\[\]]/g, "")
+        //     .replace(/\$39;/g, "'");
+        // }
+      }
 
       // message = message.replace(/'/g,"’")
       // const specialList = message.match(

@@ -3,7 +3,7 @@ const {
   translateOfflineSugoiCt2LongList,
   translateSelectCenterTextList,
 } = require("./translateJapanese");
-const { willadv } = require("../setting.json");
+const { catsystem } = require("../setting.json");
 const fs = require("fs");
 const delay = require("./delay");
 const handleWordWrap = require("./handleWordWrap");
@@ -12,16 +12,17 @@ const handleWordWrap = require("./handleWordWrap");
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "緑野の瑞風…Shaonが使う回復系の天眷。対象１体を回復する。怪我をしてない対象に、この天眷をかけると生命力が溢れ各能力が上昇する。",
-  //       "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
-  //       "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
-  //       "「かおることか呼ばないで。イラッとくるから」",
-  //       "少なくともこの俺……\nABはそう思っている。",
+  //       // "緑野の瑞風…Shaonが使う回復系の天眷。対象１体を回復する。怪我をしてない対象に、この天眷をかけると生命力が溢れ各能力が上昇する。",
+  //       // "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
+  //       // "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
+  //       // "「かおることか呼ばないで。イラッとくるから」",
+  //       // "少なくともこの俺……\nABはそう思っている。",
+  //       "肉体の耐久性や俊敏性、筋力などは俺達[人間/ヒューム]より格段に上の種族である。",
   //     ],
   //     2,
   //     undefined,
   //     true,
-  //     true,
+  //     false,
   //     "srp"
   //   )
   // );
@@ -40,10 +41,10 @@ const handleWordWrap = require("./handleWordWrap");
   // await delay(10000000);
 
   try {
-    const listFileName = fs.readdirSync(willadv.translation.folderPath);
+    const listFileName = fs.readdirSync(catsystem.translation.folderPath);
     for (let i = 0; i < listFileName.length; i++) {
       await translateFileBsxx(
-        willadv.translation.folderPath + "/" + listFileName[i]
+        catsystem.translation.folderPath + "/" + listFileName[i]
       );
     }
   } catch (error) {
@@ -61,9 +62,11 @@ async function translateFileBsxx(filePath) {
     return removeThePrefix(text);
   });
   console.time(filePath);
-  const prefixList = dataList.map((text) => {
-    return extractThePrefix(text);
-  });
+  const prefixList = dataList
+    .map((text) => {
+      return extractThePrefix(text);
+    })
+    .filter((v) => v.includes("☆"));
   // return retranslatedSpecificLines();
   let temp = "";
   // const narrowedContentText = await translateOfflineSugoiCt2LongList(
@@ -96,27 +99,32 @@ async function translateFileBsxx(filePath) {
     if (
       temp.trim().replace(/[☆★]/g, "") !== curr.trim().replace(/[☆★]/g, "") &&
       curr !== ""
-      // &&
-      // !curr.match(/\/\//g)
     ) {
-      ans.push(curr.replace(/\\n/g, " ").replace(//g, "♥"));
+      ans.push(
+        curr
+        // .replace(/\\n/g, " ")
+        // .replace(//g, "♥")
+      );
     }
     temp = curr;
     return ans;
   }, []);
   const narrowedContentText = await translateOfflineSugoiCt2LongList(
     list,
-    // .map((v) => v.split("／")[0])
-    willadv.translation.numberOfSentences,
+    catsystem.translation.numberOfSentences,
     false,
     true,
     false,
-    "bsxx",
+    "catsystem",
     ""
   );
   const translatedContentText = narrowedContentText.reduce(
     (ans, curr, index) => {
-      ans.push(list[index]);
+      ans.push(prefixList[index] + list[index]);
+      let text = curr.replace(/ /g, "　");
+      if (prefixList[index].includes("name")) {
+        text = text.replace(/^ー/g, "");
+      }
       ans.push(
         // handleWordWrap(
         //   53,
@@ -132,36 +140,37 @@ async function translateFileBsxx(filePath) {
         //     .replace(/\xe0/g, "a"),
         //   "\\n"
         // ) + ((rawTextList[index] || "").match(/(\\n)$/g) ? "\\n" : "")
-        curr
+        prefixList[index].replace(/☆/g, "★") +
+          text.replace(/’/g, "'").replace(/、/g, ",　")
       );
+      ans.push("");
       ans.push("");
       return ans;
     },
     []
   );
-  const ans = prefixList
-    .map(
-      (prefixText, index) =>
-        prefixText +
-        (translatedContentText[index]
-          ? translatedContentText[index]
-          : ""
-        ).replace(/XXX/g, "")
-    )
-    .join("\r\n");
+  // const ans = prefixList
+  //   .map(
+  //     (prefixText, index) =>
+  //       prefixText +
+  //       (translatedContentText[index]
+  //         ? translatedContentText[index]
+  //         : ""
+  //       ).replace(/XXX/g, "")
+  //   )
+  //   .join("\r\n");
   console.timeEnd(filePath);
-  await writeFile(filePath, ans, "utf8");
+  await writeFile(filePath, translatedContentText.join("\r\n"), "utf8", true);
 }
 
 function extractThePrefix(text) {
   // const matchedText = text.match(/[●○].+[○●]/g);
-  const matchedText = text.match(/[☆★○●◆◇][a-zA-Z0-9\|]+[☆★○●◆◇](\\b)?( )?/g);
+  const matchedText = text.match(/[☆★○●◆◇][a-zA-Z0-9_\|]+[☆★○●◆◇](\\b)?( )?/g);
   if (!matchedText) return "";
   return matchedText[0];
 }
 
 function removeThePrefix(text) {
-  // return text.replace(/[●○].+[○●]/g, "");
-  return text.replace(/[☆★◆◇○●][a-zA-Z0-9\|]+[☆★○●◆◇](\\b)?( )?/g, "");
+  return text.replace(/[☆★◆◇○●][a-zA-Z0-9_\|]+[☆★○●◆◇](\\b)?( )?/g, "");
 }
 // ○○○○

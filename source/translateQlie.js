@@ -50,11 +50,7 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
-  //       "何百人も門下生がいて、家元であるお[rb,祖父,じい]さまも、師範のお[rb,祖母,ばあ]さまも両親も、よくあちこちへ出かけていく。",
-  //       "「[rb,綾河,あやかわ]さん…………[rb,綾河,あやかわ][rb,春生,はるき]さん。…………おや」",
-  //       "「苅田くん…………[rb,季元,きのもと]くん。[n]季元ハジメくん」",
-  //       "HAR_0021,春生,「そして、一冊徹夜で読み通した私が作り上げたのが、[n]この物質透過装置！　スイッチオン！」",
-  //       "none,先生,「苅田くん…………[rb,季元,きのもと]くん。[n]季元ハジメくん」",
+  //       "一瞬が勝負だ。私は模造刀に手をかけ、立て膝の状態（いわゆる『[rb,座業,すわりわざ]』）で待機していた。",
   //     ],
   //     1,
   //     false,
@@ -129,19 +125,19 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         return ans;
       }
       if (ans.length > 0 && isNewDialog === false) {
-        dataList[index - 1] = dataList[index - 1].replace(/\[Cock\]/, "");
-        ans[ans.length - 1] = ans[ans.length - 1].replace(/\[Cock\]/, "");
+        dataList[index - 1] = dataList[index - 1].replace(/［Ｔｅｍｐ］/, "");
+        ans[ans.length - 1] = ans[ans.length - 1].replace(/［Ｔｅｍｐ］/, "");
       }
-      ans.push(rawText + "[Cock]");
-      dataList[index] = dataList[index] + "[Cock]";
+      ans.push(rawText + "［Ｔｅｍｐ］");
+      dataList[index] = dataList[index] + "［Ｔｅｍｐ］";
       isNewDialog = false;
       return ans;
     }, [])
     .reduce((ans, rawText) => {
       count3++;
-      temp += rawText.trim() === "---" ? "" : rawText.trim();
-      if (rawText.match(/\[Cock\]/)) {
-        ans.push(temp.replace(/\[Cock\]/g, "").trim());
+      temp += rawText.trim();
+      if (rawText.match(/［Ｔｅｍｐ］/)) {
+        ans.push(temp.replace(/［Ｔｅｍｐ］/g, "").trim());
         temp = "";
         listCount.push(count3);
         count3 = 0;

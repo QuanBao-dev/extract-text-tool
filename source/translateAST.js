@@ -47,6 +47,21 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
+  //       `「<RUBY TEXT="明晰夢" RUBY="めいせきむ">」というものがある。`,
+  //       `俺は‥‥［<RUBY TEXT="星野" RUBY="ほしの">　<RUBY TEXT="統治" RUBY="とうじ">］`,
+  //     ],
+  //     2,
+  //     false,
+  //     true,
+  //     false,
+  //     "AST2",
+  //     ""
+  //   )
+  // );
+  // await delay(1000000);
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
   //       // "「かおるこ先輩とは上手くいってるんでしょうね？　もし悲しませたりしていたら承知しないわよ」",
   //       // "「心配しなくても大丈夫だって。そもそも桜木はかおることしょっちゅう会って話してるんじゃないのか？」",
   //       // "「かおることか呼ばないで。イラッとくるから」",
@@ -198,11 +213,11 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   filePath.replace(/csv/g, "txt"),
   //   encoding
   // );
-  let dataList = fileContent.split(/\n/g);
-  if (!isSelect)
-    dataList = fileContent
-      .split(/\n/g)
-      .map((v) => v.replace(/<FONT SIZE=[0-9]+>/g, ""));
+  let dataList = fileContent.split(/\r\n/g);
+  // if (!isSelect)
+  //   dataList = fileContent
+  //     .split(/\n/g)
+  //     .map((v) => v.replace(/<FONT SIZE=[0-9]+>/g, ""));
   // let rawTranslatedDataList = translatedRawFileContent.split(/\r\n/g);
   // let dumpList = dumpFileContent.split(/\r\n/g);
   // console.log(dataList);
@@ -227,9 +242,11 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
       if (
-        (rawText.trim().match(containRegExpI) &&
-          !rawText.trim().match(exceptRegExpI)) ||
-        rawText.trim() === ""
+        !rawText.trim().match(/WINDOW/g) ||
+        rawText.trim().match(/VISIBLE/g)
+        // (rawText.trim().match(containRegExpI) &&
+        //   !rawText.trim().match(exceptRegExpI)) ||
+        // rawText.trim() === ""
       ) {
         isNewDialog = true;
         return ans;
@@ -238,8 +255,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         dataList[index - 1] = dataList[index - 1].replace(/\[Cock\]/, "");
         ans[ans.length - 1] = ans[ans.length - 1].replace(/\[Cock\]/, "");
       }
-      ans.push(rawText + "[Cock]");
-      dataList[index] = dataList[index] + "[Cock]";
+      ans.push(rawText + "[temp]");
+      dataList[index] = dataList[index] + "[temp]";
       isNewDialog = false;
       return ans;
     }, [])
@@ -276,8 +293,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     false,
     true,
     false,
-    "ast",
-    "Eroit"
+    "AST2",
+    ""
   );
 
   let count = 0;
@@ -286,18 +303,22 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
     if (!AST.translation.isNoFilter) {
       if (
-        (rawText.trim().match(containRegExpI) &&
-          !rawText.trim().match(exceptRegExpI)) ||
-        rawText.trim() === ""
+        !rawText.trim().match(/WINDOW/g) ||
+        rawText.trim().match(/VISIBLE/g)
+        // (rawText.trim().match(containRegExpI) &&
+        //   !rawText.trim().match(exceptRegExpI)) ||
+        // rawText.trim() === ""
         // !rawText.match(containRegExpG2)
         // rawText.match(containTagNameRegExpI)
       )
         isDisable = false;
       if (isDisable) return ans;
       if (
-        (rawText.trim().match(containRegExpI) &&
-          !rawText.trim().match(exceptRegExpI)) ||
-        rawText.trim() === ""
+        !rawText.trim().match(/WINDOW/g) ||
+        rawText.trim().match(/VISIBLE/g)
+        // (rawText.trim().match(containRegExpI) &&
+        //   !rawText.trim().match(exceptRegExpI)) ||
+        // rawText.trim() === ""
         // !rawText.match(containTagNameRegExpI)
         // index === 0
         // !rawText.match(containRegExpG2)
@@ -311,7 +332,6 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       let temp = translatedTextList[count];
       temp = temp;
       ans.push(temp);
-      if (AST.translation.isArtemis) ans.push('					{"rt2"},');
     } else {
       ans.push("");
     }
@@ -322,7 +342,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // .filter((text) => text !== "" && text !== ",")
   translatedFileContent = translatedFileContent
     // .slice(0, translatedFileContent.length - 2)
-    .join("\n");
+    .join("\r\n");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding);
 }

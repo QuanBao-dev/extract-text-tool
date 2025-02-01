@@ -10,6 +10,7 @@ const { readFile, writeFile } = require("./handleFile");
 const { scn } = require("../setting.json");
 // const handleWordWrap = require("./handleWordWrap");
 const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
+const handleWordWrap = require("./handleWordWrap");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const converter = new AFHConvert();
 
@@ -102,7 +103,7 @@ async function translateScn(filePathInput) {
       return typeof text[1][0][4] === "string" ? text[1][0][4] : text[1][0][1];
       return text[1][0][1];
     });
-    console.log(contentList);
+    // console.log(contentList);
     // const contentList = texts.map((text) => {
     //   return text[1][0][1];
     // });
@@ -177,10 +178,46 @@ async function translateScn(filePathInput) {
               .replace(/;/g, "；")
               .replace(/\./g, "")
           : translatedTagNameList[j];
-      text[1][0][1] = await translatedContentList[count]
-        .replace(/[\{\}\[\]]/g, '"')
-        .replace(/\\n/g, " ")
-        .replace(/&/g, "＆");
+      // if (
+      //   typeof translatedTagNameList[j] === "string" &&
+      //   translatedTagNameList[j] !== "？？？"
+      // )
+      if (text[4]._meswinchange === "hscene") {
+        text[1][0][1] =
+          "%70; " +
+          handleWordWrap(
+            74,
+            await translatedContentList[count]
+              .replace(/[\{\}\[\]]/g, '"')
+              .replace(/\\n/g, " ")
+              .replace(/&/g, "＆")
+              .replace(/\r\n/g, " ")
+              .replace(/！/g, "!")
+              .replace(/？/g, "?"),
+            "\n"
+          );
+      } else {
+        text[1][0][1] = handleWordWrap(
+          49,
+          await translatedContentList[count]
+            .replace(/[\{\}\[\]]/g, '"')
+            .replace(/\\n/g, " ")
+            .replace(/&/g, "＆")
+            .replace(/\r\n/g, " ")
+            .replace(/！/g, "!")
+            .replace(/？/g, "?"),
+          "\r\n"
+        );
+      }
+      // else
+      //   text[2] = handleWordWrap(
+      //     50,
+      //     await translatedContentList[count]
+      //       .replace(/[\{\}\[\]]/g, '"')
+      //       .replace(/\\n/g, " ")
+      //       .replace(/&/g, "＆"),
+      //     "\r\n"
+      //   );
       count++;
 
       ///////////////////////spanish

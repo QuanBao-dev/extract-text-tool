@@ -9,7 +9,7 @@ module.exports = function handleWordWrap(
   limitBreak = 1000,
   priorityWordWrap
 ) {
-  if (!text) return text;
+  // if (!text) return text.replace(/\\n/g, " ");
   let count = 0;
   const rawMaxNumberOfChar = maxNumberOfChar;
   // console.log(text)
@@ -24,36 +24,38 @@ module.exports = function handleWordWrap(
   let prefix = text.replace(/\[plc\]/g, "").match(/^(	+)/g)
     ? text.match(/^(	+)/g)[0]
     : "";
-  let filteredText = text
-    .trim()
-    // .replace(
-    //   new RegExp(
-    //     lineBreakString
-    //       .replace("(", "\\(")
-    //       .replace(")", "\\\\)")
-    //       // .replace("\\", "\\\\")
-    //       .replace("[", "\\[")
-    //       .replace("]", "\\]"),
-    //     "g"
-    //   ),
-    //   " "
-    // )
-    // .replace(/é/g, "e")
-    // .replace(/ó/g, "o")
-    // .replace(/ +/g, " ")
-    // .replace(/\["text"\] = \{\[\[/g, "")
-    // .replace(/\]\]\},/g, "")
-    // .replace(/\.\.\./g," ...")
-    // .replace(/…/g, "... ")
-    // .replace(/？/g, "? ")
-    // .replace(/,( )?/g, "、")
-    .replace(/、/g, ", ")
-    .replace(/\.\.\.( )?/g, "... ")
-    .replace(/\\n/g, " ")
-    // .replace(/&/g, "＆")
-    // .replace(/"/, "")
-    // .replace(/。/g, ". ")
-    .replace(/’/g, "'");
+  let filteredText = text.trim()
+  // .replace(
+  //   new RegExp(
+  //     lineBreakString
+  //       .replace("(", "\\(")
+  //       .replace(")", "\\\\)")
+  //       // .replace("\\", "\\\\")
+  //       .replace("[", "\\[")
+  //       .replace("]", "\\]"),
+  //     "g"
+  //   ),
+  //   " "
+  // )
+  // .replace(/é/g, "e")
+  // .replace(/ó/g, "o")
+  // .replace(/ +/g, " ")
+  // .replace(/\["text"\] = \{\[\[/g, "")
+  // .replace(/\]\]\},/g, "")
+  // .replace(/^\.\.\./g, "…");
+  // .replace(/…/g, "... ")
+  // .replace(/？/g, "? ")
+  // .replace(/,( )?/g, "、")
+  // .replace(/、/g, ", ")
+  .replace(/\.\.\.( )?/g, "... ")
+  // .replace(/\\n/g, "")
+  // .replace(/&/g, "＆")
+  // .replace(/"/, "")
+  // .replace(/。/g, ". ")
+  // .replace(/’/g, "'")
+  // .replace(/'/g, "’");
+  // .replace(/[『』「」“”]/g, '"')
+  // .replace(/[‘’]/g, "'");
   // .replace(/”」/g, "」")
   // .replace(/\(h\)/g, "");
   // filteredText = replaceTagName(filteredText, [2], "g");
@@ -108,15 +110,17 @@ module.exports = function handleWordWrap(
     finalResult.split(lineBreakString).length < limitBreak &&
     limitBreak !== 1000
   ) {
-    finalResult += Array.from(
-      Array(limitBreak - finalResult.split(lineBreakString).length).keys()
-    )
-      .map(() => lineBreakString)
-      .join("");
+    finalResult +=
+      Array.from(
+        Array(limitBreak - finalResult.split(lineBreakString).length).keys()
+      )
+        .map(() => lineBreakString)
+        .join("") + "  ";
   }
 
   // return `\t\t["text"] = {[[` + finalResult + `]]},`;
-  return finalResult.trim();
+  return finalResult;
+  // .replace(/( )+$/g, "");
   // .replace(/\\k/g, "\\k\n");
   // .replace(/,( )?/g, "、")
   // .replace(/"、/g, "\",");

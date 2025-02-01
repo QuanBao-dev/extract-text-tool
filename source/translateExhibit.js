@@ -29,7 +29,7 @@ const handleWordWrap = require("./handleWordWrap");
       } while (start < listFileName.length);
       break;
     } catch (error) {
-      console.log("Error:", error.message);
+      console.log("Error:", error);
       await delay(10000);
       numberAsync--;
     }
@@ -121,7 +121,7 @@ async function translateFileExhibit(filePath) {
   const textList = fileContent
     .replace(/(Ｐゴシック)|(ＭＳ)|(ﾇﾏ)|(名無し)/gi, "")
     .match(
-      /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶァ-ヶぁ-んァ-ヾ〟！～？＆。●♡＝…：＄αβ％●＜＞（）♀♂♪（）─〇☆―〜゛×○『“”♥　、☆＆【『「（《》】』」）・\n]+/g
+      /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶァ-ヶぁ-んァ-ヾ〟！～？＆。●♡＝…：＄αβ％●＜＞（）♀♂♪（）─〇☆―〜゛×○『“”♥　、☆＆【『「（《》】』」）\n]+/g
     );
   // console.log(fileContent);
   // console.log(textList.join("\n"));
@@ -133,7 +133,7 @@ async function translateFileExhibit(filePath) {
       false,
       true,
       false,
-      "srp",
+      "anim",
       undefined,
       true
     );
@@ -147,22 +147,33 @@ async function translateFileExhibit(filePath) {
       //     .slice(14, 15)
       // );
       let temp = handleWordWrap(
-        63,
+        57,
         weirdToNormalChars(
           translatedTextList[index]
             .replace(/[–―]/gi, "-")
             .replace(/ç/gi, "c")
             .replace(/\?( )?/gi, "？")
+            .replace(/[【『「（《》】』」）]/g, "")
         ),
         "\n"
       );
-      if (temp.split("\n").length > 3)
-        temp = weirdToNormalChars(
-          translatedTextList[index]
-            .replace(/[–―]/gi, "-")
-            .replace(/ç/gi, "c")
-            .replace(/\?( )?/gi, "？")
-        );
+      if (temp.split("\n").length > 3) {
+        temp = temp
+          .replace(/[–―]/gi, "-")
+          .replace(/ç/gi, "c")
+          .replace(/\?( )?/gi, "？")
+          .replace(/[【『「（《》】』」）]/g, "")
+          .split("\n")
+          .slice(0, 3)
+          .join("\n");
+        // temp = weirdToNormalChars(
+        //   translatedTextList[index]
+        //     .replace(/[–―]/gi, "-")
+        //     .replace(/ç/gi, "c")
+        //     .replace(/\?( )?/gi, "？")
+        //     .replace(/[【『「（《》】』」）]/g, "")
+        // );
+      }
       ans = ans.replace(
         new RegExp(v, "i"),
         temp

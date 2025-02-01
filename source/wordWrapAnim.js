@@ -12,7 +12,8 @@ const converter = new AFHConvert();
   const rawTextList = Object.keys(json);
   // const rawTextList = json;
   const translationList = rawTextList.map((rawText, index) => {
-    // const wordWrappedText = handleWordWrap(44,json[rawText],"\\N");
+    // const wordWrappedText = handleWordWrap(46, json[rawText], "\\N");
+    // return wordWrappedText;
     // if(wordWrappedText.split("\\N").length > 3) return json[rawText].replace(/( )|(@@)/g,"\t");
     // if (rawText.includes("\\N")) return "";
     // return handleWordWrap(63, json[rawText], " ")
@@ -20,43 +21,37 @@ const converter = new AFHConvert();
     //   .replace(/[「“”」]/g, '"');
     // return handleWordWrap(55, json[rawText].replace(/(<unk>(")?)/g, " "), "\r\n");
     // console.log(rawText)
-    return handleWordWrap(
-      88,
-      // converter.toFullWidth(
-      json[rawText],
-      // )
-      // .replace(/♪/g,"")
-      // .replace(/@n/g, "")
-      // .replace(/@k/g, "Tomoya")
-      // .replace(/@Gn01/gi, "Kasahara")
-      // .replace(/(<unk>(")?)/g, " ").replace(/　/g," "),
-      "@b"
-    );
-    // .replace(/ /g, "\t");
-
-    // if(json[rawText] === "@@") return " "
     // return handleWordWrap(
-    //   87,
+    //   65,
+    //   // converter.toFullWidth(
     //   json[rawText],
-    //   "@n"
-    // )
-
+    //   // )
+    //   // .replace(/♪/g,"")
+    //   // .replace(/@n/g, "")
+    //   // .replace(/@k/g, "Tomoya")
+    //   // .replace(/@Gn01/gi, "Kasahara")
+    //   // .replace(/(<unk>(")?)/g, " ").replace(/　/g," "),
+    //   "\r\n"
+    // );
+    // .replace(/ /g, "\t");
+    // if(json[rawText] === "@@") return " "
+    // return handleWordWrap(86, json[rawText], "@n");
+    return handleWordWrap(59, json[rawText], "\r\n");
     // .replace(/＄０/g,"Katsuma").replace(/Aguya/g,"Kaguya").replace(/[“”]/g,"\"");
-    // if (json[rawText].split("\\N").length >= 4) {
-    //   return (
-    //     json[rawText] +
-    //     Array.from(Array(json[rawText].split("\\N").length - 1).keys())
-    //       .map(() => "\\N")
-    //       .join("")
-    //   );
-    // }
+    if (json[rawText].split("\\N").length >= 4) {
+      return (
+        json[rawText] +
+        Array.from(Array(json[rawText].split("\\N").length - 1).keys())
+          .map(() => "\\N")
+          .join("")
+      );
+    }
     // return json[rawText];
-
-    return handleWordWrap(
-      78,
-      json[rawText].replace(/(<unk>(")?)/g, " "),
-      "\r\n"
-    );
+    // return handleWordWrap(
+    //   78,
+    //   json[rawText].replace(/(<unk>(")?)/g, " "),
+    //   "\r\n"
+    // );
     // return json[rawText].replace(/(<unk>(")?)|(@b)/g, " ");
   });
   const ans = {};

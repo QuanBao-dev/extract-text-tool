@@ -212,8 +212,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         dataList[index - 1] = dataList[index - 1].replace(/\[Cock\]/, "");
         ans[ans.length - 1] = ans[ans.length - 1].replace(/\[Cock\]/, "");
       }
-      ans.push(rawText + "[Cock]");
-      dataList[index] = dataList[index] + "[Cock]";
+      ans.push(rawText + "[temp]");
+      dataList[index] = dataList[index] + "[temp]";
       isNewDialog = false;
       return ans;
     }, [])

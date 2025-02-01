@@ -45,38 +45,34 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   med.translation;
 // [一-龠]+|[ぁ-ゔ]+|[ァ-ヴー]+|[a-zA-Z0-9]+|[ａ-ｚＡ-Ｚ０-９]+|[々〆〤ヶ]+
 (async () => {
-  console.log(
-    await translateOfflineSugoiCt2LongList(
-      [
-        "「あっ、あ、んっ……そう……それ……それを、もっと……",
-        "　そのまま、ずっと……！」",
-        "桃子さんは、多分夫の和弥さんに開発されただろう性感帯と、",
-        "そこで気持ちよくなるやり方を、僕に教えてくれる。",
-        "だってこれは、喫茶店の業務の一部なんだからね。",
-        "そうだよね、桃子さん？",
-        "「ひくひくしてきた……ほら、おま○こが、濡れて……",
-        "　もうちょっとだよ桃子さん」",
-        "「んっ！　んっ、あっ、あっ…………んんっ！」",
-        "桃子さんの声が、どんどん艶を増してゆく。",
-        "ああ…………すごい。",
-        "昔から知ってる人が、別人のようになって……。",
-        "「そこ、それっ！　あっ、いいっ、それっ！　あっ、んっ、",
-        "　いいわっ、そこっ！」",
-        "あられもない快感の声を張り上げると共に、",
-        "膣口がきゅっと締まった。",
-        "内側がさらに濡れてきて、指がふやけそう。",
-        "動かすと、じゅぷじゅぷ、くちゅくちゅ、いやらしい音がする。",
-        "「はあん、んっ、あっ、あっ、上手、いいわ……それ、んっ、",
-        "　そこ、は、あ、ああ……あんっ、んっ、あっ！」",
-      ],
-      3,
-      false,
-      true,
-      false,
-      "med"
-    )
-  );
-  await delay(10000000);
+  // console.log(
+  //   await translateOfflineSugoiCt2LongList(
+  //     [
+  //       "「まずは、お食事ですね。準備をしてまいりますので",
+  //       "そう言って二人は、いったん部屋を出ていく。」",
+  //       "ボクは、部屋の中などを眺めつつ、待つことにした。",
+  //       "しばらくして、彼女たちが、食事の膳などを持って",
+  //       "戻ってくる。",
+  //       "徳利に、御猪口などもあった。",
+  //       "この家では、すべてが和風で統一されているようだ。",
+  //       "そして、彼女たちは着替えていて……。",
+  //       "親子揃って、ものすごい格好になっていた。",
+  //       "肌襦袢、というやつだろうか？",
+  //       "透け透けで、乳首まで丸わかりの状態だった。",
+  //       "おまけに丈は短くて、陰毛が見えている。",
+  //       "この服装に関しては、別にボクは指示していない。",
+  //       "じっと観察していると、栞里さんが不安そうな顔で",
+  //       "「あの、もしかして、この格好……ご主人様は、",
+  //       "　お気に召しませんでしたか？」",
+  //     ],
+  //     3,
+  //     false,
+  //     true,
+  //     false,
+  //     "med"
+  //   )
+  // );
+  // await delay(10000000);
 
   const listFileName = fs.readdirSync(med.translation.folderPath);
   let start = 0;
@@ -125,38 +121,38 @@ async function translateFileMed(filePath, isSelect, isTagName, encoding) {
   // console.log(json);
   const rawTexts = Object.keys(json);
   let saveIndex = null;
-  const handledTexts = rawTexts.reduce((ans, curr, index) => {
-    // if (curr.match(/^　/g)) {
-    //   if (saveIndex === null) saveIndex = index;
-    //   ans[saveIndex - 1] += curr;
-    //   ans.push(" ");
-    //   return ans;
-    // } else {
-    //   saveIndex = null;
-    // }
-    if (!curr.match(/[a-zA-Z_]/g)) {
-      ans.push(curr);
-      return ans;
-    }
-    return ans;
-  }, []);
-  const translationList = await translateOfflineSugoiCt2LongList(
-    handledTexts,
-    3,
-    false,
-    true,
-    false,
-    "med"
-  );
+  // const handledTexts = rawTexts.reduce((ans, curr, index) => {
+  //   // if (curr.match(/^　/g)) {
+  //   //   if (saveIndex === null) saveIndex = index;
+  //   //   ans[saveIndex - 1] += curr;
+  //   //   ans.push(" ");
+  //   //   return ans;
+  //   // } else {
+  //   //   saveIndex = null;
+  //   // }
+  //   if (!curr.match(/[a-zA-Z_]/g)) {
+  //     ans.push(curr);
+  //     return ans;
+  //   }
+  //   return ans;
+  // }, []);
+  const translationList = (
+    await translateOfflineSugoiCt2LongList(
+      rawTexts,
+      3,
+      false,
+      true,
+      false,
+      "med"
+    )
+  ).map((v) => (v === "" ? " " : v));
+
   let count = 0;
   const ans = rawTexts.reduce((ans, curr, index) => {
-    if (curr.match(/[a-zA-Z_]/g)) {
-      ans[curr] = "";
-      return ans;
-    }
     ans[curr] = translationList[count];
     count++;
     return ans;
   }, {});
   await writeFile(filePath, JSON.stringify(ans, null, 2), encoding);
 }
+// [一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟]"

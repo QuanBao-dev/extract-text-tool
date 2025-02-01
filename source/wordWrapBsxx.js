@@ -30,7 +30,8 @@ async function wordWrapBsxx(filePath) {
     // if (text.match(/^「/g)) text += "」";
     return handleWordWrap(bsxx.wordWrap.maxCharPerLines, text, "\\n", 1000)
       .replace(/[「]/g, "「 ")
-      .replace(/[『]/g, "『 ");
+      .replace(/[『]/g, "『 ")
+      .replace(/――/g, "―― ");
   });
   //   65,
   //   "\\n"

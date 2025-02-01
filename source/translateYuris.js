@@ -72,10 +72,10 @@ async function translateFileYuris(filePath) {
     });
     const translatedTextList = await translateOfflineSugoiCt2LongList(
       rawTextList,
-      2,
+      3,
       false,
       true,
-      true,
+      false,
       "yuris2"
     );
     // console.log(rawTextList)

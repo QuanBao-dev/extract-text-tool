@@ -1,4 +1,4 @@
-const { readFile, writeFile } = require("./handleFile");
+const { readFile, writeFile, saveBackup } = require("./handleFile");
 const fs = require("fs");
 const {
   translateOfflineSugoiCt2LongList,
@@ -20,12 +20,12 @@ const converter = new AFHConvert();
   //       // "雫のいら立ったタイミングを見計らったように現れたヴ[r]ォイドに、熱い正義の炎を[ruby text=ほとばし]迸らせる。",
   //       // "【浩輔】（仕事も終わったばっかだってのに、みんな元気だよなあ……）",
   //       // "「夜舟流着地術・参式――“<Rはごろもひとえ>羽衣一重</R>”」",
-  //       "%C77FF「『おはようございます、兄さん。\r\n　　なんでもＣＦＣの会合があるとか。おめでとうございます』」\r\n"
+  //       "リビングに顔を出した≪美桜／姉さん≫が、さっと室内を見回す。その表情をみるかぎり…どうやら、一応合格らしい。",
   //     ],
   //     2,
   //     false,
   //     true,
-  //     true,
+  //     false,
   //     "cst"
   //   )
   // );
@@ -80,29 +80,39 @@ async function translateFileCst(filePath) {
   // ).map((v) => (v ? v : v));
   // translatedMessageList = messageList;
   try {
+    // translatedMessageList = await translateSelectCenterTextList(
+    //   messageList,
+    //   1,
+    //   false,
+    //   undefined,
+    //   "srp"
+    // );
     translatedMessageList = (
       await translateOfflineSugoiCt2LongList(
-        messageList,
-        // .map((message) => {
-        //   if (!message) return message;
-        //   const specialList = message.match(
-        //     /[≪\[]][0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+[≫\]]/g
-        //   );
-        //   if (specialList)
-        //     for (let i = 0; i < specialList.length; i++) {
-        //       const special = specialList[i].split(/[／/]/)[0];
-        //       message = message.replace(
-        //         specialList[i],
-        //         special.replace(/[≪\[]/, "")
-        //       );
-        //     }
-        //   return message;
-        // })
+        messageList
+        .map((message) => {
+          if (!message) return message;
+          const specialList = message.match(
+            /[≪\[][0-9一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆、　『「！」』“”。●・♡＝…：＄αβ%％●＜＞&A-Z←→↓↑\/／]+[≫\]]/g
+          );
+          if (specialList){
+            console.log({specialList});
+            for (let i = 0; i < specialList.length; i++) {
+              const special = specialList[i].split(/[／/]/)[0];
+              message = message.replace(
+                specialList[i],
+                special.replace(/[≪\[]/, "")
+              );
+            }
+          }
+          return message;
+        }),
         3,
         false,
         true,
         false,
-        "cst-special"
+        "cst",
+        ""
       )
     ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
     // translatedMessageList = messageList
@@ -130,7 +140,8 @@ async function translateFileCst(filePath) {
         false,
         true,
         true,
-        "cst-special"
+        "cst",
+        ""
       )
     ).map((v) => (v ? v.replace(/\(/g, "（").replace(/\)/g, "）") : v));
   }
@@ -151,7 +162,9 @@ async function translateFileCst(filePath) {
     const object = {};
     if (name) object.name = name;
     if (names) object.names = names;
-    if (translatedMessage !== undefined) object.message = translatedMessage;
+    // object.originalText = messageList[key];
+    if (translatedMessage !== undefined)
+      object.message = translatedMessage.replace(/@/g, "＠");
     result.push(object);
     return result;
   }, []);
@@ -178,4 +191,5 @@ async function translateFileCst(filePath) {
   //   console.log(`${i + 1}/${dataList.length}`);
   // }
   await writeFile(filePath, JSON.stringify(ans, null, 2), "utf8");
+  // await saveBackup();
 }

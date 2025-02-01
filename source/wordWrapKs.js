@@ -39,7 +39,7 @@ const containRegExpI = new RegExp(
 })();
 
 async function wordWrapKs(filePath) {
-  const fileContent = await readFile(filePath, "utf8");
+  const fileContent = await readFile(filePath, "utf16");
   console.log(filePath);
 
   // await writeFile(filePath, fileContent, "shiftjis");
@@ -57,15 +57,15 @@ async function wordWrapKs(filePath) {
   // );
   // return await writeFile(filePath, fileContent2, "utf8");
   // return await writeFile(filePath, handleWordWrapArtemis(fileContent), "utf8");
-  return await writeFile(
-    filePath,
-    handleWordWrapLilith(fileContent),
-    "utf8",
-    true
-  );
+  // return await writeFile(
+  //   filePath,
+  //   handleWordWrapLilith(fileContent),
+  //   "utf8",
+  //   true
+  // );
   // return await writeFile(filePath, handleWordWrapHibikiWork(fileContent), "shiftjis");
   // return await writeFile(filePath, handleWordWrapArtemis2(fileContent), "utf8");
-  // return await writeFile(filePath, handleWordWrapQlieVN(fileContent), "shiftjis");
+  return await writeFile(filePath, handleWordWrapQlieVN(fileContent), "utf16");
   // await writeFile(filePath, handleWordWrapUnityDsm(fileContent), "utf8");
   // return await delay(10000000)
   // return await writeFile(filePath, handleWordWrapShina(fileContent), "shiftjis");

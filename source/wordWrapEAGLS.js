@@ -194,7 +194,7 @@ async function translateFileKs(filePath, encoding) {
     handleWordWrapEAGLS(fileContent),
     "shiftjis"
   );
-  console.time  (filePath);
+  console.time(filePath);
   // const dumpFileContent = await readFile(
   //   filePath.replace(/csv/g, "txt"),
   //   encoding
@@ -228,8 +228,8 @@ async function translateFileKs(filePath, encoding) {
         dataList[index - 1] = dataList[index - 1].replace(/\[Cock\]/, "");
         ans[ans.length - 1] = ans[ans.length - 1].replace(/\[Cock\]/, "");
       }
-      ans.push(rawText + "[Cock]");
-      dataList[index] = dataList[index] + "[Cock]";
+      ans.push(rawText + "[temp]");
+      dataList[index] = dataList[index] + "[temp]";
       isNewDialog = false;
       return ans;
     }, [])
@@ -258,27 +258,30 @@ async function translateFileKs(filePath, encoding) {
   //   return text;
   // });
   /////Word wrap for eagls
-  const translatedTextList = rawTextList.map((text) => {
-    const splittedTexts = text.split('"');
-    if(!splittedTexts[1]) return text;
-    splittedTexts[1] = handleWordWrap(
-      EAGLS.wordWrap.maxCharPerLines,
-      splittedTexts[1],
-      "(e)"
-    )
-    // .replace(/^((】 )?）)/g, "");
+  // const translatedTextList = rawTextList.map((text) => {
+  //   const splittedTexts = text.split('"');
+  //   if (!splittedTexts[1]) return text;
+  //   splittedTexts[1] = handleWordWrap(
+  //     EAGLS.wordWrap.maxCharPerLines,
+  //     splittedTexts[1],
+  //     "(e)"
+  //   );
+  //   // .replace(/^((】 )?）)/g, "");
 
-    // if (splittedTexts[1].match(/】（/g)) {
-    //   splittedTexts[1] += "）";
-    // }
-    return splittedTexts.join('"').replace(/"[\.\?!」』]"/g,"\"").replace(/""$/g,"\"");
-    // return (
-    //   splittedTexts.slice(0, 2).join('"') +
-    //   '"' +
-    //   "\r\n" +
-    //   splittedTexts.slice(2).join('"')
-    // );
-  });
+  //   // if (splittedTexts[1].match(/】（/g)) {
+  //   //   splittedTexts[1] += "）";
+  //   // }
+  //   return splittedTexts
+  //     .join('"')
+  //     .replace(/"[\.\?!」』]"/g, '"')
+  //     .replace(/""$/g, '"');
+  //   // return (
+  //   //   splittedTexts.slice(0, 2).join('"') +
+  //   //   '"' +
+  //   //   "\r\n" +
+  //   //   splittedTexts.slice(2).join('"')
+  //   // );
+  // });
   // const translatedTextList = await translateOfflineSugoiCt2LongList(
   //   rawTextList,
   //   3,
@@ -294,26 +297,26 @@ async function translateFileKs(filePath, encoding) {
   // });
   //// cutting dialogue
   // console.log(rawTextList)
-  // const translatedTextList = rawTextList
-  // .map((text)=> text.replace(/, /g,"、"))
-  // // .map((text) => {
-  // //   const splittedTexts = text.split('"');
-  // //   if (splittedTexts[2] === "") {
-  // //     return splittedTexts.slice(0, 2).join('"') + '"';
-  // //   }
-  // //   return (
-  // //     splittedTexts.slice(0, 2).join('"') +
-  // //     '"' +
-  // //     "\r\n" +
-  // //     splittedTexts.slice(2).join('"')
-  // //   );
-  // // });
-  // .map(
-  //   (text) =>
-  //   // text.replace(/"52\(/g,"\"\r\n52(")
-  //   // text.replace(/\)#/g,")\r\n#").replace(/\)&/g, ")\r\n&") //(Please Fixed rawText)
-  //   "&" + text.split("&").slice(1).join("\r\n&").split("#").join("\r\n#")
-  // );
+  const translatedTextList = rawTextList
+    .map((text) => text.replace(/, /g, "、"))
+    // .map((text) => {
+    //   const splittedTexts = text.split('"');
+    //   if (splittedTexts[2] === "") {
+    //     return splittedTexts.slice(0, 2).join('"') + '"';
+    //   }
+    //   return (
+    //     splittedTexts.slice(0, 2).join('"') +
+    //     '"' +
+    //     "\r\n" +
+    //     splittedTexts.slice(2).join('"')
+    //   );
+    // });
+    .map(
+      (text) =>
+        // text.replace(/"52\(/g, '"\r\n52(')
+        text.replace(/\)#/g, ")\r\n#").replace(/\)&/g, ")\r\n&") //(Please Fixed rawText)
+      // "&" + text.split("&").slice(1).join("\r\n&").split("#").join("\r\n#")
+    );
   // console.log(rawTextList)
   // let translatedTextList = await translateSelectCenterTextList(
   //   rawTextList,

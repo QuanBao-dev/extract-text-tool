@@ -9,6 +9,7 @@ const { artemisAster } = require("../setting.json");
 const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
+const handleWordWrap = require("./handleWordWrap");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
   artemisAster.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
@@ -239,7 +240,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   filePath.replace(/csv/g, "txt"),
   //   encoding
   // );
-  let dataList = fileContent.split(/\n/g);
+  let dataList = fileContent.split(/\r\n/g);
   // let rawTranslatedDataList = translatedRawFileContent.split(/\r\n/g);
   // let dumpList = dumpFileContent.split(/\r\n/g);
   // console.log(dataList);
@@ -250,7 +251,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // });
   // dataList = [...temp2];
   let temp = "";
-  let isSelectAster = false;
+  let isScript = false;
   console.time(filePath);
   if (isSelect) {
     const translatedFileContent = (
@@ -261,7 +262,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         artemisAster,
         "srp"
       )
-    ).join("\n");
+    ).join("\r\n");
     return await writeFile(filePath, translatedFileContent, encoding);
   }
   let isNewDialog = true;
@@ -271,22 +272,23 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
       if (!artemisAster.translation.isNoFilter) {
-        if (rawText === "		},") {
-          isSelectAster = false;
+        if (rawText.match(/(endscript)|(\.case 1)|(},)/g)) {
+          isScript = false;
         }
         if (
-          (rawText.trim().match(containRegExpI) &&
-            !rawText.trim().match(exceptRegExpI)) ||
-          rawText === "" ||
-          isSelectAster
+          // (rawText.trim().match(containRegExpI) &&
+          //   !rawText.trim().match(exceptRegExpI)) ||
+          // rawText === "" ||
+          // isScript
+          !rawText.trim().match(/^\["text"\]/g) 
           // index === 0
           // !rawText.match(containRegExpG2)
           // rawText.match(containTagNameRegExpI)
           // !rawText.match(containTagNameRegExpI)
           // false
         ) {
-          if (rawText.includes('"select"')) {
-            // isSelectAster = true;
+          if (rawText.match(/(iscript)|(^\.select)|(select = {)/g)) {
+            isScript = true;
           }
           isNewDialog = true;
           return ans;
@@ -296,8 +298,8 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         dataList[index - 1] = dataList[index - 1].replace(/\[Cock\]/, "");
         ans[ans.length - 1] = ans[ans.length - 1].replace(/\[Cock\]/, "");
       }
-      ans.push(rawText + "[Cock]");
-      dataList[index] = dataList[index] + "[Cock]";
+      ans.push(rawText + "[temp]");
+      dataList[index] = dataList[index] + "[temp]";
       isNewDialog = false;
       return ans;
     }, [])
@@ -316,29 +318,29 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           ans.push(
             temp
               .replace(/\[Cock\]/g, "")
-              .replace(/\[r\]/g, "")
-              .replace(/／/g, "")
-              .replace(/,{"rt2"},/g, "")
-              .replace(/{"exfont[a-zA-Z0-9 ,"=}]+/g, "")
-              .replace(/{"txruby", text=/g, "")
-              .replace(/{"txruby"}/g, "")
-              .replace(/}/g, "")
-              .replace(/,/g, "")
+              // .replace(/\[r\]/g, "")
+              // .replace(/／/g, "")
+              .replace(/{"rt2"},/g, "")
+              // .replace(/{"exfont[a-zA-Z0-9 ,"=}]+/g, "")
+              // .replace(/{"txruby", text=/g, "")
+              // .replace(/{"txruby"}/g, "")
+              // .replace(/}/g, "")
               // .replace(/,/g, "")
-              // .replace(/"/g, "")
-              .replace(/^"/g, "")
-              .replace(/"$/g, "")
-              .replace(/・/g, "")
-              .replace(/」( +)?「/g, "@@@")
+              // // .replace(/,/g, "")
+              // // .replace(/"/g, "")
+              // .replace(/^"/g, "")
+              // .replace(/"$/g, "")
+              // .replace(/・/g, "")
+              // .replace(/」( +)?「/g, "@@@")
               .trim()
           );
         } else {
           ans.push(
             temp
-              .replace(/\[Cock\]/g, "")
-              .replace(/\[r\]/g, "")
-              .replace(/／/g, "")
-              .replace(/,{"rt2"},/g, "")
+              // .replace(/\[Cock\]/g, "")
+              // .replace(/\[r\]/g, "")
+              // .replace(/／/g, "")
+              // .replace(/,{"rt2"},/g, "")
               .trim()
           );
         }
@@ -348,49 +350,53 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       }
       return ans;
     }, []);
+    // console.log(rawTextList)
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
     3,
     false,
     true,
     false,
-    "srp",
+    "ast4",
     ""
   );
+  // const translatedTextList = rawTextList;
   let count = 0;
   let isDisable = false;
   // return await writeFile(filePath, translatedTextList.join("\n")+"\n", "utf8");
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
     if (!artemisAster.translation.isNoFilter) {
-      if (rawText === "		},") {
-        isSelectAster = false;
+      if (rawText.match(/(endscript)|(\.case 1)|(},)/g)) {
+        isScript = false;
       }
+      // if (
+      //   // (rawText.trim().match(containRegExpI) &&
+      //   //   !rawText.trim().match(exceptRegExpI)) ||
+      //   // rawText === "" ||
+      //   // isScript
+      //   !rawText.trim().match(/^\["text"\]/g) 
+      //   // !rawText.match(containRegExpG2)
+      //   // rawText.match(containTagNameRegExpI)
+      // ) {
+      //   if (rawText.match(/(iscript)|(^\.select)|(select = {)/g)) {
+      //     isScript = true;
+      //   }
+      //   isDisable = false;
+      // }
+      // if (isDisable) return ans;
       if (
-        (rawText.trim().match(containRegExpI) &&
-          !rawText.trim().match(exceptRegExpI)) ||
-        rawText === "" ||
-        isSelectAster
-        // !rawText.match(containRegExpG2)
-        // rawText.match(containTagNameRegExpI)
-      ) {
-        if (rawText.includes('"select"')) {
-          // isSelectAster = true;
-        }
-        isDisable = false;
-      }
-      if (isDisable) return ans;
-      if (
-        (rawText.trim().match(containRegExpI) &&
-          !rawText.trim().match(exceptRegExpI)) ||
-        rawText === "" ||
-        isSelectAster
+        // (rawText.trim().match(containRegExpI) &&
+        //   !rawText.trim().match(exceptRegExpI)) ||
+        // rawText === "" ||
+        // isScript
+        !rawText.trim().match(/^\["text"\]/g) 
         // !rawText.match(containTagNameRegExpI)
         // index === 0
         // !rawText.match(containRegExpG2)
         // rawText.match(containTagNameRegExpI)
       ) {
-        if (rawText.includes('"select"')) {
-          // isSelectAster = true;
+        if (rawText.match(/(iscript)|(^\.select)|(select = {)/g)) {
+          isScript = true;
         }
         ans.push(rawText);
         return ans;
@@ -411,7 +417,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           //   Math.floor(temp.length / listCount[count]) < 41
           //     ? Math.floor(temp.length / listCount[count])
           //     : 46,
-          //   temp,
+          temp
           //   "\r\n",
           //   listCount[count]
           // )
@@ -421,7 +427,11 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           // !artemisAster.translation.isWordWrap
           //   ? ('					"' + temp + '",').replace(/@+/g, "」\\n「")
           //   : "					" + temp + ","
-          `				{"exfont", size="f2"},\n				"${temp}",\n				{"exfont"},`
+          // `{"exfont", size="f2"},\r\n${handleWordWrap(
+          //   1000,
+          //   temp,
+          //   "\\n"
+          // )}\r\n{"exfont"},`
           // .replace(/,( )?/g, "、")
           // .replace(/、/g, ", ")
           // .replace(/[◆✩♥♡●♪]/g, "")
@@ -441,7 +451,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // .filter((text) => text !== "" && text !== ",")
   translatedFileContent = translatedFileContent
     // .slice(0, translatedFileContent.length - 2)
-    .join("\n");
+    .join("\r\n");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding);
 }
