@@ -464,7 +464,9 @@ async function translateFileSec5(filePath, isSelect, isTagName, encoding) {
   // .filter((text) => text !== "" && text !== ",")
   translatedFileContent = translatedFileContent
     // .slice(0, translatedFileContent.length - 2)
-    .join("\r\n");
+    .join("\r\n")
+    .replace(/★Chosen★/g, "★选项★")
+    .replace(/★Mistake★/g, "★标题★");
   console.timeEnd(filePath);
   await writeFile(filePath, translatedFileContent, encoding, false, false);
 }

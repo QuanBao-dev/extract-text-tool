@@ -45,6 +45,8 @@ BGI
 BGI_*
 AST
 AST_*
+AST*
+AST*
 whale
 whale_*
 EAGLS
@@ -84,6 +86,7 @@ Seen
 Seen_*
 cacheTranslation.json
 cacheTranslation2.json
+cacheTranslationAI.json
 med
 med*
 sec5
@@ -98,3 +101,6 @@ catsystem
 catsystem*
 so5
 so5*
+request.rest
+history.json
+prompt.txt

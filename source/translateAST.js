@@ -242,11 +242,11 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
       if (
-        !rawText.trim().match(/WINDOW/g) ||
-        rawText.trim().match(/VISIBLE/g)
-        // (rawText.trim().match(containRegExpI) &&
-        //   !rawText.trim().match(exceptRegExpI)) ||
-        // rawText.trim() === ""
+        // !rawText.trim().match(/WINDOW/g) ||
+        // rawText.trim().match(/VISIBLE/g)
+        (rawText.trim().match(containRegExpI) &&
+          !rawText.trim().match(exceptRegExpI)) ||
+        rawText.trim() === ""
       ) {
         isNewDialog = true;
         return ans;
@@ -281,7 +281,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       }
       return ans;
     }, []);
-  // console.log(rawTextList);
+  console.log(rawTextList);
   let translatedTextList = await translateOfflineSugoiCt2LongList(
     // [...rawTextList].map((text) => {
     //   return text.split(",")[0].includes("pylm")
@@ -294,7 +294,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     true,
     false,
     "AST2",
-    ""
+    "Eroit"
   );
 
   let count = 0;
@@ -303,22 +303,22 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let translatedFileContent = dataList.reduce((ans, rawText, index) => {
     if (!AST.translation.isNoFilter) {
       if (
-        !rawText.trim().match(/WINDOW/g) ||
-        rawText.trim().match(/VISIBLE/g)
-        // (rawText.trim().match(containRegExpI) &&
-        //   !rawText.trim().match(exceptRegExpI)) ||
-        // rawText.trim() === ""
+        // !rawText.trim().match(/WINDOW/g) ||
+        // rawText.trim().match(/VISIBLE/g)
+        (rawText.trim().match(containRegExpI) &&
+          !rawText.trim().match(exceptRegExpI)) ||
+        rawText.trim() === ""
         // !rawText.match(containRegExpG2)
         // rawText.match(containTagNameRegExpI)
       )
         isDisable = false;
       if (isDisable) return ans;
       if (
-        !rawText.trim().match(/WINDOW/g) ||
-        rawText.trim().match(/VISIBLE/g)
-        // (rawText.trim().match(containRegExpI) &&
-        //   !rawText.trim().match(exceptRegExpI)) ||
-        // rawText.trim() === ""
+        // !rawText.trim().match(/WINDOW/g) ||
+        // rawText.trim().match(/VISIBLE/g)
+        (rawText.trim().match(containRegExpI) &&
+          !rawText.trim().match(exceptRegExpI)) ||
+        rawText.trim() === ""
         // !rawText.match(containTagNameRegExpI)
         // index === 0
         // !rawText.match(containRegExpG2)

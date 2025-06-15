@@ -94,12 +94,12 @@ async function translateFileBsxx(filePath) {
   //   .map((v) => v.split("／")[0]);
   const list = contentText.reduce((ans, curr) => {
     if (
-      temp.trim().replace(/[☆★]/g, "") !== curr.trim().replace(/[☆★]/g, "") &&
+      temp !== curr &&
       curr !== ""
       // &&
       // !curr.match(/\/\//g)
     ) {
-      ans.push(curr.replace(/\\n/g, " ").replace(//g, "♥"));
+      ans.push(curr.replace(/\\n/g, " "));
     }
     temp = curr;
     return ans;
@@ -111,9 +111,10 @@ async function translateFileBsxx(filePath) {
     false,
     true,
     false,
-    "bsxx",
+    "willadv3",
     ""
   );
+  // const narrowedContentText = list;
   const translatedContentText = narrowedContentText.reduce(
     (ans, curr, index) => {
       ans.push(list[index]);
@@ -133,6 +134,7 @@ async function translateFileBsxx(filePath) {
         //   "\\n"
         // ) + ((rawTextList[index] || "").match(/(\\n)$/g) ? "\\n" : "")
         curr
+        // .replace(/「/g, "「 ").replace(/『/g, "『 ")
       );
       ans.push("");
       return ans;
@@ -154,14 +156,14 @@ async function translateFileBsxx(filePath) {
 }
 
 function extractThePrefix(text) {
-  // const matchedText = text.match(/[●○].+[○●]/g);
-  const matchedText = text.match(/[☆★○●◆◇][a-zA-Z0-9\|]+[☆★○●◆◇](\\b)?( )?/g);
+  const matchedText = text.match(/[◇◆].+[◇◆]/g);
+  // const matchedText = text.match(/[☆★○●◆◇][a-zA-Z0-9\|]+[☆★○●◆◇](\\b)?( )?/g);
   if (!matchedText) return "";
   return matchedText[0];
 }
 
 function removeThePrefix(text) {
-  // return text.replace(/[●○].+[○●]/g, "");
-  return text.replace(/[☆★◆◇○●][a-zA-Z0-9\|]+[☆★○●◆◇](\\b)?( )?/g, "");
+  return text.replace(/[◆◇].+[◆◇]/g, "");
+  // return text.replace(/[☆★◆◇○●][a-zA-Z0-9\|]+[☆★○●◆◇](\\b)?( )?/g, "");
 }
 // ○○○○

@@ -100,7 +100,7 @@ async function translateScn(filePathInput) {
     let contentList = texts.map((text, index) => {
       // return typeof text[7] === "string" ? text[7] : text[2];
       // return typeof text[8] === "string" ? text[8] : text[2];
-      return typeof text[1][0][4] === "string" ? text[1][0][4] : text[1][0][1];
+      // return typeof text[1][0][4] === "string" ? text[1][0][4] : text[1][0][1];
       return text[1][0][1];
     });
     // console.log(contentList);
@@ -137,7 +137,9 @@ async function translateScn(filePathInput) {
 
     let [translatedContentList, translatedTagNameList] = await Promise.all([
       translateOfflineSugoiCt2LongList(
-        contentList.map((v) => v.replace(/\\n/g, "")),
+        contentList.map((v) =>
+          v.replace(/\\n/g, " ").replace(/、/g, ", ").replace(/＊/g, "*")
+        ),
         3,
         false,
         true,
@@ -170,75 +172,95 @@ async function translateScn(filePathInput) {
       const text = texts[j];
       // const rawText =
       //   typeof rawTexts[j][7] === "string" ? rawTexts[j][7] : rawTexts[j][2];
-      text[1][0][0] =
-        typeof translatedTagNameList[j] === "string"
-          ? translatedTagNameList[j]
-              .replace(/&/g, "＆")
-              .replace(/%/g, "％")
-              .replace(/;/g, "；")
-              .replace(/\./g, "")
-          : translatedTagNameList[j];
-      // if (
-      //   typeof translatedTagNameList[j] === "string" &&
-      //   translatedTagNameList[j] !== "？？？"
-      // )
-      if (text[4]._meswinchange === "hscene") {
-        text[1][0][1] =
-          "%70; " +
-          handleWordWrap(
-            74,
-            await translatedContentList[count]
-              .replace(/[\{\}\[\]]/g, '"')
-              .replace(/\\n/g, " ")
-              .replace(/&/g, "＆")
-              .replace(/\r\n/g, " ")
-              .replace(/！/g, "!")
-              .replace(/？/g, "?"),
-            "\n"
-          );
-      } else {
-        text[1][0][1] = handleWordWrap(
-          49,
-          await translatedContentList[count]
-            .replace(/[\{\}\[\]]/g, '"')
-            .replace(/\\n/g, " ")
-            .replace(/&/g, "＆")
-            .replace(/\r\n/g, " ")
-            .replace(/！/g, "!")
-            .replace(/？/g, "?"),
-          "\r\n"
-        );
-      }
-      // else
-      //   text[2] = handleWordWrap(
-      //     50,
+      // text[1][0][0] =
+      //   typeof translatedTagNameList[j] === "string"
+      //     ? translatedTagNameList[j]
+      //         .replace(/&/g, "＆")
+      //         .replace(/%/g, "％")
+      //         .replace(/;/g, "；")
+      //         .replace(/\./g, "")
+      //         .replace(/[“”【『（《「》】』）」]/g, "")
+      //         .trim()
+      //     : translatedTagNameList[j];
+      // // if (
+      // //   typeof translatedTagNameList[j] === "string" &&
+      // //   translatedTagNameList[j] !== "？？？"
+      // // )
+
+      // text[1][0][1] =
+      //   // "%70; " +
+      //   handleWordWrap(
+      //     48,
       //     await translatedContentList[count]
       //       .replace(/[\{\}\[\]]/g, '"')
       //       .replace(/\\n/g, " ")
-      //       .replace(/&/g, "＆"),
-      //     "\r\n"
-      //   );
-      count++;
+      //       .replace(/&/g, "＆")
+      //       .replace(/\r\n/g, " ")
+      //       .replace(/！/g, "!")
+      //       .replace(/？/g, "?"),
+      //     "\\n"
+      //   ).trim();
+      // // if (text[4]._meswinchange === "hscene") {
+      // //   text[1] =
+      // //     "%70; " +
+      // //     handleWordWrap(
+      // //       74,
+      // //       await translatedContentList[count]
+      // //         .replace(/[\{\}\[\]]/g, '"')
+      // //         .replace(/\\n/g, " ")
+      // //         .replace(/&/g, "＆")
+      // //         .replace(/\r\n/g, " ")
+      // //         .replace(/！/g, "!")
+      // //         .replace(/？/g, "?"),
+      // //       "\n"
+      // //     );
+      // // } else {
+      // //   text[1] = handleWordWrap(
+      // //     49,
+      // //     await translatedContentList[count]
+      // //       .replace(/[\{\}\[\]]/g, '"')
+      // //       .replace(/\\n/g, " ")
+      // //       .replace(/&/g, "＆")
+      // //       .replace(/\r\n/g, " ")
+      // //       .replace(/！/g, "!")
+      // //       .replace(/？/g, "?"),
+      // //     "\r\n"
+      // //   );
+      // // }
+      // // else
+      // //   text[2] = handleWordWrap(
+      // //     50,
+      // //     await translatedContentList[count]
+      // //       .replace(/[\{\}\[\]]/g, '"')
+      // //       .replace(/\\n/g, " ")
+      // //       .replace(/&/g, "＆"),
+      // //     "\r\n"
+      // //   );
+      // count++;
 
       ///////////////////////spanish
-      // console.log(text[1][0][1]);
-      // const rawText = text[1][0][1];
-      // text[1][0][1] = await translateJapaneseToEng(
-      //   translatedContentList[count]
-      //     .replace(/\\n/g, " ")
-      //     .replace(/「/g, "")
-      //     .replace(/」/g, ""),
-      //   false,
-      //   3,
-      //   10
-      // );
-      // if (rawText.match(/「/g) && rawText.match(/」/g)) {
-      //   text[1][0][1] = "「" + text[1][0][1] + "」";
-      // }
-      // console.log(text[1][0][1]);
-      // console.log("-----------");
-      // count++;
-      ////////////////////////
+      console.log(translatedContentList[count]);
+      const rawText = text[1][0][1];
+      text[1][0][1] = handleWordWrap(
+        48,
+        await translateJapaneseToEng(
+          translatedContentList[count]
+            .replace(/\\n/g, " ")
+            .replace(/「/g, "")
+            .replace(/」/g, ""),
+          false,
+          3,
+          10
+        ),
+        "\\n"
+      );
+      if (rawText.match(/「/g) && rawText.match(/」/g)) {
+        text[1][0][1] = "「" + text[1][0][1] + "」";
+      }
+      console.log(text[1][0][1]);
+      console.log("-----------");
+      count++;
+      //////////////////////
       // if (rawText.includes("城にぃ")) {
       //   text[2] = translatedContentList[count]
       //     .replace(/[\{\}\[\]]/g, '"')

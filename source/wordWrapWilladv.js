@@ -84,7 +84,7 @@ async function translateFileBsxx(filePath) {
     false,
     true,
     false,
-    "willadv",
+    "tblscr",
     "Eroit"
   );
   const translatedContentText = narrowedContentText.reduce(

@@ -20,6 +20,8 @@ const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
 const handleWordWrap = require("./handleWordWrap");
+const axios = require("axios");
+const { translateAIModelList, extractName } = require("./translateAIModel");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
   pinpoint.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
@@ -77,7 +79,39 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //     false
   //   )
   // );
-  // await delay(100000);
+  // console.log(
+  //   await translateAIModelList(
+  //     [
+  //       "今朝のモーニングティーは、爽やかな香りとしっかりとした味わいのヌワラエリヤ。",
+  //       "それをやや薄めに入れたものを、ベッドから出てテーブルに着くお嬢様の前に差し出す。",
+  //       "寝起きで空っぽの胃には、あまり濃いお茶は良くないから、ちょっとした気遣いなのだが……。",
+  //     ],
+  //     "hermes-3-llama-3.2-3b"
+  //   )
+  // );
+  // const prompt = await readFile("./prompt.txt", "utf8");
+  // console.log(
+  //   (
+  //     await axios({
+  //       url: "http://localhost:1234/v1/chat/completions",
+  //       method: "post",
+  //       data: JSON.stringify({
+  //         model: "vntl-llama3-8b",
+  //         stream: false,
+  //         messages: [
+  //           { role: "system", content: prompt },
+  //           {
+  //             role: "user",
+  //             content: `こんなはずじゃなかったのに……`,
+  //           },
+  //         ],
+  //       }),
+  //       headers: { "Content-Type": "application/json" },
+  //       timeout: 150000,
+  //     })
+  //   ).data.choices[0].message.content
+  // );
+  // await delay(10000000);
   // console.log(
   //   await translateOfflineSugoiCt2LongList(
   //     [
@@ -220,6 +254,22 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
   //     "kiriruby"
   //   )
   // );
+  // console.log(
+  //   `{\n    \"Line1\": \"\\\"Good morning, Miss. I have prepared a refreshing breakfast for you and a hearty meal.\\nI served her slightly diluted tea from the bedside table to the dining table when she got up while looking at the sleeping maid.\\\"\",\n    \"Line2\": \"\\\"Uh...\\\"\",\n    \"Line3\": \"\\\"She's already awake in the morning\\\"\",\n    \"Such a maid while watching the sleepiness of the bed. Then, a little care is placed in the pot from the bedside to the table. It's because a strong tea is not good for an empty stomach when waking up.\"\n}\n}`
+  //     .replace(/(\\n)|(\\)/g, "")
+  //     .split("Line")
+  //     .slice(1)
+  //     .map((v) =>
+  //       v
+  //         .split(":")[1]
+  //         .trim()
+  //         .replace(/(\\)|(\n)|(^"+)|("+$)|(\{)|(\})/g, "")
+  //         .trim()
+  //         .replace(/(",$)/g, "")
+  //         .trim()
+  //         .replace(/(")$/g, "")
+  //     )
+  // );
   // await delay(10000000);
   const listFileName = fs.readdirSync(pinpoint.translation.folderPath);
   let start = 0;
@@ -270,6 +320,9 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   // return await writeFile(filePath, convertJsonToCSV(fileContent), "utf8");
 
   dataList = fileContent.split(/\r\n/g);
+  if (dataList.length === 1) {
+    dataList = fileContent.split(/\n/g);
+  }
   if (fileContent.includes("# error")) return;
   // do {
   //   const fileContent = await readFile(filePath, encoding);
@@ -315,13 +368,14 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       translatedFileContent,
       encoding,
       false,
-      true
+      false
     );
   }
   let isNewDialog = true;
   let count3 = 0;
   let listCount = [];
   const suffixList = [];
+  const nameList = [];
   // console.log(dataList)
   let isScript = false;
   let rawTextList = dataList
@@ -361,6 +415,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         dataList[index - 1] = dataList[index - 1].replace(/［Ｔｅｍｐ］/, "");
         ans[ans.length - 1] = ans[ans.length - 1].replace(/［Ｔｅｍｐ］/, "");
       }
+      nameList.push(extractName(dataList[index - 1]));
       ans.push(rawText + "［Ｔｅｍｐ］");
       dataList[index] = dataList[index] + "［Ｔｅｍｐ］";
       isNewDialog = false;
@@ -380,7 +435,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         return ans;
       }
       count3++;
-      temp += (rawText.trim() === "---" ? "" : rawText) + " ";
+      temp += (rawText.trim() === "---" ? "" : rawText) + "";
       if (rawText.match(/［Ｔｅｍｐ］/)) {
         // suffixList.push(
         //   temp.match(/(\[[a-zA-Z =\[\]_]+\]+)$/g)[0].replace(/\[Ｔｅｍｐ\]/g, "")
@@ -451,6 +506,19 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   //   converter.toFullWidth(v)
   // );
   // const translatedTextList = [...rawTextList];
+  // const translatedNameList = await translateOfflineSugoiCt2LongList(
+  //   nameList,
+  //   8,
+  //   false,
+  //   true,
+  //   false,
+  //   "srp",
+  //   "",
+  //   false,
+  //   false,
+  //   null,
+  //   "Sugoi"
+  // );
   const translatedTextList = await translateOfflineSugoiCt2LongList(
     rawTextList,
     // .reduce((ans, text) => {
@@ -481,15 +549,19 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     //   console.log({v})
     //   return v.match(/@nm t="([一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞♀♂♪─〇☆―〜゛×・○♥　、☆＆『』‥ⅠⅡⅢⅣⅤ『』《》￥ｎ【『「（《》】』」）]+)?"/g)[0].replace(/@nm t="/g,"").replace(/"/g,"")
     // })
-    3,
+    4,
     false,
     true,
     false,
-    "kiriruby",
-    "",
+    "srp",
+    "Eroit",
     false,
-    false
+    false,
+    null,
+    "Sugoi"
+    // translatedNameList
   );
+  // console.log(translatedTextList)
   // const translatedTextList = rawTextList.map((v) => `@font size="25"\r\n`+v)
   // .map((v) => converter.toFullWidth(v).replace(/］/g,"]").replace(/［/g,"["));
   // .map((text) => {
@@ -660,16 +732,17 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       // const prefixNumber = textTemp.split(" ")[0];
       // const prefixName = textTemp.split(" ").slice(1).join(" ");
       // if (!temp.match(/[【『「（《》】』」）]/g)) temp = "　" + temp;
+      //         `[font size = "22"]\r\n`+
       ans.push(
         // handleWordWrap(
         //   Math.floor(temp.length / listCount[count]) < 41
         //     ? Math.floor(temp.length / listCount[count])
         //     : 45,
-          temp
+        //   temp,
         //   "\r\n",
         //   listCount[count]
         // )
-        // handleWordWrap(71, temp.replace(/’/g,"'"), "\r\n", listCount[count])
+        // handleWordWrap(1000, temp.replace(/’/g,"'"), "\r\n", listCount[count])
         // "[font size=20]\r\n"+temp
         // `{"exfont", size="f2"},\r\n${temp}\r\n{"exfont"},`
 
@@ -693,12 +766,16 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         // temp.replace(/if/g, "ｉf").replace(/time/g, "tｉme").replace(/else/g, "ｅlse").replace(/:/g, "：")
         // .replace(/@/g, "＠")
         // (!temp.includes("[") ? "　" : "") + temp
-        // handleWordWrap(71, temp, "\\n").replace(/(\\n)$/g, "")
-        // handleWordWrap(50, temp, "\r\n", listCount[count])
+        // (temp.match(/^「/g) ? "" : " ") +
+        // handleWordWrap(70, temp.replace(/、/g, ", "), "\\n").replace(
+        //   /(\\n)$/g,
+        //   ""
+        // )
+        // handleWordWrap(70, temp.replace(/、/g, ", "), "\r\n", listCount[count])
         // prefix + (temp === "@@" ? "" : temp).replace(/,( )?/g, "、")
         // ("　"+temp).replace(/　「/g,"「")
         // rawText.replace(/@nm t="[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟！～？＆。●・♡＝…：＄αβ%％●＜＞♀♂♪─〇☆―〜゛×・○♥　、☆＆『』‥ⅠⅡⅢⅣⅤ『』《》￥ｎ]+"/g,`@nm t="${temp}"${!isRtContained ? ` rt="${rawNameTag}"`:""}`)
-        // temp
+        temp
         // .replace(/,( )?/g, "、")
         // .replace(/、/g, ", ")
         // .replace(/[◆✩♥♡●♪]/g, "")
@@ -721,7 +798,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
     // .slice(0, translatedFileContent.length - 2)
     .join("\r\n");
   console.timeEnd(filePath);
-  await writeFile(filePath, translatedFileContent, encoding, false, true);
+  await writeFile(filePath, translatedFileContent, encoding, false, false);
   // await saveBackup();
 }
 function checkIsContinue(dumpList, previousText) {
@@ -785,13 +862,10 @@ async function fixTranslatedFileKs(filePathTranslated, filePathRaw, encoding) {
     fs.unlinkSync(filePathRaw);
   }
 }
-// [...$0.querySelectorAll(".mainbox")].reduce((ans, curr) => {
-//   const characters = [...curr.querySelectorAll(".chardetails")];
-//   characters.forEach((character) => {
-//     if (character.querySelector("tr b"))
-//       ans[character.querySelector("tr b").textContent] =
-//         character.querySelector("tr a").textContent;
-//   });
+// [...document.querySelectorAll(".chardetails")].reduce((ans,v)=>{
+//   const stripe = v.querySelector(".stripe");
+//   let temp = {};
+//   ans[stripe.querySelector("small").textContent] = stripe.querySelector("td a").textContent;
 //   return ans;
-// }, {});
+// },{})
 // ○○○○

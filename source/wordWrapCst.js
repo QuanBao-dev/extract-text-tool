@@ -82,39 +82,46 @@ async function translateFileCst(filePath) {
       //   //     return v + " ";
       //   //   })
       //   //   .join("");
-      // message = handleWordWrap(
-      //   25,
-      //   message,
-      //   // .replace(/[『「]/g,"\"").replace(/[』」]/g,"\""),
-      //   // .replace(/m/g, "m ")
-      //   // .replace(/M/g, "M ")
-      //   // .replace(/G/g, "G ")
-      //   // .replace(/w/g, "w ")
-      //   // .replace(/W/g, "W ")
-      //   // .replace(/M/g, "m")
-      //   // .replace(/F/g, "f")
-      //   // .replace(/W/g, "w")
-      //   // .replace(/O/g, "o"),
-      //   // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
-      //   // .replace(/<r/g, "")
-      //   // .replace(/\>/g, "")
-      //   // .replace(/<\/s/g, "")
-      //   // .replace(/❛/g, "'")
-      //   // .replace(/、/g, ", ")
-      //   "\r\n"
-      //   // name ? 72 - name.length - 2 : undefined
-      //   // undefined
-      // ).replace(/＠/g, "＠　");
-      //     .replace(/#/g, "＃")
-      //     .replace(/（/g, "(")
-      //     .replace(/）/g, ")")
-      //     .replace(/@/g, "＠");
-      //   // .replace(/'/g,"’");
-      //   // .replace(/m/g, "m ")
-      //   // .replace(/M/g, "M ")
-      //   // .replace(/G/g, "G ")
-      //   // .replace(/w/g, "w ")
-      //   // .replace(/W/g, "W ");
+      message = handleWordWrap(
+        78,
+        message.replace(/’/g,"'"),
+        // .replace(/[『「]/g,"\"").replace(/[』」]/g,"\""),
+        // .replace(/m/g, "m ")
+        // .replace(/M/g, "M ")
+        // .replace(/G/g, "G ")
+        // .replace(/w/g, "w ")
+        // .replace(/W/g, "W ")
+        // .replace(/M/g, "m")
+        // .replace(/F/g, "f")
+        // .replace(/W/g, "w")
+        // .replace(/O/g, "o"),
+        // .replace(/( )?<[a-z A-Z0-9\-\/]+>( )?/g, "")
+        // .replace(/<r/g, "")
+        // .replace(/\>/g, "")
+        // .replace(/<\/s/g, "")
+        // .replace(/❛/g, "'")
+        // .replace(/、/g, ", ")
+        "\r\n"
+        // name ? 72 - name.length - 2 : undefined
+        // undefined
+      ).replace(/＠/g, "＠　").trim();
+
+      // if (message.split("\r\n").length >= 4) {
+      //   message =
+      //     "%XS14" +
+      //     handleWordWrap(64, message.replace(/\r\n/g, " "), "\r\n");
+      // }
+
+      // .replace(/#/g, "＃")
+      // .replace(/（/g, "(")
+      // .replace(/）/g, ")")
+      // .replace(/@/g, "＠");
+      // .replace(/'/g,"’");
+      // .replace(/m/g, "m ")
+      // .replace(/M/g, "M ")
+      // .replace(/G/g, "G ")
+      // .replace(/w/g, "w ")
+      // .replace(/W/g, "W ");
       // } catch (error) {
       //   message = rawMessage.replace(/#/g, "＃");
       // }
@@ -129,61 +136,61 @@ async function translateFileCst(filePath) {
       //     .map((v) => "")
       //     .join(" ");
 
-      message = message
-        .replace(/fs/g, "")
-        .replace(/\\/g, "")
-        .replace(/\:/g, "")
-        .replace(/[\[\]]/g, "")
-        .replace(/\$39;/g, "'")
-        .replace(/'/g, "’");
-      if (!message.includes("pc")) {
-        if (message.length > 30 || message.includes("[")) {
-          const length = message
-            .trim()
-            .replace(/　/g, " ")
-            .replace(/、/g, ", ")
-            .split(" ").length;
-          message =
-            // "\\fs" +
-            message
-              .trim()
-              .replace(/　/g, " ")
-              .replace(/、/g, ", ")
-              .split(" ")
-              .map((v, index) => {
-                // if (v === "") return v;
-                if (v.includes("[") || v.includes("]")) {
-                  return v
-                    .trim()
-                    .replace(/fs/g, "")
-                    .replace(/\\/g, "")
-                    .replace(/\:/g, "")
-                    .replace(/[\[\]]/g, "")
-                    .replace(/\$39;/g, "'");
-                }
-                // return v;
-                if (v === "") return v.replace(/\$39;/g, "'");
-                if(length <= 17) return `\\fs[${v}]`.replace(/\$39;/g, "'");
-                if(length >= 20) return `${v}`.replace(/\$39;/g, "'");
-                return `\\fs[${v}]`.replace(/\$39;/g, "'");
-                // if (index > 7 && index < length - 4) {
-                // } else {
-                //   return `${v}`.replace(/\$39;/g, "'");
-                // }
-              })
-              .filter((v) => v !== "")
-              .join(" ");
-        }
+      // message = message
+      //   .replace(/fs/g, "")
+      //   .replace(/\\/g, "")
+      //   .replace(/\:/g, "")
+      //   .replace(/[\[\]]/g, "")
+      //   .replace(/\$39;/g, "'")
+      //   .replace(/'/g, "’");
+      // if (!message.includes("pc")) {
+      //   if (message.length > 30 || message.includes("[")) {
+      //     const length = message
+      //       .trim()
+      //       .replace(/　/g, " ")
+      //       .replace(/、/g, ", ")
+      //       .split(" ").length;
+      //     message =
+      //       // "\\fs" +
+      //       message
+      //         .trim()
+      //         .replace(/　/g, " ")
+      //         .replace(/、/g, ", ")
+      //         .split(" ")
+      //         .map((v, index) => {
+      //           // if (v === "") return v;
+      //           if (v.includes("[") || v.includes("]")) {
+      //             return v
+      //               .trim()
+      //               .replace(/fs/g, "")
+      //               .replace(/\\/g, "")
+      //               .replace(/\:/g, "")
+      //               .replace(/[\[\]]/g, "")
+      //               .replace(/\$39;/g, "'");
+      //           }
+      //           // return v;
+      //           if (v === "") return v.replace(/\$39;/g, "'");
+      //           if(length <= 17) return `\\fs[${v}]`.replace(/\$39;/g, "'");
+      //           if(length >= 20) return `${v}`.replace(/\$39;/g, "'");
+      //           return `\\fs[${v}]`.replace(/\$39;/g, "'");
+      //           // if (index > 7 && index < length - 4) {
+      //           // } else {
+      //           //   return `${v}`.replace(/\$39;/g, "'");
+      //           // }
+      //         })
+      //         .filter((v) => v !== "")
+      //         .join(" ");
+      //   }
 
-        // if (name === undefined) {
-        //   message = message
-        //     .replace(/fs/g, "")
-        //     .replace(/\\/g, "")
-        //     .replace(/\:/g, "")
-        //     .replace(/[\[\]]/g, "")
-        //     .replace(/\$39;/g, "'");
-        // }
-      }
+      //   // if (name === undefined) {
+      //   //   message = message
+      //   //     .replace(/fs/g, "")
+      //   //     .replace(/\\/g, "")
+      //   //     .replace(/\:/g, "")
+      //   //     .replace(/[\[\]]/g, "")
+      //   //     .replace(/\$39;/g, "'");
+      //   // }
+      // }
 
       // message = message.replace(/'/g,"’")
       // const specialList = message.match(

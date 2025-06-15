@@ -10,6 +10,7 @@ const delay = require("./delay");
 // const handleWordWrap = require("./handleWordWrap");
 const { translateSelectCenterTextList } = require("./translateJapanese");
 const handleWordWrap = require("./handleWordWrap");
+const { extractName } = require("./translateAIModel");
 // const handleWordWrapGlue = require("./handleWordWrapGlue");
 const containRegExpI = new RegExp(
   artemisAster.translation.regExpToExcludeSentenceNotNeedTranslatedContain,
@@ -233,14 +234,29 @@ const { addedStringAfterTranslation, addedPrefixAfterTranslation } =
 let objectCount = {};
 
 async function translateFileKs(filePath, isSelect, isTagName, encoding) {
-  const fileContent = await readFile(filePath, encoding);
+  let fileContent = await readFile(filePath, encoding);
   // const translatedRawFileContent = await readFile(filePath.replace("BGI","BGI_output"),encoding)
   objectCount = {};
   // const dumpFileContent = await readFile(
   //   filePath.replace(/csv/g, "txt"),
   //   encoding
   // );
-  let dataList = fileContent.split(/\r\n/g);
+  if (!isSelect) {
+    fileContent = fileContent
+      .replace(/{"exfont",size="f2"},\r\n/g, "")
+      .replace(/{"exfont"},\r\n/g, "");
+  }
+  let dataList = fileContent
+    // .replace(/{"exfont",size="f2"},\r\n/g, "")
+    // .replace(/{"exfont"},\r\n/g, "")
+    .replace(/Haruka/g, "Haruruka")
+    .replace(/teacher/g, "sensei")
+    .replace(/Haruuka/g, "Haruruka")
+    .replace(/Kaneguri/g, "Kadenokouji")
+    .replace(/Shizuri/g, "Sizuri")
+    .replace(/Koonoka/g, "Konoka")
+    .replace(/Sawa/g, "Hawa")
+    .split(/\r\n/g);
   // let rawTranslatedDataList = translatedRawFileContent.split(/\r\n/g);
   // let dumpList = dumpFileContent.split(/\r\n/g);
   // console.log(dataList);
@@ -269,6 +285,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
   let count3 = 0;
   let listCount = [];
   const suffixList = [];
+  const nameList = [];
   let rawTextList = dataList
     .reduce((ans, rawText, index) => {
       if (!artemisAster.translation.isNoFilter) {
@@ -276,11 +293,11 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
           isScript = false;
         }
         if (
-          // (rawText.trim().match(containRegExpI) &&
-          //   !rawText.trim().match(exceptRegExpI)) ||
-          // rawText === "" ||
-          // isScript
-          !rawText.trim().match(/^\["text"\]/g) 
+          (rawText.trim().match(containRegExpI) &&
+            !rawText.trim().match(exceptRegExpI)) ||
+          rawText === "" ||
+          isScript
+          // !rawText.trim().match(/^\["text"\]/g)
           // index === 0
           // !rawText.match(containRegExpG2)
           // rawText.match(containTagNameRegExpI)
@@ -295,29 +312,32 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         }
       }
       if (ans.length > 0 && isNewDialog === false) {
-        dataList[index - 1] = dataList[index - 1].replace(/\[Cock\]/, "");
-        ans[ans.length - 1] = ans[ans.length - 1].replace(/\[Cock\]/, "");
+        dataList[index - 1] = dataList[index - 1].replace(/\[temp\]/, "");
+        ans[ans.length - 1] = ans[ans.length - 1].replace(/\[temp\]/, "");
       }
+      if (dataList[index - 1] && !dataList[index - 1].includes(";"))
+        nameList.push(extractName(dataList[index - 1]));
+      else nameList.push("");
       ans.push(rawText + "[temp]");
       dataList[index] = dataList[index] + "[temp]";
       isNewDialog = false;
       return ans;
     }, [])
     .reduce((ans, rawText) => {
+      ans.push(rawText.replace(/\[temp\]/g, "").replace(/\[r\]/g, ""));
+      return ans;
       if (artemisAster.translation.isNoFilter) {
-        ans.push(rawText.replace(/\[Cock\]/g, "").replace(/\[r\]/g, ""));
-        return ans;
       }
       count3++;
       temp += rawText.trim() === "---" ? "" : rawText.trim();
-      if (rawText.match(/\[Cock\]/)) {
+      if (rawText.match(/\[temp\]/)) {
         // suffixList.push(
-        //   temp.match(/(\[[a-zA-Z =\[\]_]+\]+)$/g)[0].replace(/\[Cock\]/g, "")
+        //   temp.match(/(\[[a-zA-Z =\[\]_]+\]+)$/g)[0].replace(/\[temp\]/g, "")
         // );
         if (!artemisAster.translation.isWordWrap) {
           ans.push(
             temp
-              .replace(/\[Cock\]/g, "")
+              .replace(/\[temp\]/g, "")
               // .replace(/\[r\]/g, "")
               // .replace(/／/g, "")
               .replace(/{"rt2"},/g, "")
@@ -337,7 +357,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
         } else {
           ans.push(
             temp
-              // .replace(/\[Cock\]/g, "")
+              // .replace(/\[temp\]/g, "")
               // .replace(/\[r\]/g, "")
               // .replace(/／/g, "")
               // .replace(/,{"rt2"},/g, "")
@@ -350,16 +370,35 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       }
       return ans;
     }, []);
-    // console.log(rawTextList)
-  const translatedTextList = await translateOfflineSugoiCt2LongList(
-    rawTextList,
-    3,
+  const translatedNameList = await translateOfflineSugoiCt2LongList(
+    nameList,
+    8,
     false,
     true,
     false,
-    "ast4",
-    ""
+    "srp",
+    "",
+    false,
+    false,
+    null,
+    "Sugoi"
   );
+
+  const translatedTextList = await translateOfflineSugoiCt2LongList(
+    rawTextList.map((v) => v.replace(/\\n/g, " ")),
+    2,
+    false,
+    true,
+    false,
+    "ast3",
+    "",
+    null,
+    null,
+    null,
+    "AI",
+    translatedNameList
+  );
+  // ",\n	+\{"txruby", text=".+"\},\n	+"
   // const translatedTextList = rawTextList;
   let count = 0;
   let isDisable = false;
@@ -374,7 +413,7 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       //   //   !rawText.trim().match(exceptRegExpI)) ||
       //   // rawText === "" ||
       //   // isScript
-      //   !rawText.trim().match(/^\["text"\]/g) 
+      //   !rawText.trim().match(/^\["text"\]/g)
       //   // !rawText.match(containRegExpG2)
       //   // rawText.match(containTagNameRegExpI)
       // ) {
@@ -385,11 +424,11 @@ async function translateFileKs(filePath, isSelect, isTagName, encoding) {
       // }
       // if (isDisable) return ans;
       if (
-        // (rawText.trim().match(containRegExpI) &&
-        //   !rawText.trim().match(exceptRegExpI)) ||
-        // rawText === "" ||
-        // isScript
-        !rawText.trim().match(/^\["text"\]/g) 
+        (rawText.trim().match(containRegExpI) &&
+          !rawText.trim().match(exceptRegExpI)) ||
+        rawText === "" ||
+        isScript
+        // !rawText.trim().match(/^\["text"\]/g)
         // !rawText.match(containTagNameRegExpI)
         // index === 0
         // !rawText.match(containRegExpG2)
