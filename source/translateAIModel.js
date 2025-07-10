@@ -1,18 +1,25 @@
 const axios = require("axios");
 const { readFile } = require("./handleFile");
-const delay = require("./delay");
+const { replacedCharsBeforeTranslation } = require("../setting.json");
 const AFHConvert = require("ascii-fullwidth-halfwidth-convert");
 const converter = new AFHConvert();
-const objectMap2 = handleObjectMap({
-  "相倉 和葉": "Ainokura Kazuha",
-  "雨晴 こがね": "Amahara Kogane",
-  "上梨 夜雪": "Kaminashi Yashiro",
-  "上梨 鋼": "Kaminashi Kou",
-  "赤尾 充祥": "Akao Mitsuru",
-  "国広 伊織": "Kunihiro Iori",
-  "利賀 遥斗": "Touga Haruto",
-  ぽっぽんち: "Popponchi",
-});
+const { weirdToNormalChars } = require("weird-to-normal-chars");
+
+const objectMap2 = handleObjectMap(replacedCharsBeforeTranslation);
+const signedCharacter = [
+  ..."ăâđêôơưàảãạáằẳẵặắầẩẫậấèẻẽẹéềểễệếìỉĩịíōòỏõọóồổỗộốờởỡợớùủũụúừửữựứỳỷỹỵýĂÂĐÊÔƠƯÀẢÃẠÁẰẲẴẶẮẦẨẪẬẤÈẺẼẸÉỀỂỄỆẾÌỈĨỊÍïÒỎÕỌÓỒỔỖỘỐỜỞỠỢỚÙỦŨỤÚỪỬỮỰỨỲỶỸỴÝ",
+];
+const unsignedCharacter = [
+  ..."aadeoouaaaaaaaaaaaaaaaeeeeeeeeeeiiiiioooooooooooooooouuuuuuuuuuyyyyyAADEOOUAAAAAAAAAAAAAAAEEEEEEEEEEIIIIIiOOOOOOOOOOOOOOOUUUUUUUUUUYYYYY",
+];
+
+function replaceSignedCharacter(text) {
+  let temp = text;
+  signedCharacter.forEach((signedChar, index) => {
+    temp = temp.replace(new RegExp(signedChar, "g"), unsignedCharacter[index]);
+  });
+  return temp;
+}
 
 let count = 1;
 
@@ -27,25 +34,81 @@ async function updateCount(history) {
   if (!maxCount) return 0;
   return maxCount;
 }
+
+async function lmStudioFetch(model, rawTexts, messages, text) {
+  messages.push({ role: "user", content: text });
+  return (
+    (
+      await axios({
+        url: "http://localhost:1234/v1/chat/completions",
+        method: "post",
+        data: JSON.stringify({
+          model: model,
+          stream: false,
+          max_tokens: -1,
+          temperature: 0,
+          stop: ["\n}"],
+          messages,
+        }),
+        timeout: 1000 * 10,
+        headers: { "Content-Type": "application/json" },
+      })
+    ).data.choices[0].message.content.trim() + "\n}"
+  );
+}
+
+async function ollamaFetch(model, messages, prompt, rawTexts) {
+  const response =
+    (
+      await axios({
+        url: "http://localhost:11434/api/generate",
+        method: "post",
+        data: JSON.stringify({
+          model: model,
+          stream: false,
+          prompt,
+          options: {
+            temperature: 0,
+            stop: ["\n}"],
+            num_gpu: 33,
+            num_ctx: 8192,
+            num_thread: 1,
+          },
+          messages,
+        }),
+        timeout: 1000 * 20,
+        headers: { "Content-Type": "application/json" },
+      })
+    ).data.response + "\n}";
+  messages.push({ role: "user", content: prompt });
+  return response;
+}
+
 async function translateAIModelList(
   rawTexts = [],
   nameList,
   model = "vntl-llama3-8b",
   isCst = false,
-  narrator = "Narrator"
+  narrator = "",
+  isSkip
 ) {
   nameList = nameList.map((v) => {
     if (!v) return narrator;
     if (v === "？？？") return "???";
-    return v.replace(/(Mr\.)|(Mrs\.)|(\.)/g, "");
+    return v
+      .replace(/(Mr\.)|(Mrs\.)|(\.)/g, "")
+      .replace(/An /g, "")
+      .replace(/The /g, "")
+      .replace(/'/g, "’")
+      .trim();
   });
 
   const textList = rawTexts.map((v, index) => {
     if (nameList[index] !== "") {
-      if (isCst) return nameList[index] + "　「" + v + "」";
-      return nameList[index] + "　" + v;
+      if (isCst) return nameList[index].trim() + ": 「" + v.trim() + "」";
+      return nameList[index].trim() + ": " + v.trim();
     }
-    return v;
+    return v.trim();
   });
 
   const [prompt, history] = await Promise.all([
@@ -65,7 +128,7 @@ async function translateAIModelList(
 
   let jsonObject = {};
   let jsonObject2 = {};
-  // return rawTexts;
+  // count = 1;
   textList.forEach((text) => {
     let temp = handleTextBeforeTranslation(
       text
@@ -76,7 +139,10 @@ async function translateAIModelList(
       // .replace(/　/g, "")
     );
     temp = replaceTagName(temp, [2], "g");
-    temp = replaceTagName(temp, [3], "gi");
+    temp = replaceTagName(temp, [3], "gi")
+      .replace(/Hibikiい/g, "響い")
+      .replace(/Okuま/g, "奥ま")
+      .replace(/Okuの/g, "奥の");
     // console.log({temp});
     jsonObject[`Line${count}`] = temp;
     jsonObject2[`Line${count}`] = temp.replace(narrator, "").trim();
@@ -85,102 +151,127 @@ async function translateAIModelList(
   const text = JSON.stringify(jsonObject, null, 1).replace(/\[r\]/g, "");
 
   let translatedTextList = [];
-  let length = 0;
   while (translatedTextList.length !== textList.length) {
-    messages.push({ role: "user", content: text });
     // console.log(messages);
-    console.log(jsonObject2);
+    console.log(jsonObject);
     let response;
     try {
-      response =
-        (
-          await axios({
-            url: "http://localhost:1234/v1/chat/completions",
-            method: "post",
-            data: JSON.stringify({
-              model: model,
-              stream: false,
-              max_tokens: -1,
-              temperature: 0,
-              stop: ["\n}"],
-              messages,
-            }),
-            timeout: 1000 * 60 * 1.5,
-            headers: { "Content-Type": "application/json" },
-          })
-        ).data.choices[0].message.content.trim() + "\n}";
+      // response = await lmStudioFetch(model, rawTexts, messages, text);
+      response = await ollamaFetch(model, messages, text, rawTexts);
     } catch (error) {
-      handleCatchError(rawTexts);
+      handleCatchError(rawTexts, isSkip);
     }
 
     try {
       translatedTextList = jsonRepair2(response, nameList);
-      if (translatedTextList.length !== length) {
+      if (translatedTextList.length !== rawTexts.length) {
         translatedTextList = jsonRepair(response, nameList);
       }
+      // console.log({ translatedTextList });
 
-      translatedTextList = translatedTextList.map((v, i) => {
-        let temp = v.trim();
-        if (!isCst) {
-          if (
-            rawTexts[i].trim().match(/^『/g) &&
-            rawTexts[i].trim().match(/』$/g)
-          ) {
-            temp =
-              "『" +
-              temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "") +
-              "』";
+      translatedTextList = translatedTextList
+        .map((v, i) => {
+          let temp = v.trim();
+          if (nameList[i] && nameList[i] !== narrator) {
+            temp = temp
+              .replace(/^.+:/g, "")
+              .replace(new RegExp("^Narator", "i"), "")
+              .trim()
+              .replace(/^:+/g, "")
+              .replace(/^,+/g, "")
+              .replace(/^'+/g, "")
+              .replace(/^[『【「(]+/g, "");
           }
-          if (
-            rawTexts[i].trim().match(/^【/g) &&
-            rawTexts[i].trim().match(/】$/g)
-          ) {
-            temp =
-              "【" +
-              temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "") +
-              "】";
+
+          if (!isCst) {
+            if (rawTexts[i].trim().match(/^『/g)) {
+              temp =
+                "『" + temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "");
+            }
+            if (rawTexts[i].trim().match(/』$/g)) {
+              temp =
+                temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "") + "』";
+            }
+
+            if (rawTexts[i].trim().match(/^【/g)) {
+              temp =
+                "【" + temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "");
+            }
+            if (rawTexts[i].trim().match(/】$/g)) {
+              temp =
+                temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "") + "】";
+            }
+
+            if (rawTexts[i].trim().match(/^「/g)) {
+              temp =
+                "「" + temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "");
+            }
+            if (rawTexts[i].trim().match(/」$/g)) {
+              temp =
+                temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "") + "」";
+            }
+
+            if (rawTexts[i].trim().match(/^[\(（]/g)) {
+              temp =
+                "(" + temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "");
+            }
+            if (rawTexts[i].trim().match(/[\)）]$/g)) {
+              temp =
+                temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "") + ")";
+            }
           }
-          if (
-            rawTexts[i].trim().match(/^「/g) &&
-            rawTexts[i].trim().match(/」$/g)
-          ) {
-            temp =
-              "「" +
-              temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "") +
-              "」";
-          }
-          if (
-            rawTexts[i].trim().match(/^\(/g) &&
-            rawTexts[i].trim().match(/\)$/g)
-          ) {
-            temp =
-              "(" +
-              temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "") +
-              ")";
-          }
-          if (
-            rawTexts[i].trim().match(/^（/g) &&
-            rawTexts[i].trim().match(/）$/g)
-          ) {
-            temp =
-              "(" +
-              temp.replace(/^["'“‘«]+/g, "").replace(/["'”’»]+$/g, "") +
-              ")";
-          }
-        }
-        return temp
-          .trim()
-          .replace(/^「+/g, "「")
-          .replace(/」」+$/g, "」")
-          .replace(/^\(\(/g, "(")
-          .replace(/^"/g, "");
-      });
+
+          return temp
+            .trim()
+            .replace(/^「+/g, "「")
+            .replace(/」」+$/g, "」")
+            .replace(/^\(\(/g, "(")
+            .replace(/^"/g, "")
+            .replace(/「.+: '/g, "「")
+            .replace(/「: '/g, "「")
+            .replace(new RegExp("The narrator", "i"), "")
+            .trim();
+        })
+        .filter((v) => v !== "");
     } catch (error) {
-      handleCatchError(rawTexts);
+      handleCatchError(rawTexts, isSkip);
     }
 
+    translatedTextList = translatedTextList
+      .map((v) => (v === "" ? "..." : v))
+      .map((v) =>
+        weirdToNormalChars(
+          replaceSignedCharacter(
+            v
+              .replace(/User.+:/g, "")
+              .replace(/\(（/g, "(")
+              .replace(/）\)/g, ")")
+              .replace(/„/g, "")
+              .replace(/“/g, "")
+              .replace(/`/g, "")
+              .replace(/—/g, ", ")
+              .replace(/「, , 」/g, "「...」")
+              .replace(/, ,/g, " ")
+              .replace(/「」/g, "「……」")
+              .trim()
+          )
+        )
+      )
+      .filter((v) => v !== "");
+
     if (translatedTextList.length !== rawTexts.length) {
-      handleCatchError(rawTexts);
+      handleCatchError(rawTexts, isSkip);
+    }
+
+    for (let i = 0; i < translatedTextList.length; i++) {
+      if (
+        translatedTextList[i].match(
+          /[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ＆]+/g
+        ) ||
+        translatedTextList[i].match(new RegExp(': "', "g"))
+      ) {
+        handleCatchError(rawTexts, isSkip);
+      }
     }
 
     // Add assistant content
@@ -191,46 +282,67 @@ async function translateAIModelList(
       if (nameList[temp] !== "") {
         assistantContent[`Line${i}`] =
           nameList[temp] +
-          ' "' +
+          ": " +
           translatedTextList[temp]
-            .replace(/^["'“【『「（《\(:«]+/g, "")
-            .replace(/["'》】』」»\)]+$/g, "") +
-          '"';
+            .replace(/^["'“]+/g, "")
+            .replace(/["'`]+$/g, "")
+            .trim()
+            .replace(/^\?+/, "")
+            .trim() +
+          "";
       } else {
-        assistantContent[`Line${i}`] =
-          nameList[temp] +
-          translatedTextList[temp]
-            .replace(/^["'“【『「（《\(:«]+/g, "")
-            .replace(/["'》】』」»\)]+$/g, "");
+        assistantContent[`Line${i}`] = translatedTextList[temp]
+          .replace(/^["'“]+/g, "")
+          .replace(/["'`]+$/g, "")
+          .trim()
+          .replace(/^\?+/, "")
+          .trim();
       }
       temp++;
     }
 
-    temp = 0;
-    for (let i = count - rawTexts.length; i < count; i++) {
-      if (nameList[temp] !== "" && nameList[temp] !== narrator) {
-        assistantContent2[`Line${i}`] =
-          nameList[temp] +
-          ' "' +
-          translatedTextList[temp]
-            .replace(/^["'“【『「（《\(:«]+/g, "")
-            .replace(/["'》】』」»\)]+$/g, "") +
-          '"';
-      } else {
-        assistantContent2[`Line${i}`] = translatedTextList[temp]
-          .replace(/^["'“【『「（《\(:«]+/g, "")
-          .replace(/["'》】』」»\)]+$/g, "");
-      }
-      temp++;
-    }
+    // temp = 0;
+    // for (let i = count - rawTexts.length; i < count; i++) {
+    //   if (nameList[temp] !== "" && nameList[temp] !== narrator) {
+    //     assistantContent2[`Line${i}`] =
+    //       nameList[temp] +
+    //       ' "' +
+    //       translatedTextList[temp]
+    //         .replace(/^["'“【『「（《\(:«]+/g, "")
+    //         .replace(/["'》】』」»\)`]+$/g, "")
+    //         .trim()
+    //         .replace(
+    //           new RegExp("^" + nameList[temp].replace(/\?/g, "\\?") + ":", "g"),
+    //           ""
+    //         )
+    //         .replace(/^\?+/, "")
+    //         .replace(/^["'“【『「（《\(:«]+/g, "")
+    //         .trim() +
+    //       '"';
+    //   } else {
+    //     assistantContent2[`Line${i}`] = translatedTextList[temp]
+    //       .replace(/^["'“【『「（《\(:«]+/g, "")
+    //       .replace(/["'》】』」»\)`]+$/g, "")
+    //       .trim()
+    //       .replace(
+    //         new RegExp("^" + nameList[temp].replace(/\?/g, "\\?") + ":", "g"),
+    //         ""
+    //       )
+    //       .replace(/^\?+/, "")
+    //       .replace(/^["'“【『「（《\(:«]+/g, "")
+    //       .trim();
+    //   }
+    //   temp++;
+    // }
 
     messages.push({
       role: "assistant",
       content: JSON.stringify(assistantContent, null, 1),
     });
 
-    console.log(assistantContent2);
-    const n = 10;
+    // console.log(assistantContent2);
+    console.log(assistantContent);
+    const n = 5;
     let historyLength = n * 2;
     if (messages.length > historyLength) {
       let length = messages.length;
@@ -240,9 +352,9 @@ async function translateAIModelList(
   return { translatedTextList, messages };
 }
 
-function handleCatchError(rawTexts) {
+function handleCatchError(rawTexts, isSkip) {
   count -= rawTexts.length;
-  count++;
+  if (isSkip) count++;
   messages.pop();
   throw new Error("Fall back");
 }
@@ -275,6 +387,12 @@ function handleObjectMap(objectMap) {
     });
     return ans;
   }, ans);
+  Object.keys(ans).forEach((key) => {
+    if (key.length === 1) {
+      delete ans[key];
+    }
+  });
+  // console.log(ans);
   return ans;
 }
 
@@ -283,7 +401,10 @@ function replaceTagName(text, modes = [2], flag = "g") {
   if (!temp) return temp;
   if (modes.includes(2)) {
     Object.keys(objectMap2).forEach((key) => {
-      temp = temp.replace(new RegExp(key, flag), objectMap2[key]);
+      temp = temp.replace(
+        new RegExp(key, flag),
+        converter.toFullWidth(objectMap2[key])
+      );
     });
   }
   return temp;
@@ -375,6 +496,19 @@ function handleTextBeforeTranslation(text) {
     text.match(
       /\([一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟～＆。●・♡＝…：:‘’＄αβ％●＜＞♀♂♪─〇☆―〜゛×○♥☆＆＿♥、☆＆・ζ‘’＄αβ％●＜＞♀♂♪─〇☆―〜゛×・○♥、☆＆＿’！？\r\n　－（）\/]+\)/g
     ) || [];
+  const rubyList23 =
+    text.match(
+      /\[ruby:[一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟～＆。●・♡＝…：‘’＄αβ％●＜＞♀♂♪─〇☆―〜゛×○♥☆＆＿♥、☆＆・ζ‘’＄αβ％●＜＞♀♂♪─〇☆―〜゛×・○♥、☆＆＿’！？\r\n　－（）]+\][一-龠ぁ-ゔァ-ヴーａ-ｚＡ-Ｚ０-９々〆〤ヶｦ-ﾟァ-ヶぁ-んァ-ヾｦ-ﾟ〟～＆。●・♡＝…：‘’＄αβ％●＜＞♀♂♪─〇☆―〜゛×○♥☆＆＿♥、☆＆・ζ‘’＄αβ％●＜＞♀♂♪─〇☆―〜゛×・○♥、☆＆＿’！？\r\n　－（）]+\[\/ruby\]/g
+    ) || [];
+  for (let i = 0; i < rubyList23.length; i++) {
+    text = text.replace(
+      rubyList23[i],
+      rubyList23[i]
+        .split("]")[0]
+        .replace(/\[ruby:/g, "")
+        .replace(/\(/g, "")
+    );
+  }
   for (let i = 0; i < rubyList22.length; i++) {
     text = text.replace(
       rubyList22[i],
@@ -530,47 +664,72 @@ function handleTextBeforeTranslation(text) {
   // }
   return text;
 }
+
 function jsonRepair(text, nameList) {
-  return text
-    .replace(/(\\n)|(\\)/g, "")
-    .split(',\n "')
-    .map((v) =>
-      v
-        .replace(/Line[0-9]+/g, "")
-        .replace(/[\[\]]/g, "")
-        .trim()
-        .replace(/(\\)|(\n)|(^"+)|("+$)|(\{)|(\})/g, "")
-        .trim()
-        .replace(/(““)/g, "")
-        .trim()
-        .replace(/(””)/g, "")
-        .trim()
-        .replace(/(",$)/g, "")
-        .trim()
-        .replace(/(")$/g, "")
-        .trim()
-        .replace(/(」)$/g, "")
-        .trim()
-        .replace(/(,$)/g, "")
-        .trim()
-        .replace(/(,$)/g, "")
-        .trim()
-        .replace(/(»$)/g, "")
-        .trim()
-        .replace(/"/g, "")
-    )
-    .map((v, index) => {
-      let name = replaceTagName(nameList[index], [2], "g");
-      name = replaceTagName(nameList[index], [3], "gi");
-      let temp = v
-        .trim()
-        // .replace(/:/g, "")
-        .replace(new RegExp(name.replace(/\?/g, "\\?"), "i"), "")
-        .trim()
-        .replace(/^["'“【『「（《\(:«]+/g, "")
-        .replace(/["'》】』」»\)]+$/g, "");
-      return temp;
-    });
+  return (
+    text
+      .replace(/(\\n)|(\\)/g, "")
+      // .split(',\n "')
+      .split("\n")
+      .map((v) =>
+        v
+          .replace(/Line[0-9]+/g, "")
+          .replace(/[\[\]]/g, "")
+          .trim()
+          .replace(/(\\)|(\n)|(^"+)|("+$)|(\{)|(\})/g, "")
+          .trim()
+          .replace(/(““)/g, "")
+          .trim()
+          .replace(/(””)/g, "")
+          .trim()
+          .replace(/(",$)/g, "")
+          .trim()
+          .replace(/(")$/g, "")
+          .trim()
+          .replace(/(」)$/g, "")
+          .trim()
+          .replace(/(,$)/g, "")
+          .trim()
+          .replace(/(,$)/g, "")
+          .trim()
+          .replace(/(»$)/g, "")
+          .trim()
+          .replace(/"/g, "")
+      )
+      .filter((v) => v !== "")
+      .map((v, index) => {
+        let name = replaceTagName(
+          nameList[index].replace(/\?/g, "\\?"),
+          [2],
+          "g"
+        );
+        name = replaceTagName(nameList[index].replace(/\?/g, "\\?"), [3], "gi")
+          .replace(/\?/g, "\\?")
+          .trim();
+        let temp = v
+          .trim()
+          .replace(/^["'“【『「（《\(:«]+/g, "")
+          .replace(/["'》】』」»\)]+$/g, "")
+          .trim()
+          .replace(new RegExp(name, name === "Narrator" ? "g" : "i"), "")
+          .trim()
+          .replace(/^["'“【『「（《\(:«]+/g, "")
+          .replace(/["'》】』」»\)]+$/g, "")
+          .trim()
+          .replace(/<\/s>/g, "")
+          .replace(/[<>\/]/g, "")
+          .trim()
+          .replace(/'`/g, "")
+          .trim()
+          .replace(/`$/g, "")
+          .replace(/^['"]+/g, "")
+          .replace(/['"]+$/g, "")
+          .replace(/^[a-zA-Z\-\*?0-9]+:/g, "")
+          .replace(/^\*+/g, "");
+        return temp;
+      })
+      .filter((v) => v !== "")
+  );
 }
 function jsonRepair2(text, nameList) {
   return text
@@ -603,19 +762,40 @@ function jsonRepair2(text, nameList) {
         .trim()
         .replace(/(»$)/g, "")
         .trim()
-        .replace(/(")$/g, "");
+        .replace(/"/g, "");
     })
     .map((v, index) => {
-      let name = replaceTagName(nameList[index], [2], "g");
-      name = replaceTagName(nameList[index], [3], "gi");
+      let name = replaceTagName(
+        nameList[index].replace(/\?/g, "\\?"),
+        [2],
+        "g"
+      );
+      name = replaceTagName(nameList[index].replace(/\?/g, "\\?"), [3], "gi")
+        .replace(/\?/g, "\\?")
+        .trim();
       let temp = v
         .trim()
-        .replace(new RegExp(name.replace(/\?/g, "\\?"), "i"), "")
+        .replace(/^["'“【『「（《\(:«]+/g, "")
+        .replace(/["'》】』」»\)]+$/g, "")
+        .trim()
+        .replace(new RegExp(name, name === "Narrator" ? "g" : "i"), "")
         .trim()
         .replace(/^["'“【『「（《\(:«]+/g, "")
-        .replace(/["'》】』」»\)]+$/g, "");
+        .replace(/["'》】』」»\)]+$/g, "")
+        .trim()
+        .replace(/<\/s>/g, "")
+        .replace(/[<>\/]/g, "")
+        .trim()
+        .replace(/'`/g, "")
+        .trim()
+        .replace(/`$/g, "")
+        .replace(/^['"]+/g, "")
+        .replace(/['"]+$/g, "")
+        .replace(/^[a-zA-Z\-\*?0-9]+:/g, "")
+        .replace(/^\*+/g, "");
       return temp;
-    });
+    })
+    .filter((v) => v !== "");
 }
 
 module.exports = { translateAIModelList, extractName };
